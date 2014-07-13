@@ -10,12 +10,6 @@ class HelpersTest extends \TestCase
         $this->assertFalse(is_dir($dir));
     }
 
-    public function testEscape()
-    {
-        $str = lucene_query_escape("+ - && || ! ( ) { } [ ] ^ \" ~ * ? : \\");
-        $this->assertEquals("\\+ \\- \\&& \\|| \\! \\( \\) \\{ \\} \\[ \\] \\^ \\\" \\~ \\* \\? \\: \\\\", $str);
-    }
-
     private function createTempDir()
     {
         $root = sys_get_temp_dir();

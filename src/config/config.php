@@ -12,9 +12,7 @@ return array(
      |
      |
      */
-    'index' => [
-        'path' => storage_path() . '/laravel-search/index',
-    ],
+    'index_path' => storage_path() . '/laravel-search/index',
 
     'models' => [
         'lib\\Product' => [

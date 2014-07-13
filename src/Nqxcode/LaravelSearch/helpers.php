@@ -26,25 +26,3 @@ if (!function_exists('rmdir_recursive')) {
         return false;
     }
 }
-
-if (!function_exists('lucene_query_escape')) {
-    /**
-     * Escape special characters for Lucene query.
-     *
-     * @param string $str
-     *
-     * @return string
-     */
-    function lucene_query_escape($str)
-    {
-        $special_chars = ['\\', '+', '-', '&&', '||', '!', '(', ')', '{', '}', '[', ']', '^', '"', '~', '*', '?', ':'];
-
-        foreach ($special_chars as $ch) {
-            $str = str_replace($ch, "\\{$ch}", $str); // escape all special characters
-        }
-
-        $str = str_ireplace([' and ', ' or ', ' not ', ' to '], '', $str); // remove other operators
-
-        return $str;
-    }
-}

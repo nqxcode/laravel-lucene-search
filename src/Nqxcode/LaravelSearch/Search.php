@@ -1,15 +1,12 @@
 <?php namespace Nqxcode\LaravelSearch;
 
 use Illuminate\Database\Eloquent\Model;
-use Nqxcode\LaravelSearch\Index\Configurator;
-use Nqxcode\LaravelSearch\Index\Connection;
-use Nqxcode\LaravelSearch\Query\Builder as QueryBuilder;
 use ZendSearch\Lucene\Document;
 use ZendSearch\Lucene\Index\Term;
 use ZendSearch\Lucene\Search\Query\MultiTerm;
 use ZendSearch\Lucene\Document\Field;
 
-class Index
+class Search
 {
     /**
      * @var Connection
@@ -29,31 +26,28 @@ class Index
     /**
      * Model configurator.
      *
-     * @var Configurator
+     * @var Config
      */
-    private $configurator;
+    private $config;
 
     /**
-     * @return \Nqxcode\LaravelSearch\Index\Configurator
+     * @return \Nqxcode\LaravelSearch\Config
      */
-    public function configurator()
+    public function config()
     {
-        return $this->configurator;
+        return $this->config;
     }
 
     /**
      * Create index instance.
      *
-     * @param Index\Connection $connection
-     * @param Configurator $configurator
+     * @param Connection $connection
+     * @param Config $configurator
      */
-    public function __construct(
-        Connection $connection,
-        Configurator $configurator
-    )
+    public function __construct(Connection $connection, Config $configurator)
     {
         $this->connection = $connection;
-        $this->configurator = $configurator;
+        $this->config = $configurator;
     }
 
     /**
@@ -75,11 +69,11 @@ class Index
     private function find(Model $model)
     {
         $query = new MultiTerm();
-        list($name, $value) = $this->configurator->getModelPrivateKey($model);
+        list($name, $value) = $this->config->getModelPrivateKey($model);
 
         $query->addTerm(new Term($value, $name), true);
 
-        list($name, $value) = $this->configurator->getModelClassHash($model);
+        list($name, $value) = $this->config->getModelClassHash($model);
         $query->addTerm(new Term($value, $name), true);
 
         return $this->index()->find($query);
@@ -95,21 +89,20 @@ class Index
         // Remove any existing documents for model.
         $this->delete($model);
 
-        // Create document for model.
-        // Create new document.
+        // Create new document for model.
         $doc = new Document();
 
-        list($name, $value) = $this->configurator->getModelPrivateKey($model);
+        list($name, $value) = $this->config->getModelPrivateKey($model);
 
         // Add private key.
         $doc->addField(Field::keyword($name, $value));
 
-        list($name, $value) = $this->configurator->getModelClassHash($model);
+        list($name, $value) = $this->config->getModelClassHash($model);
 
         // Add class hash for model.
         $doc->addField(Field::Keyword($name, $value));
 
-        $fields = $this->configurator->getModelFields($model);
+        $fields = $this->config->getModelFields($model);
 
         // Add fields to document to be indexed (but not stored).
         foreach ($fields as $field => $options) {
@@ -149,6 +142,6 @@ class Index
 
     public function lastQuery()
     {
-        return $this->last_query->last_query;
+        return $this->last_query->last_query_string;
     }
 }

@@ -1,7 +1,6 @@
-<?php namespace unit\Index;
+<?php namespace unit;
 
-use Nqxcode\LaravelSearch\Index;
-use Nqxcode\LaravelSearch\Index\Connection;
+use Nqxcode\LaravelSearch\Connection;
 
 class ConnectionTest extends \TestCase
 {

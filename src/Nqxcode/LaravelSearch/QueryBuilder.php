@@ -1,23 +1,23 @@
-<?php namespace Nqxcode\LaravelSearch\Query;
+<?php namespace Nqxcode\LaravelSearch;
 
-use Nqxcode\LaravelSearch\Index;
+use Illuminate\Database\Eloquent\Model;
 use ZendSearch\Lucene\Search\QueryParser;
 use ZendSearch\Lucene\Search\Query\Boolean;
 
 use App;
 use Input;
 
-class Builder
+class QueryBuilder
 {
     /**
-     * @var \Nqxcode\LaravelSearch\Index
+     * @var \Nqxcode\LaravelSearch\Search
      */
     private $index;
 
     /**
-     * @var \Nqxcode\LaravelSearch\Index\Configurator
+     * @var \Nqxcode\LaravelSearch\Config
      */
-    private $configurator;
+    private $config;
 
     /**
      * @var \ZendSearch\Lucene\Search\Query\Boolean
@@ -47,27 +47,34 @@ class Builder
     protected $callbacks = array();
 
     /**
-     * Flag to remember if callbacks have already been executed.
-     * Prevents multiple executions.
-     *
-     * @var bool
-     */
-    protected $callbacks_executed = false;
-
-    /**
-     * An array of stored query totals to help reduce subsequent count calls.
+     * An array of cached query totals to help reduce subsequent count calls.
      *
      * @var array
      */
     private $cached_query_totals;
 
     /**
-     * @param Index $index
+     * The last executed query.
+     *
+     * @var
      */
-    public function __construct(Index $index)
+    private $last_query;
+
+    /**
+     * @return mixed
+     */
+    public function getLastQuery()
+    {
+        return $this->last_query;
+    }
+
+    /**
+     * @param Search $index
+     */
+    public function __construct(Search $index)
     {
         $this->index = $index;
-        $this->configurator = $index->configurator();
+        $this->config = $index->config();
         $this->query = new Boolean;
     }
 
@@ -82,13 +89,15 @@ class Builder
      *                         - prohibited : must not match
      *                         - phrase     : match as a phrase
      *                         - fuzzy      : fuzziness value (0 - 1)
+     *                         - proximity  : finding words are a within a specific distance (unsigned integer)
      *
      * @return \ZendSearch\Lucene\Search\Query\Boolean
      */
     public function addSubquery(Boolean $query, array $condition)
     {
-        $value = trim(lucene_query_escape(array_get($condition, 'value')));
-        if (array_get($condition, 'phrase')) {
+        $value = trim($this->escape(array_get($condition, 'value')));
+
+        if (array_get($condition, 'phrase') || array_get($condition, 'proximity')) {
             $value = '"' . $value . '"';
         }
         if (isset($condition['fuzzy']) && false !== $condition['fuzzy']) {
@@ -116,6 +125,13 @@ class Builder
             $field = null;
         }
 
+        if (isset($condition['proximity']) && false !== $condition['proximity']) {
+            if (is_integer($condition['proximity']) && $condition['proximity'] > 0) {
+                $proximity = $condition['proximity'];
+                $value = $value . '~' . $proximity;
+            }
+        }
+
         if (is_array($field)) {
             $values = array();
             foreach ($field as $f) {
@@ -126,7 +142,7 @@ class Builder
             $value = trim(array_get($condition, 'field')) . ':(' . $value . ')';
         }
 
-        $this->last_query = $value;
+        $this->last_query_string = $value;
         $query->addSubquery(QueryParser::parse($value), $sign);
 
         return $query;
@@ -153,17 +169,21 @@ class Builder
      *
      * @param string $field
      * @param mixed $value
+     * @param mixed $options
      *
      * @return $this
      */
-    public function where($field, $value)
+    public function where($field, $value, array $options = array())
     {
-        $this->query = $this->addSubquery($this->query, array(
+        $this->query = $this->addSubquery($this->query, [
             'field' => $field,
             'value' => $value,
-            'required' => true,
-            'phrase' => true,
-        ));
+            'required' => array_get($options, 'required', true),
+            'prohibited' => array_get($options, 'prohibited', false),
+            'phrase' => array_get($options, 'phrase', true),
+            'fuzzy' => array_get($options, 'fuzzy', null),
+            'proximity' => array_get($options, 'proximity', null),
+        ]);
 
         return $this;
     }
@@ -177,18 +197,20 @@ class Builder
      *                       - prohibited : requires a non-match
      *                       - phrase     : match the $value as a phrase
      *                       - fuzzy      : perform a fuzzy search (true, or numeric between 0-1)
+     *                       - proximity  : finding words are a within a specific distance (unsigned integer)
      * @return $this
      */
     public function build($value, $field = '*', array $options = array())
     {
-        $this->query = $this->addSubquery($this->query, array(
+        $this->query = $this->addSubquery($this->query, [
             'field' => $field,
             'value' => $value,
             'required' => array_get($options, 'required', true),
             'prohibited' => array_get($options, 'prohibited', false),
-            'phrase' => array_get($options, 'phrase', false),
+            'phrase' => array_get($options, 'phrase', true),
             'fuzzy' => array_get($options, 'fuzzy', null),
-        ));
+            'proximity' => array_get($options, 'proximity', null),
+        ]);
 
         return $this;
     }
@@ -221,7 +243,7 @@ class Builder
         $results = $this->get();
 
         foreach ($results as $result) {
-            $this->index->delete(array_get($result, 'id'));
+            $this->index->delete($result);
         }
     }
 
@@ -252,7 +274,11 @@ class Builder
     {
         $this->executeCallbacks();
 
-        return $this->runCount($this->query);
+        if (isset($this->cached_query_totals[md5(serialize($this->query))])) {
+            return $this->cached_query_totals[md5(serialize($this->query))];
+        }
+
+        return count($this->executeQuery($this->query));
     }
 
     /**
@@ -263,6 +289,7 @@ class Builder
     public function get()
     {
         $options = array();
+
         if ($this->limit) {
             $options['limit'] = $this->limit;
             $options['offset'] = $this->offset;
@@ -270,7 +297,11 @@ class Builder
 
         $this->executeCallbacks();
 
-        $results = $this->runQuery($this->query, $options);
+        // Get found hits.
+        $hits = $this->executeQuery($this->query, $options);
+
+        // Convert hits to models.
+        $results = $this->convertToModels($hits);
 
         return $results;
     }
@@ -283,11 +314,14 @@ class Builder
      */
     protected function executeCallbacks()
     {
-        if ($this->callbacks_executed) {
+        static $callbacks_executed;
+
+        // Prevent multiple executions.
+        if ($callbacks_executed) {
             return;
         }
 
-        $this->callbacks_executed = true;
+        $callbacks_executed = true;
 
         foreach ($this->callbacks as $callback) {
             if ($q = call_user_func($callback, $this->query)) {
@@ -297,62 +331,83 @@ class Builder
     }
 
     /**
-     * Execute the given query and return the total number of results.
+     * Execute the given query and return the query hits.
      *
      * @param \ZendSearch\Lucene\Search\Query\Boolean $query
-     *
-     * @return int
+     * @param array $options - limit  : max number of records to return
+     *                       - offset : number of records to skip
+     * @return array|\ZendSearch\Lucene\Search\QueryHit
      */
-    public function runCount($query)
+    public function executeQuery($query, array $options = array())
     {
-        if (isset($this->cached_query_totals[md5(serialize($query))])) {
-            return $this->cached_query_totals[md5(serialize($query))];
+        $hits = $this->index->index()->find($query);
+
+        // Remember total number of results.
+        $this->cached_query_totals[md5(serialize($query))] = count($hits);
+
+        // Remember running query.
+        $this->last_query = $query;
+
+        // Limit results.
+        if (isset($options['limit']) && isset($options['offset'])) {
+            $hits = array_slice($hits, $options['offset'], $options['limit']);
         }
 
-        return count($this->runQuery($query));
+        return $hits;
     }
 
     /**
-     * Execute the given query and return the results.
+     * Convert hits to models.
+     *
      * Return an array of records where each record is an
-     * instance of Illuminate\Database\Eloquent\Model class
+     * instance of Illuminate\Database\Eloquent\Model class.
      *
-     * @param \ZendSearch\Lucene\Search\Query\Boolean $query
-     * @param array $options - limit  : max # of records to return
-     *                       - offset : # of records to skip
-     *
-     * @return array
+     * @param \ZendSearch\Lucene\Search\QueryHit[] $hits
+     * @return Model[]
      */
-    public function runQuery($query, array $options = array())
+    protected function convertToModels($hits)
     {
-        $response = $this->index->index()->find($query);
+        // Get models from hits.
+        $results = array_map(function ($hit) {
+            $model = $this->config->model($hit->class_hash);
+            return $model->find($hit->private_key);
+        }, $hits);
 
-        $this->cached_query_totals[md5(serialize($query))] = count($response);
-
-        $results = array();
-
-        if (!empty($response)) {
-            foreach ($response as $hit) {
-                $results[] = [
-                    'id' => $hit->private_key,
-                    'model_instance' => $this->configurator->model($hit->class_hash),
-                    'score' => $hit->score,
-                ];
-            }
-        }
-
-        if (isset($options['limit']) && isset($options['offset'])) {
-            $results = array_slice($results, $options['offset'], $options['limit']);
-        }
-
-        $results = array_map(function ($item) {
-            return $item['model_instance']->find($item['id']);
-        }, $results);
-
+        // Skip empty.
         $results = array_filter($results, function ($model) {
             return !is_null($model);
         });
 
         return $results;
+    }
+
+    /**
+     * Escape special characters for Lucene query.
+     *
+     * @param string $str
+     *
+     * @return string
+     */
+    public function escape($str)
+    {
+        // List of all special chars.
+        $special_chars = ['\\', '+', '-', '&&', '||', '!', '(', ')', '{', '}', '[', ']', '^', '"', '~', '*', '?', ':'];
+
+        // list of query operators
+        $query_operators = ['to', 'or', 'and', 'not'];
+
+        // Escape all special characters.
+        foreach ($special_chars as $ch) {
+            $str = str_replace($ch, "\\{$ch}", $str);
+        }
+
+        $query_operators = array_map(function ($operator) {
+            return " {$operator} ";
+        }, $query_operators);
+
+        // Remove other operators.
+        $str = str_ireplace($query_operators, ' ', $str);
+
+        return $str;
     }
 }

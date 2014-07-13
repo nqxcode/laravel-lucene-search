@@ -1,7 +1,8 @@
 <?php namespace unit;
 
-use Nqxcode\LaravelSearch\Index;
 use \Mockery as m;
+
+use Nqxcode\LaravelSearch\Search;
 use Illuminate\Database\Eloquent\Model;
 use ZendSearch\Lucene\Document;
 use ZendSearch\Lucene\Document\Field;
@@ -10,14 +11,15 @@ use ZendSearch\Lucene\Index\Term;
 
 class DummyModel extends Model
 {
+    /** DummyModel */
 }
 
-class IndexTest extends \TestCase
+class SearchTest extends \TestCase
 {
     /** @var \Mockery\MockInterface */
     private $connection;
     /** @var  \Mockery\MockInterface */
-    private $configurator;
+    private $config;
     /** @var  DummyModel */
     private $model;
 
@@ -29,17 +31,17 @@ class IndexTest extends \TestCase
         $this->model->id = 1;
         $this->model->name = 'test name';
 
-        $this->connection = m::mock('Nqxcode\LaravelSearch\Index\Connection');
+        $this->connection = m::mock('Nqxcode\LaravelSearch\Connection');
         $this->connection->shouldReceive('getIndexPath');
 
-        $this->configurator = m::mock('Nqxcode\LaravelSearch\Index\Configurator');
-        $this->configurator->shouldReceive('getModelPrivateKey')
+        $this->config = m::mock('Nqxcode\LaravelSearch\Config');
+        $this->config->shouldReceive('getModelPrivateKey')
             ->with($this->model)
             ->andReturn(['private_key', 1]);
-        $this->configurator->shouldReceive('getModelClassHash')
+        $this->config->shouldReceive('getModelClassHash')
             ->with($this->model)
             ->andReturn(['class_hash', '12345']);
-        $this->configurator->shouldReceive('getModelFields')
+        $this->config->shouldReceive('getModelFields')
             ->with($this->model)
             ->andReturn(['name' => []]);
 
@@ -110,6 +112,6 @@ class IndexTest extends \TestCase
 
     private function createIndex()
     {
-        return new Index($this->connection, $this->configurator);
+        return new Search($this->connection, $this->config);
     }
 }

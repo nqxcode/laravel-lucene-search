@@ -1,8 +1,8 @@
-<?php namespace Nqxcode\LaravelSearch\Index;
+<?php namespace Nqxcode\LaravelSearch;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Configurator
+class Config
 {
     private $configuration = [];
 
@@ -77,7 +77,7 @@ class Configurator
 
     /**
      * @param $class_hash
-     * @return array
+     * @return Model
      * @throws \InvalidArgumentException
      */
     public function model($class_hash)
@@ -89,6 +89,18 @@ class Configurator
         }
 
         throw new \InvalidArgumentException("Can't find class for hash: '{$class_hash}'.");
+    }
+
+    /**
+     * @return Model[]
+     */
+    public function models()
+    {
+        $models = [];
+        foreach ($this->configuration as $config) {
+            $models[] = new $config['class'];
+        }
+        return $models;
     }
 
     /**

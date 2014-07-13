@@ -1,4 +1,4 @@
-<?php namespace Nqxcode\LaravelSearch\Index;
+<?php namespace Nqxcode\LaravelSearch;
 
 use ZendSearch\Lucene\Lucene;
 use ZendSearch\Exception\ExceptionInterface;

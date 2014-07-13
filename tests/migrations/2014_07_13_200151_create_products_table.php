@@ -23,18 +23,18 @@ class CreateProductsTable extends Migration
 
         $now = Carbon::now();
 
-        foreach (range(0, 30) as $i) {
+        foreach (range(0, 1) as $i) {
             DB::table('products')->insert(array(
                 'name' => 'clock',
-                'description' => 'very cool',
+                'description' => 'very fucking test more cool',
                 'created_at' => $now,
                 'updated_at' => $now,
             ));
         }
 
-        foreach (range(0, 10) as $i) {
+        foreach (range(0, 1) as $i) {
             DB::table('products')->insert(array(
-                'name' => 'battery',
+                'name' => 'fun very cool',
                 'description' => 'very big',
                 'created_at' => $now,
                 'updated_at' => $now,
