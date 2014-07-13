@@ -5,15 +5,23 @@ use Illuminate\Support\Facades\Config;
 return array(
     /*
      |--------------------------------------------------------------------------
-     | Storage settings
+     | Index settings
      |--------------------------------------------------------------------------
      |
      | TODO Write description!
      |
      |
      */
-    'storage' => array(
-        'path' => storage_path() . '/laravel-search',
-    ),
+    'index' => [
+        'path' => storage_path() . '/laravel-search/index',
+    ],
 
+    'models' => [
+        'lib\\Product' => [
+            'fields' => [
+                'name' => [],
+                'description' => [],
+            ]
+        ]
+    ]
 );

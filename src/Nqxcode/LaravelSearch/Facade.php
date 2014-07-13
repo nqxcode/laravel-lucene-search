@@ -1,4 +1,4 @@
-<?php namespace Nqxcode\LaravelOrmSearch;
+<?php namespace Nqxcode\LaravelSearch;
 
 class Facade extends \Illuminate\Support\Facades\Facade
 {
@@ -8,6 +8,6 @@ class Facade extends \Illuminate\Support\Facades\Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'search';
+        return 'search.index';
     }
 }
