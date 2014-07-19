@@ -1,6 +1,8 @@
-<?php namespace functional;
+<?php namespace tests\functional;
 
-class SearchTest extends \TestCase
+use tests\TestCase;
+
+class SearchTest extends TestCase
 {
     public function setUp()
     {
@@ -20,7 +22,7 @@ class SearchTest extends \TestCase
 
     public function testSearch()
     {
-        $chain = \Search::search('very cool', ['description', 'name']);
+        $chain = \Search::find('very cool', ['description', 'name']);
         $results = $chain->get();
 
         $lastQuery = \Search::lastQuery();

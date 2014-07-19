@@ -1,8 +1,9 @@
-<?php namespace unit;
+<?php namespace tests\unit;
 
 use Nqxcode\LaravelSearch\Connection;
+use tests\TestCase;
 
-class ConnectionTest extends \TestCase
+class ConnectionTest extends TestCase
 {
     private $indexPath;
 

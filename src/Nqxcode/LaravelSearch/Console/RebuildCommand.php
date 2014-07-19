@@ -7,6 +7,7 @@ class RebuildCommand extends Command
 {
     protected $name = 'search:rebuild-index';
     protected $description = 'Rebuild the search index';
+
     /** @var \Nqxcode\LaravelSearch\Search */
     protected $search;
 

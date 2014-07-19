@@ -207,7 +207,7 @@ class QueryBuilder
             'value' => $value,
             'required' => array_get($options, 'required', true),
             'prohibited' => array_get($options, 'prohibited', false),
-            'phrase' => array_get($options, 'phrase', true),
+            'phrase' => array_get($options, 'phrase', false),
             'fuzzy' => array_get($options, 'fuzzy', null),
             'proximity' => array_get($options, 'proximity', null),
         ]);
@@ -369,8 +369,7 @@ class QueryBuilder
     {
         // Get models from hits.
         $results = array_map(function ($hit) {
-            $model = $this->config->model($hit->class_hash);
-            return $model->find($hit->private_key);
+            return $this->config->model($hit);
         }, $hits);
 
         // Skip empty.
@@ -393,7 +392,7 @@ class QueryBuilder
         // List of all special chars.
         $special_chars = ['\\', '+', '-', '&&', '||', '!', '(', ')', '{', '}', '[', ']', '^', '"', '~', '*', '?', ':'];
 
-        // list of query operators
+        // List of query operators.
         $query_operators = ['to', 'or', 'and', 'not'];
 
         // Escape all special characters.
@@ -401,6 +400,7 @@ class QueryBuilder
             $str = str_replace($ch, "\\{$ch}", $str);
         }
 
+        // Add spaces to operators.
         $query_operators = array_map(function ($operator) {
             return " {$operator} ";
         }, $query_operators);

@@ -1,20 +1,16 @@
-<?php namespace unit;
+<?php namespace tests\unit;
 
 use \Mockery as m;
 
 use Nqxcode\LaravelSearch\Search;
-use Illuminate\Database\Eloquent\Model;
+use tests\lib\DummyModel;
+use tests\TestCase;
 use ZendSearch\Lucene\Document;
 use ZendSearch\Lucene\Document\Field;
 use ZendSearch\Lucene\Search\Query\MultiTerm;
 use ZendSearch\Lucene\Index\Term;
 
-class DummyModel extends Model
-{
-    /** DummyModel */
-}
-
-class SearchTest extends \TestCase
+class SearchTest extends TestCase
 {
     /** @var \Mockery\MockInterface */
     private $connection;
@@ -27,7 +23,7 @@ class SearchTest extends \TestCase
     {
         parent::setUp();
 
-        $this->model = new DummyModel;
+        $this->model = new DummyModel();
         $this->model->id = 1;
         $this->model->name = 'test name';
 
@@ -35,13 +31,13 @@ class SearchTest extends \TestCase
         $this->connection->shouldReceive('getIndexPath');
 
         $this->config = m::mock('Nqxcode\LaravelSearch\Config');
-        $this->config->shouldReceive('getModelPrivateKey')
+        $this->config->shouldReceive('privateKey')
             ->with($this->model)
             ->andReturn(['private_key', 1]);
-        $this->config->shouldReceive('getModelClassHash')
+        $this->config->shouldReceive('classUid')
             ->with($this->model)
-            ->andReturn(['class_hash', '12345']);
-        $this->config->shouldReceive('getModelFields')
+            ->andReturn(['class_uid', '12345']);
+        $this->config->shouldReceive('fields')
             ->with($this->model)
             ->andReturn(['name' => []]);
 
@@ -53,7 +49,7 @@ class SearchTest extends \TestCase
         $luceneIndex->shouldReceive('addDocument')->with(m::on(function ($arg) {
             $doc = new Document();
             $doc->addField(Field::keyword('private_key', 1));
-            $doc->addField(Field::Keyword('class_hash', '12345'));
+            $doc->addField(Field::Keyword('class_uid', '12345'));
             $doc->addField(Field::unStored('name', 'test name'));
 
             $this->assertEquals($doc, $arg);
@@ -63,7 +59,7 @@ class SearchTest extends \TestCase
         $luceneIndex->shouldReceive('find')->with(m::on(function ($arg) {
             $term = new MultiTerm();
             $term->addTerm(new Term(1, 'private_key'), true);
-            $term->addTerm(new Term('12345', 'class_hash'), true);
+            $term->addTerm(new Term('12345', 'class_uid'), true);
 
             $this->assertEquals($term, $arg);
             return true;
@@ -87,7 +83,7 @@ class SearchTest extends \TestCase
         $luceneIndex->shouldReceive('find')->with(m::on(function ($arg) {
             $term = new MultiTerm();
             $term->addTerm(new Term(1, 'private_key'), true);
-            $term->addTerm(new Term('12345', 'class_hash'), true);
+            $term->addTerm(new Term('12345', 'class_uid'), true);
 
             $this->assertEquals($term, $arg);
             return true;

@@ -1,8 +1,9 @@
-<?php namespace unit;
+<?php namespace tests\unit;
 
 use \Mockery as m;
 use \Illuminate\Database\Eloquent\Model;
 use Nqxcode\LaravelSearch\SearchTrait;
+use tests\TestCase;
 
 /**
  * Class SearchTraitDummyClass
@@ -13,7 +14,7 @@ class SearchTraitDummyClass extends Model
     use SearchTrait;
 }
 
-class SearchTraitTest extends \TestCase
+class SearchTraitTest extends TestCase
 {
     use SearchTrait;
 

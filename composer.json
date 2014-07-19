@@ -30,9 +30,9 @@
         "classmap": [
             "src/migrations"
         ],
-        "psr-0": {
-            "Nqxcode\\LaravelSearch\\": "src/",
-            "": "tests/"
+        "psr-4": {
+            "Nqxcode\\LaravelSearch\\": "src/Nqxcode/LaravelSearch",
+            "tests\\": "tests/"
         }
     },
     "minimum-stability": "stable"

@@ -1,10 +1,11 @@
-<?php namespace unit;
+<?php namespace tests\unit;
 
 use Mockery as m;
 
 use Nqxcode\LaravelSearch\QueryBuilder;
+use tests\TestCase;
 
-class QueryBuilderTest extends \TestCase
+class QueryBuilderTest extends TestCase
 {
     /**
      * @var QueryBuilder

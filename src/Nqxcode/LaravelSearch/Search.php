@@ -61,19 +61,19 @@ class Search
     }
 
     /**
-     * Find hit for model in index.
+     * Find query hits for model in index.
      *
      * @param Model $model
      * @return array|\ZendSearch\Lucene\Search\QueryHit
      */
-    private function find(Model $model)
+    private function findHits(Model $model)
     {
         $query = new MultiTerm();
-        list($name, $value) = $this->config->getModelPrivateKey($model);
+        list($name, $value) = $this->config->privateKey($model);
 
         $query->addTerm(new Term($value, $name), true);
 
-        list($name, $value) = $this->config->getModelClassHash($model);
+        list($name, $value) = $this->config->classUid($model);
         $query->addTerm(new Term($value, $name), true);
 
         return $this->index()->find($query);
@@ -89,20 +89,27 @@ class Search
         // Remove any existing documents for model.
         $this->delete($model);
 
+        if (method_exists($model, 'isAvailableForIndexing')) {
+            if (!call_user_func([$model, 'isAvailableForIndexing'])) {
+                return;
+            }
+        }
+
         // Create new document for model.
         $doc = new Document();
 
-        list($name, $value) = $this->config->getModelPrivateKey($model);
+        list($name, $value) = $this->config->privateKey($model);
 
         // Add private key.
         $doc->addField(Field::keyword($name, $value));
 
-        list($name, $value) = $this->config->getModelClassHash($model);
+        // Add model's class UID.
+        list($name, $value) = $this->config->classUid($model);
 
-        // Add class hash for model.
+        // Add class uid for identification of 'model'
         $doc->addField(Field::Keyword($name, $value));
 
-        $fields = $this->config->getModelFields($model);
+        $fields = $this->config->fields($model);
 
         // Add fields to document to be indexed (but not stored).
         foreach ($fields as $field => $options) {
@@ -120,9 +127,9 @@ class Search
      */
     public function delete(Model $model)
     {
-        $hits = $this->find($model);
+        $hits = $this->findHits($model);
         foreach ($hits as $hit) {
-            $this->index()->delete($hit->id); // delete document from index.
+            $this->index()->delete($hit->id); // delete document from index by hit's ID.
         }
     }
 
@@ -132,7 +139,7 @@ class Search
      * @param array $options
      * @return $this
      */
-    public function search($value, $field = '*', array $options = array())
+    public function find($value, $field = '*', array $options = array())
     {
         $query = new QueryBuilder($this);
         $this->last_query = $query;

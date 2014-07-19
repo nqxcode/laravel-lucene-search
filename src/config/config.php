@@ -15,7 +15,7 @@ return array(
     'index_path' => storage_path() . '/laravel-search/index',
 
     'models' => [
-        'lib\\Product' => [
+        'tests\lib\Product' => [
             'fields' => [
                 'name' => [],
                 'description' => [],

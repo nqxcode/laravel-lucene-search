@@ -1,6 +1,8 @@
-<?php  namespace unit;
+<?php namespace tests\unit;
 
-class HelpersTest extends \TestCase
+use tests\TestCase;
+
+class HelpersTest extends TestCase
 {
     public function testRmDirRecursive()
     {

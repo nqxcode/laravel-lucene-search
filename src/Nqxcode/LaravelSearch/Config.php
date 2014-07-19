@@ -1,62 +1,86 @@
 <?php namespace Nqxcode\LaravelSearch;
 
 use Illuminate\Database\Eloquent\Model;
+use \ZendSearch\Lucene\Search\QueryHit;
 
+/**
+ * Class Config
+ * @package Nqxcode\LaravelSearch
+ */
 class Config
 {
+    /**
+     * The list of configurations for each searchable model.
+     *
+     * @var array
+     */
     private $configuration = [];
 
-    private function createConfiguration($class, $options)
+    /**
+     * Construct the configuration instance.
+     *
+     * @param $configuration
+     */
+    public function __construct(array $configuration)
     {
-        if (!class_exists($class, true)) {
-            throw new \InvalidArgumentException(
-                "The class '{$class}' specified in 'configuration' recieved in constructor shall exist."
-            );
-        }
-
-        $reflector = new \ReflectionClass($class);
-        if (!$reflector->isSubclassOf('Illuminate\Database\Eloquent\Model')) {
-            throw new \InvalidArgumentException(
-                "The class '{$class}' specified in 'configuration' recieved in constructor shall be "
-                . " inherited from 'Illuminate\\Database\\Eloquent\\Model' class."
-            );
-        }
-
-        $fields = array_get($options, 'fields', []);
-
-        if (count($fields) == 0) {
-            throw new \InvalidArgumentException(
-                "For the class '{$class}' specified in 'configuration' must be 'fields'."
-            );
-        }
-
-
-        return [
-            'class' => $class,
-            'class_hash' => $this->hash($class),
-            'fields' => $fields,
-            'private_key' => array_get($options, 'private_key', 'id')
-        ];
+        $this->configuration = $this->create($configuration);
     }
 
-    public function __construct($configuration)
+    /**
+     * Create configuration for models.
+     *
+     * @param array $configuration
+     * @return array
+     * @throws \InvalidArgumentException
+     */
+    private function create(array $configuration)
     {
-        foreach ($configuration as $class => $options) {
-            $this->configuration[] = $this->createConfiguration($class, $options);
+        foreach ($configuration as $className => $options) {
+
+            if (!class_exists($className, true)) {
+                throw new \InvalidArgumentException(
+                    "The class '{$className}' shall exist."
+                );
+            }
+
+            if (!is_subclass_of($className, 'Illuminate\Database\Eloquent\Model')) {
+                throw new \InvalidArgumentException(
+                    "The class '{$className}' shall be "
+                    . " inherited from 'Illuminate\\Database\\Eloquent\\Model'."
+                );
+            }
+
+            $fields = array_get($options, 'fields', []);
+
+            if (count($fields) == 0) {
+                throw new \InvalidArgumentException(
+                    "For the class '{$className}' 'fields' shall be specified."
+                );
+            }
+
+
+            return [
+                'class_name' => $className,
+                'class_uid' => $this->hash($className),
+                'fields' => $fields,
+                'private_key' => array_get($options, 'private_key', 'id')
+            ];
         }
     }
 
     /**
+     * Get configuration for model.
+     *
      * @param Model $model
      * @return array
      * @throws \InvalidArgumentException
      */
-    private function configuration(Model $model)
+    private function config(Model $model)
     {
         $hash = $this->hash(get_class($model));
 
         foreach ($this->configuration as $config) {
-            if ($config['class_hash'] === $hash) {
+            if ($config['class_uid'] === $hash) {
                 return $config;
             }
         }
@@ -67,6 +91,8 @@ class Config
     }
 
     /**
+     * Get hash for value.
+     *
      * @param $value
      * @return string
      */
@@ -76,60 +102,81 @@ class Config
     }
 
     /**
-     * @param $class_hash
+     * Create instance of model by class UID.
+     *
+     * @param $classUid
      * @return Model
      * @throws \InvalidArgumentException
      */
-    public function model($class_hash)
+    private function createInstanceByClassUid($classUid)
     {
         foreach ($this->configuration as $config) {
-            if ($config['class_hash'] == $class_hash) {
-                return new $config['class'];
+            if ($config['class_uid'] == $classUid) {
+                return new $config['class_name'];
             }
         }
 
-        throw new \InvalidArgumentException("Can't find class for hash: '{$class_hash}'.");
+        throw new \InvalidArgumentException("Can't find class for hash: '{$classUid}'.");
     }
 
     /**
+     * Get list of models instances.
+     *
      * @return Model[]
      */
     public function models()
     {
         $models = [];
         foreach ($this->configuration as $config) {
-            $models[] = new $config['class'];
+            $models[] = new $config['class_name'];
         }
         return $models;
     }
 
     /**
+     * Get private key for model.
+     *
      * @param Model $model
      * @return array
      */
-    public function getModelPrivateKey(Model $model)
+    public function privateKey(Model $model)
     {
-        $c = $this->configuration($model);
+        $c = $this->config($model);
         return ['private_key', $model->{$c['private_key']}];
     }
 
     /**
+     * Get UID for model class.
+     *
      * @param Model $model
      * @return array
      */
-    public function getModelClassHash(Model $model)
+    public function classUid(Model $model)
     {
-        $c = $this->configuration($model);
-        return ['class_hash', $c['class_hash']];
+        $c = $this->config($model);
+        return ['class_uid', $c['class_uid']];
     }
 
     /**
+     * Get fields for indexing for model.
+     *
      * @param Model $model
      * @return array
      */
-    public function getModelFields(Model $model)
+    public function fields(Model $model)
     {
-        $c = $this->configuration($model);
+        $c = $this->config($model);
         return $c['fields'];
+    }
+
+    /**
+     * Get the model by query hit.
+     *
+     * @param QueryHit $hit
+     * @return \Illuminate\Database\Eloquent\Collection|Model|static
+     */
+    public function model(QueryHit $hit)
+    {
+        return $this->createInstanceByClassUid($hit->class_uid)->find($hit->private_key);
     }
 }
