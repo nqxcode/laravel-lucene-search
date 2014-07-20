@@ -6,6 +6,13 @@ use ZendSearch\Lucene\Index\Term;
 use ZendSearch\Lucene\Search\Query\MultiTerm;
 use ZendSearch\Lucene\Document\Field;
 
+/**
+ * Class Search
+ *
+ * @method QueryBuilder find($field, $value, array $options = [])
+ * @method QueryBuilder where($field, $value, array $options = [])
+ * @package Nqxcode\LaravelSearch
+ */
 class Search
 {
     /**
@@ -39,7 +46,7 @@ class Search
     }
 
     /**
-     * @var
+     * @var QueryBuilder
      */
     private $queryBuilder;
 
@@ -157,8 +164,8 @@ class Search
     }
 
 
-    public function lastQuery()
+    public function getLastBooleanQueryStrings()
     {
-        return $this->queryBuilder->last_query_string;
+        return $this->queryBuilder->getLastBooleanQueryStrings();
     }
 }

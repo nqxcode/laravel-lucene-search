@@ -12,7 +12,7 @@ class QueryBuilder
     /**
      * @var \Nqxcode\LaravelSearch\Search
      */
-    private $index;
+    private $search;
 
     /**
      * @var \Nqxcode\LaravelSearch\Config
@@ -69,12 +69,25 @@ class QueryBuilder
     }
 
     /**
-     * @param Search $index
+     * @var string[]
      */
-    public function __construct(Search $index)
+    private $last_query_strings;
+
+    /**
+     * @return \string[]
+     */
+    public function getLastBooleanQueryStrings()
     {
-        $this->index = $index;
-        $this->config = $index->config();
+        return $this->last_query_strings;
+    }
+
+    /**
+     * @param Search $search
+     */
+    public function __construct(Search $search)
+    {
+        $this->search = $search;
+        $this->config = $search->config();
         $this->query = new Boolean;
     }
 
@@ -142,7 +155,7 @@ class QueryBuilder
             $value = trim(array_get($condition, 'field')) . ':(' . $value . ')';
         }
 
-        $this->last_query_string[] = $value;
+        $this->last_query_strings[] = $value;
         $query->addSubquery(QueryParser::parse($value), $sign);
 
         return $query;
@@ -243,7 +256,7 @@ class QueryBuilder
         $results = $this->get();
 
         foreach ($results as $result) {
-            $this->index->delete($result);
+            $this->search->delete($result);
         }
     }
 
@@ -284,7 +297,7 @@ class QueryBuilder
     /**
      * Execute the current query and return the results.
      *
-     * @return array
+     * @return Model[]
      */
     public function get()
     {
@@ -301,9 +314,7 @@ class QueryBuilder
         $hits = $this->executeQuery($this->query, $options);
 
         // Convert hits to models.
-        $results = $this->convertToModels($hits);
-
-        return $results;
+        return $this->convertToModels($hits);
     }
 
 
@@ -340,7 +351,7 @@ class QueryBuilder
      */
     public function executeQuery($query, array $options = [])
     {
-        $hits = $this->index->index()->find($query);
+        $hits = $this->search->index()->find($query);
 
         // Remember total number of results.
         $this->cached_query_totals[md5(serialize($query))] = count($hits);

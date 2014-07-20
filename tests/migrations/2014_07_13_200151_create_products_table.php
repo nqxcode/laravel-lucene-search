@@ -43,7 +43,7 @@ class CreateProductsTable extends Migration
 
         DB::table('products')->insert(array(
             'name' => 'cool',
-            'description' => 'very big',
+            'description' => 'not very big',
             'created_at' => $now,
             'updated_at' => $now,
         ));

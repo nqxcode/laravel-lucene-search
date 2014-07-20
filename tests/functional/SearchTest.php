@@ -1,7 +1,6 @@
 <?php namespace tests\functional;
 
 use tests\TestCase;
-use \Nqxcode\LaravelSearch\Config as SearchConfig;
 
 class SearchTest extends TestCase
 {
@@ -12,8 +11,8 @@ class SearchTest extends TestCase
         // remove search index
         rmdir_recursive($this->app['search.index_path']);
 
-        $this->app->bind('search.models.config', function ($app) {
-            return new SearchConfig(
+        $this->app->bind('search.models', function () {
+            return
                 [
                     'tests\lib\Product' => [
                         'fields' => [
@@ -21,8 +20,7 @@ class SearchTest extends TestCase
                             'description',
                         ]
                     ]
-                ]
-            );
+                ];
         });
 
         $artisan = $this->app->make('artisan');
@@ -36,11 +34,11 @@ class SearchTest extends TestCase
 
     public function testSearch()
     {
-        $chain = \Search::where('name', 'cool'); // //
-        ;
+        $chain = \Search::where('name', 'cool')->where('description', 'not very big');
+
         $results = $chain->get();
 
-        $lastQuery = \Search::lastQuery();
+        $lastQuery = \Search::getLastBooleanQueryStrings();
 
         return;
     }
