@@ -39,7 +39,7 @@ class SearchTest extends TestCase
             ->andReturn(['class_uid', '12345']);
         $this->config->shouldReceive('fields')
             ->with($this->model)
-            ->andReturn(['name' => []]);
+            ->andReturn(['name']);
 
     }
 

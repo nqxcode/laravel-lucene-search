@@ -15,11 +15,13 @@ return array(
     'index_path' => storage_path() . '/laravel-search/index',
 
     'models' => [
-        'tests\lib\Product' => [
-            'fields' => [
-                'name' => [],
-                'description' => [],
+        /*
+            'namespace\DummyModel' => [
+                'fields' => [
+                    'name',
+                    'description',
+                ]
             ]
-        ]
+        */
     ]
 );

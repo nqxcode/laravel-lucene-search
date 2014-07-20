@@ -47,7 +47,7 @@ class Connection
         } catch (\Exception $e) {
             if (!file_exists($path)) {
                 throw new \Exception(
-                    "Couldn't connect to Zend Lucene index. 'index.path' directory doesn't exist: '{$path}''"
+                    "Couldn't connect to index of Zend Lucene. Directory '{$path}' doesn't exist.'"
                 );
             }
             throw $e;

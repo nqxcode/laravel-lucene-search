@@ -142,7 +142,7 @@ class QueryBuilder
             $value = trim(array_get($condition, 'field')) . ':(' . $value . ')';
         }
 
-        $this->last_query_string = $value;
+        $this->last_query_string[] = $value;
         $query->addSubquery(QueryParser::parse($value), $sign);
 
         return $query;
@@ -173,7 +173,7 @@ class QueryBuilder
      *
      * @return $this
      */
-    public function where($field, $value, array $options = array())
+    public function where($field, $value, array $options = [])
     {
         $this->query = $this->addSubquery($this->query, [
             'field' => $field,
@@ -200,7 +200,7 @@ class QueryBuilder
      *                       - proximity  : finding words are a within a specific distance (unsigned integer)
      * @return $this
      */
-    public function build($value, $field = '*', array $options = array())
+    public function find($value, $field = '*', array $options = [])
     {
         $this->query = $this->addSubquery($this->query, [
             'field' => $field,
@@ -288,7 +288,7 @@ class QueryBuilder
      */
     public function get()
     {
-        $options = array();
+        $options = [];
 
         if ($this->limit) {
             $options['limit'] = $this->limit;
@@ -338,7 +338,7 @@ class QueryBuilder
      *                       - offset : number of records to skip
      * @return array|\ZendSearch\Lucene\Search\QueryHit
      */
-    public function executeQuery($query, array $options = array())
+    public function executeQuery($query, array $options = [])
     {
         $hits = $this->index->index()->find($query);
 

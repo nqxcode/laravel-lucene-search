@@ -34,12 +34,19 @@ class CreateProductsTable extends Migration
 
         foreach (range(0, 1) as $i) {
             DB::table('products')->insert(array(
-                'name' => 'fun very cool',
+                'name' => 'very fun cool',
                 'description' => 'very big',
                 'created_at' => $now,
                 'updated_at' => $now,
             ));
         }
+
+        DB::table('products')->insert(array(
+            'name' => 'cool',
+            'description' => 'very big',
+            'created_at' => $now,
+            'updated_at' => $now,
+        ));
     }
 
     /**

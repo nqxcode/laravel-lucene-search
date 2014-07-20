@@ -17,24 +17,17 @@ class Config
     private $configuration = [];
 
     /**
-     * Construct the configuration instance.
+     * Create configuration for models.
      *
      * @param $configuration
+     * @throws \InvalidArgumentException
      */
     public function __construct(array $configuration)
     {
-        $this->configuration = $this->create($configuration);
-    }
+        if (count($configuration) == 0) {
+            throw new \InvalidArgumentException('No models found in configuration.');
+        }
 
-    /**
-     * Create configuration for models.
-     *
-     * @param array $configuration
-     * @return array
-     * @throws \InvalidArgumentException
-     */
-    private function create(array $configuration)
-    {
         foreach ($configuration as $className => $options) {
 
             if (!class_exists($className, true)) {
@@ -46,7 +39,7 @@ class Config
             if (!is_subclass_of($className, 'Illuminate\Database\Eloquent\Model')) {
                 throw new \InvalidArgumentException(
                     "The class '{$className}' shall be "
-                    . " inherited from 'Illuminate\\Database\\Eloquent\\Model'."
+                    . "inherited from 'Illuminate\\Database\\Eloquent\\Model'."
                 );
             }
 
@@ -54,12 +47,12 @@ class Config
 
             if (count($fields) == 0) {
                 throw new \InvalidArgumentException(
-                    "For the class '{$className}' 'fields' shall be specified."
+                    "For the class '{$className}' parameter 'fields' shall be specified."
                 );
             }
 
 
-            return [
+            $this->configuration[] = [
                 'class_name' => $className,
                 'class_uid' => $this->hash($className),
                 'fields' => $fields,
