@@ -2,7 +2,7 @@
 
 class Product extends \Illuminate\Database\Eloquent\Model
 {
-    public function isAvailableForSearching()
+    public function isSearchable()
     {
         return true;
     }

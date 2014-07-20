@@ -104,9 +104,9 @@ class Search
         // Remove any existing documents for model.
         $this->delete($model);
 
-        if (method_exists($model, 'isAvailableForSearching')) {
+        if (method_exists($model, 'isSearchable')) {
             // The model is available to an indexing?
-            if (!$model->{'isAvailableForSearching'}()) {
+            if (!$model->{'isSearchable'}()) {
                 return;
             }
         }
