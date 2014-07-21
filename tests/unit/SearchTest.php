@@ -23,7 +23,7 @@ class SearchTest extends TestCase
     {
         parent::setUp();
 
-        $this->model = new DummyModel();
+        $this->model = new DummyModel;
         $this->model->id = 1;
         $this->model->name = 'test name';
 

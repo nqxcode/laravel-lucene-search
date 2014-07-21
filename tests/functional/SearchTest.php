@@ -28,7 +28,7 @@ class SearchTest extends TestCase
         // call migrations specific to our tests, e.g. to seed the db
         $artisan->call('migrate', ['--database' => 'testbench', '--path' => '../tests/migrations']);
 
-        // call rebuid search index
+        // call rebuild search index
         $artisan->call('search:rebuild-index');
     }
 

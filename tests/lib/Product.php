@@ -1,6 +1,8 @@
 <?php namespace tests\lib;
 
-class Product extends \Illuminate\Database\Eloquent\Model
+use \Illuminate\Database\Eloquent\Model;
+
+class Product extends Model
 {
     public function isSearchable()
     {
