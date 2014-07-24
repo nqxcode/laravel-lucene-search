@@ -5,7 +5,7 @@ use Illuminate\Console\Command;
 class ClearCommand extends Command
 {
     protected $name = 'search:clear';
-    protected $description = 'Clear the search index';
+    protected $description = 'Clear the search index storage';
 
     public function fire()
     {
@@ -14,7 +14,7 @@ class ClearCommand extends Command
         if ($result = rmdir_recursive($indexPath)) {
             $this->info('Search index storage cleared!');
         } else {
-            $this->error('No Search index storage found..');
+            $this->error('No search index storage found..');
         }
     }
 }

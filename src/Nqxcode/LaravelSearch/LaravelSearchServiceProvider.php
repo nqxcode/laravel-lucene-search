@@ -58,12 +58,12 @@ class LaravelSearchServiceProvider extends ServiceProvider
         $this->app->bindShared('search.models.config', function ($app) {
             return new ModelsConfig(
                 $app['search.models'],
-                $app->make('Nqxcode\LaravelSearch\RepoFactory')
+                $app->make('Nqxcode\LaravelSearch\ModelFactory')
             );
         });
 
-        $this->app->bindShared('command.search.rebuild-index', function ($app) {
-            return new Console\RebuildCommand($app['search']);
+        $this->app->bindShared('command.search.rebuild-index', function () {
+            return new Console\RebuildCommand;
         });
 
         $this->app->bindShared('command.search.clear', function () {

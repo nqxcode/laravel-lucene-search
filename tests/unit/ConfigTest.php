@@ -26,27 +26,27 @@ class ConfigTest extends TestCase
 
         $configs = $this->getValidConfigs();
 
-        $repoCreator = m::mock('Nqxcode\LaravelSearch\RepoFactory');
+        $modelFactory = m::mock('Nqxcode\LaravelSearch\ModelFactory');
 
-        $repoCreator->shouldReceive('create')
+        $modelFactory->shouldReceive('create')
             ->with('tests\lib\Product')
             ->andReturn($this->productRepoMock = m::mock(new Product));
 
         $this->productRepoMock->id = 1;
 
-        $repoCreator->shouldReceive('create')
+        $modelFactory->shouldReceive('create')
             ->with('tests\lib\DummyModel')
             ->andReturn($this->dummyRepoMock = m::mock(new DummyModel));
 
         $this->dummyRepoMock->pk = 2;
 
-        $repoCreator->shouldReceive('classUid')->with($this->productRepoMock)->andReturn('1');
-        $repoCreator->shouldReceive('classUid')->with($this->dummyRepoMock)->andReturn('2');
+        $modelFactory->shouldReceive('classUid')->with('tests\lib\Product')->andReturn('1');
+        $modelFactory->shouldReceive('classUid')->with('tests\lib\DummyModel')->andReturn('2');
 
         $this->unknownRepoMock = m::mock('Illuminate\Database\Eloquent\Model');
-        $repoCreator->shouldReceive('classUid')->with($this->unknownRepoMock)->andReturn('999');
+        $modelFactory->shouldReceive('classUid')->with(get_class($this->unknownRepoMock))->andReturn('999');
 
-        $this->config = new Config($configs, $repoCreator);
+        $this->config = new Config($configs, $modelFactory);
     }
 
     public function testModels()

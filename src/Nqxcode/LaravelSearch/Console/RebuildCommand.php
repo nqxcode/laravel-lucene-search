@@ -3,25 +3,26 @@
 use Illuminate\Console\Command;
 use Nqxcode\LaravelSearch\Search;
 
+use \App;
+
 class RebuildCommand extends Command
 {
     protected $name = 'search:rebuild-index';
     protected $description = 'Rebuild the search index';
 
-    /** @var \Nqxcode\LaravelSearch\Search */
-    protected $search;
-
-    public function __construct(Search $search)
+    public function __construct()
     {
         parent::__construct();
-        $this->search = $search;
     }
 
     public function fire()
     {
         $this->call('search:clear');
 
-        $modelRepositories = $this->search->config()->modelRepositories();
+        /** @var Search $search */
+        $search = \App::make('search');
+
+        $modelRepositories = $search->config()->modelRepositories();
 
         if (count($modelRepositories)) {
             foreach ($modelRepositories as $modelRepository) {
@@ -31,7 +32,7 @@ class RebuildCommand extends Command
                     $all = $modelRepository->all();
                 }
                 foreach ($all as $model) {
-                    $this->search->update($model);
+                    $search->update($model);
                 }
             }
             $this->info('Search index updated for all models!');
