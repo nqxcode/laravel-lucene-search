@@ -1,9 +1,12 @@
 <?php namespace Nqxcode\LaravelSearch;
 
 use Illuminate\Support\ServiceProvider;
+use Nqxcode\LaravelSearch\Analyzer\Config as AnalyzerConfig;
 use Nqxcode\LaravelSearch\Config as ModelsConfig;
 
 use Config;
+
+use \ZendSearch\Lucene\Analysis\Analyzer\Common\Utf8Num\CaseInsensitive;
 
 class LaravelSearchServiceProvider extends ServiceProvider
 {
@@ -43,12 +46,20 @@ class LaravelSearchServiceProvider extends ServiceProvider
             return $app['search'];
         });
 
+        $this->app->bind('search.analyzer', function () {
+            return new CaseInsensitive;
+        });
+
+        $this->app->bind('search.analyzer.config', function () {
+            return new AnalyzerConfig([], []); // TODO !!!
+        });
+
         $this->app->bindShared('search.index_path', function () {
             return rtrim(Config::get('laravel-search::index_path'), '/');
         });
 
         $this->app->bindShared('search.connection', function ($app) {
-            return new Connection($app['search.index_path']);
+            return new Connection($app['search.index_path'], $app['search.analyzer.config']);
         });
 
         $this->app->bindShared('search.models', function () {

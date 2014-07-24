@@ -1,7 +1,10 @@
 <?php namespace Nqxcode\LaravelSearch;
 
+use Nqxcode\LaravelSearch\Analyzer\Config as AnalyzerConfig;
+use ZendSearch\Lucene\Analysis\Analyzer\Analyzer;
 use ZendSearch\Lucene\Lucene;
 use ZendSearch\Exception\ExceptionInterface;
+use ZendSearch\Lucene\Search\QueryParser;
 
 class Connection
 {
@@ -34,10 +37,14 @@ class Connection
      * Create connection to index
      *
      * @param $path
+     * @param AnalyzerConfig $config
      * @throws \Exception
      */
-    public function __construct($path)
+    public function __construct($path, AnalyzerConfig $config)
     {
+        $config->setDefaultAnalyzer();
+        QueryParser::setDefaultEncoding('utf-8');
+
         $this->indexPath = $path;
 
         try {

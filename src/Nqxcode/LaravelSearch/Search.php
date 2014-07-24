@@ -1,6 +1,8 @@
 <?php namespace Nqxcode\LaravelSearch;
 
 use Illuminate\Database\Eloquent\Model;
+use Nqxcode\LaravelSearch\Highlighting\Highlighter;
+use Nqxcode\LaravelSearch\Highlighting\Html;
 use ZendSearch\Lucene\Document;
 use ZendSearch\Lucene\Index\Term;
 use ZendSearch\Lucene\Search\Query\MultiTerm;
@@ -59,7 +61,8 @@ class Search
     public function __construct(
         Connection $connection,
         Config $config
-    ) {
+    )
+    {
         $this->connection = $connection;
         $this->config = $config;
     }
@@ -161,8 +164,20 @@ class Search
      */
     public function __call($name, $arguments)
     {
-        $this->queryBuilder = \App::make('Nqxcode\LaravelSearch\QueryRunner');
-        return call_user_func_array([$this->queryBuilder, $name], $arguments);
+        switch ($name) {
+            case 'highlightMatches':
+
+                $highlighter = \App::make('Nqxcode\LaravelSearch\Highlighting\Highlighter');
+                $analyzerConfig = \App::make('search.analyzer.config');
+
+                $html = new Html($this->queryBuilder, $highlighter, $analyzerConfig);
+
+                return call_user_func_array([$html, $name], $arguments);
+
+            default:
+                $this->queryBuilder = \App::make('Nqxcode\LaravelSearch\QueryRunner');
+                return call_user_func_array([$this->queryBuilder, $name], $arguments);
+        }
     }
 
 

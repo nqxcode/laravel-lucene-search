@@ -1,16 +1,21 @@
 <?php namespace tests\unit;
 
+use \Mockery as m;
+
 use Nqxcode\LaravelSearch\Connection;
 use tests\TestCase;
 
 class ConnectionTest extends TestCase
 {
     private $indexPath;
+    private $analyzerConfig;
 
     public function setUp()
     {
         parent::setUp();
         $this->indexPath = sys_get_temp_dir() . '/temp_lucene_index';
+        $this->analyzerConfig = m::mock('Nqxcode\LaravelSearch\Analyzer\Config');
+        $this->analyzerConfig->shouldReceive('setDefaultAnalyzer');
     }
 
     protected function tearDown()
@@ -40,6 +45,6 @@ class ConnectionTest extends TestCase
 
     private function createConnection()
     {
-        return new Connection($this->indexPath);
+        return new Connection($this->indexPath, $this->analyzerConfig);
     }
 }

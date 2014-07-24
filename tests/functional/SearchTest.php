@@ -42,4 +42,17 @@ class SearchTest extends TestCase
 
         return;
     }
+
+    public function testSearchHighlightResults()
+    {
+        $chain = \Search::where('description', 'not very big');
+
+        $results = $chain->get();
+
+        $result = \Search::highlightMatches('this is not very big');
+
+        $lastQuery = \Search::getLastQueryClauses();
+
+        return;
+    }
 }

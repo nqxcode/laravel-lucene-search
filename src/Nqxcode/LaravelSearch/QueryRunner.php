@@ -3,6 +3,7 @@
 use Illuminate\Database\Eloquent\Model;
 use ZendSearch\Lucene\Search\QueryParser;
 use ZendSearch\Lucene\Search\Query\Boolean as QueryBoolean;
+use ZendSearch\Lucene\Search\QueryHit;
 
 use App;
 use Input;
@@ -339,10 +340,10 @@ class QueryRunner
     /**
      * Execute the given query and return the query hits.
      *
-     * @param \ZendSearch\Lucene\Search\Query\Boolean $query
+     * @param QueryBoolean $query
      * @param array $options - limit  : max number of records to return
      *                       - offset : number of records to skip
-     * @return array|\ZendSearch\Lucene\Search\QueryHit
+     * @return array|QueryHit
      */
     public function executeQuery($query, array $options = [])
     {
