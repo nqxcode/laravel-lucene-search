@@ -51,7 +51,7 @@ class ConfigTest extends TestCase
 
     public function testModels()
     {
-        $models = $this->config->repositories();
+        $models = $this->config->modelRepositories();
         $this->assertEquals($this->productRepoMock, $models[0]);
         $this->assertEquals($this->dummyRepoMock, $models[1]);
     }

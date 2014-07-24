@@ -5,7 +5,7 @@ use Illuminate\Console\Command;
 class ClearCommand extends Command
 {
     protected $name = 'search:clear';
-    protected $description = 'Clear the Index Storage';
+    protected $description = 'Clear the search index';
 
     public function fire()
     {

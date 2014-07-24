@@ -19,13 +19,13 @@ class Config
     /**
      * Create configuration for models.
      *
-     * @param $configuration
-     * @param $repositoryCreator
+     * @param array $configuration
+     * @param ModelFactory $modelFactory
      * @throws \InvalidArgumentException
      */
-    public function __construct(array $configuration, ModelFactory $repositoryCreator)
+    public function __construct(array $configuration, ModelFactory $modelFactory)
     {
-        $this->repositoryCreator = $repositoryCreator;
+        $this->repositoryCreator = $modelFactory;
 
         foreach ($configuration as $className => $options) {
 
@@ -37,11 +37,12 @@ class Config
                 );
             }
 
-            $repo = $repositoryCreator->create($className);
+            $modelRepository = $modelFactory->create($className);
+            $classUid = $modelFactory->classUid($className);
 
             $this->configuration[] = [
-                'repository' => $repo,
-                'class_uid' => $repositoryCreator->classUid($repo),
+                'repository' => $modelRepository,
+                'class_uid' => $classUid,
                 'fields' => $fields,
                 'private_key' => array_get($options, 'private_key', 'id')
             ];
@@ -57,10 +58,10 @@ class Config
      */
     private function config(Model $model)
     {
-        $hash = $this->repositoryCreator->classUid($model);
+        $classUid = $this->repositoryCreator->classUid($model);
 
         foreach ($this->configuration as $config) {
-            if ($config['class_uid'] === $hash) {
+            if ($config['class_uid'] === $classUid) {
                 return $config;
             }
         }
@@ -93,7 +94,7 @@ class Config
      *
      * @return Model[]
      */
-    public function repositories()
+    public function modelRepositories()
     {
         $repositories = [];
         foreach ($this->configuration as $config) {
