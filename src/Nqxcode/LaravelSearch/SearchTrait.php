@@ -5,7 +5,7 @@ trait SearchTrait
     /**
      * Update model in search index.
      */
-    public function updateIndex()
+    public function updateSearchIndex()
     {
         \Search::update($this);
     }
@@ -13,7 +13,7 @@ trait SearchTrait
     /**
      * Delete model from search index.
      */
-    public function deleteIndex()
+    public function deleteSearchIndex()
     {
         \Search::delete($this);
     }

@@ -2,22 +2,22 @@
 
 use Mockery as m;
 
-use Nqxcode\LaravelSearch\QueryBuilder;
+use Nqxcode\LaravelSearch\QueryRunner;
 use tests\TestCase;
 
 class QueryBuilderTest extends TestCase
 {
     /**
-     * @var QueryBuilder
+     * @var QueryRunner
      */
     private $queryBulder;
 
     public function setUp()
     {
         parent::setUp();
-        $index = m::mock('Nqxcode\LaravelSearch\Search');
-        $index->shouldReceive('config');
-        $this->queryBulder = new QueryBuilder($index);
+        $search = m::mock('Nqxcode\LaravelSearch\Search');
+        \App::instance('Nqxcode\LaravelSearch\Search', $search);
+        $this->queryBulder = \App::make('Nqxcode\LaravelSearch\QueryRunner');
     }
 
     public function testEscapeQueryWithSpecialChars()
@@ -47,4 +47,6 @@ class QueryBuilderTest extends TestCase
             ['apple not cherry', 'apple cherry'],
         ];
     }
+
+
 }

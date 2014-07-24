@@ -19,7 +19,7 @@ class RebuildCommand extends Command
 
     public function fire()
     {
-        $models = $this->search->config()->models();
+        $models = $this->search->config()->repositories();
         if (count($models)) {
             foreach ($models as $instance) {
                 $all = $instance->all();

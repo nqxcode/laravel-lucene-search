@@ -38,7 +38,7 @@ class SearchTest extends TestCase
 
         $results = $chain->get();
 
-        $lastQuery = \Search::getLastBooleanQueryStrings();
+        $lastQuery = \Search::getLastQueryClauses();
 
         return;
     }

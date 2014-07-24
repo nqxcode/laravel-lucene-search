@@ -1,9 +1,9 @@
 <?php namespace Nqxcode\LaravelSearch;
 
-use Config;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Foundation\Application;
-use Nqxcode\LaravelSearch\Config as SearchConfig;
+use Nqxcode\LaravelSearch\Config as ModelsConfig;
+
+use Config;
 
 class LaravelSearchServiceProvider extends ServiceProvider
 {
@@ -39,6 +39,10 @@ class LaravelSearchServiceProvider extends ServiceProvider
             );
         });
 
+        $this->app->bind('Nqxcode\LaravelSearch\Search', function ($app) {
+            return $app['search'];
+        });
+
         $this->app->bindShared('search.index_path', function () {
             return rtrim(Config::get('laravel-search::index_path'), '/');
         });
@@ -52,14 +56,17 @@ class LaravelSearchServiceProvider extends ServiceProvider
         });
 
         $this->app->bindShared('search.models.config', function ($app) {
-            return new SearchConfig($app['search.models']);
+            return new ModelsConfig(
+                $app['search.models'],
+                $app->make('Nqxcode\LaravelSearch\RepoFactory')
+            );
         });
 
-        $this->app['command.search.rebuild-index'] = $this->app->share(function ($app) {
+        $this->app->bindShared('command.search.rebuild-index', function ($app) {
             return new Console\RebuildCommand($app['search']);
         });
 
-        $this->app['command.search.clear'] = $this->app->share(function () {
+        $this->app->bindShared('command.search.clear', function () {
             return new Console\ClearCommand;
         });
 

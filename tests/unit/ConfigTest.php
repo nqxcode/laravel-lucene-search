@@ -26,7 +26,7 @@ class ConfigTest extends TestCase
 
         $configs = $this->getValidConfigs();
 
-        $repoCreator = m::mock('Nqxcode\LaravelSearch\RepoCreator');
+        $repoCreator = m::mock('Nqxcode\LaravelSearch\RepoFactory');
 
         $repoCreator->shouldReceive('create')
             ->with('tests\lib\Product')
@@ -40,18 +40,18 @@ class ConfigTest extends TestCase
 
         $this->dummyRepoMock->pk = 2;
 
-        $repoCreator->shouldReceive('hash')->with($this->productRepoMock)->andReturn('1');
-        $repoCreator->shouldReceive('hash')->with($this->dummyRepoMock)->andReturn('2');
+        $repoCreator->shouldReceive('classUid')->with($this->productRepoMock)->andReturn('1');
+        $repoCreator->shouldReceive('classUid')->with($this->dummyRepoMock)->andReturn('2');
 
         $this->unknownRepoMock = m::mock('Illuminate\Database\Eloquent\Model');
-        $repoCreator->shouldReceive('hash')->with($this->unknownRepoMock)->andReturn('999');
+        $repoCreator->shouldReceive('classUid')->with($this->unknownRepoMock)->andReturn('999');
 
         $this->config = new Config($configs, $repoCreator);
     }
 
     public function testModels()
     {
-        $models = $this->config->models();
+        $models = $this->config->repositories();
         $this->assertEquals($this->productRepoMock, $models[0]);
         $this->assertEquals($this->dummyRepoMock, $models[1]);
     }
@@ -68,7 +68,7 @@ class ConfigTest extends TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Can't find class for hash: '999'
+     * @expectedExceptionMessage Can't find class for classUid: '999'
      */
     public function testModelWithIncorrectClassUid()
     {
@@ -88,19 +88,19 @@ class ConfigTest extends TestCase
 
     public function testClassUid()
     {
-        $pair = $this->config->classUid($this->productRepoMock);
+        $pair = $this->config->classUidPair($this->productRepoMock);
         $this->assertEquals(['class_uid', '1'], $pair);
 
-        $pair = $this->config->classUid($this->dummyRepoMock);
+        $pair = $this->config->classUidPair($this->dummyRepoMock);
         $this->assertEquals(['class_uid', '2'], $pair);
     }
 
     public function testPrivateKey()
     {
-        $pair = $this->config->privateKey($this->productRepoMock);
+        $pair = $this->config->privateKeyPair($this->productRepoMock);
         $this->assertEquals(['private_key', 1], $pair);
 
-        $pair = $this->config->privateKey($this->dummyRepoMock);
+        $pair = $this->config->privateKeyPair($this->dummyRepoMock);
         $this->assertEquals(['private_key', 2], $pair);
     }
 
@@ -109,7 +109,7 @@ class ConfigTest extends TestCase
         $message = "Configuration doesn't exist for model of class '" . get_class($this->unknownRepoMock) . "'.";
         $this->setExpectedException('\InvalidArgumentException', $message);
 
-        $this->config->privateKey($this->unknownRepoMock);
+        $this->config->privateKeyPair($this->unknownRepoMock);
     }
 
     private function getValidConfigs()

@@ -2,25 +2,20 @@
 
 use Illuminate\Database\Eloquent\Model;
 use ZendSearch\Lucene\Search\QueryParser;
-use ZendSearch\Lucene\Search\Query\Boolean;
+use ZendSearch\Lucene\Search\Query\Boolean as QueryBoolean;
 
 use App;
 use Input;
 
-class QueryBuilder
+class QueryRunner
 {
     /**
-     * @var \Nqxcode\LaravelSearch\Search
+     * @var Search
      */
     private $search;
 
     /**
-     * @var \Nqxcode\LaravelSearch\Config
-     */
-    private $config;
-
-    /**
-     * @var \ZendSearch\Lucene\Search\Query\Boolean
+     * @var QueryBoolean
      */
     private $query;
 
@@ -61,6 +56,8 @@ class QueryBuilder
     private $last_query;
 
     /**
+     * Get the last executed query.
+     *
      * @return mixed
      */
     public function getLastQuery()
@@ -71,42 +68,40 @@ class QueryBuilder
     /**
      * @var string[]
      */
-    private $last_query_strings;
+    private $last_query_clauses;
 
     /**
-     * @return \string[]
+     * @return string[]
      */
-    public function getLastBooleanQueryStrings()
+    public function getLastQueryClauses()
     {
-        return $this->last_query_strings;
+        return $this->last_query_clauses;
     }
 
     /**
      * @param Search $search
+     * @param QueryBoolean $query
      */
-    public function __construct(Search $search)
+    public function __construct(Search $search, QueryBoolean $query)
     {
         $this->search = $search;
-        $this->config = $search->config();
-        $this->query = new Boolean;
+        $this->query = $query;
     }
 
     /**
-     * Add a search/where clause to the given query based on the given condition.
-     * Return the given $query instance when finished.
+     * Add a "andWhere" clause to the given query based on the given condition.
      *
-     * @param \ZendSearch\Lucene\Search\Query\Boolean $query
+     * @param QueryBoolean $query
      * @param array $condition - field      : name of the field
      *                         - value      : value to match
-     *                         - required   : must match
-     *                         - prohibited : must not match
-     *                         - phrase     : match as a phrase
-     *                         - fuzzy      : fuzziness value (0 - 1)
-     *                         - proximity  : finding words are a within a specific distance (unsigned integer)
-     *
-     * @return \ZendSearch\Lucene\Search\Query\Boolean
+     *                         - required   : must match (boolean)
+     *                         - prohibited : must not match (boolean)
+     *                         - phrase     : match as a phrase (boolean)
+     *                         - proximity  : value of distance between words (unsigned integer)
+     **                        - fuzzy      : fuzziness value (float, 0 - 1)
+     * @return QueryBoolean
      */
-    public function addSubquery(Boolean $query, array $condition)
+    public function addCondition(QueryBoolean $query, array $condition)
     {
         $value = trim($this->escape(array_get($condition, 'value')));
 
@@ -155,7 +150,7 @@ class QueryBuilder
             $value = trim(array_get($condition, 'field')) . ':(' . $value . ')';
         }
 
-        $this->last_query_strings[] = $value;
+        $this->last_query_clauses[] = $value;
         $query->addSubquery(QueryParser::parse($value), $sign);
 
         return $query;
@@ -164,13 +159,13 @@ class QueryBuilder
     /**
      * Add a custom callback fn to be called just before the query is executed.
      *
-     * @param \Closure $callback
+     * @param callable $closure
      *
      * @return $this
      */
-    public function addCallback($callback)
+    public function addCallback(callable $closure)
     {
-        $this->callbacks[] = $callback;
+        $this->callbacks[] = $closure;
 
         return $this;
     }
@@ -188,7 +183,7 @@ class QueryBuilder
      */
     public function where($field, $value, array $options = [])
     {
-        $this->query = $this->addSubquery($this->query, [
+        $this->query = $this->addCondition($this->query, [
             'field' => $field,
             'value' => $value,
             'required' => array_get($options, 'required', true),
@@ -215,7 +210,7 @@ class QueryBuilder
      */
     public function find($value, $field = '*', array $options = [])
     {
-        $this->query = $this->addSubquery($this->query, [
+        $this->query = $this->addCondition($this->query, [
             'field' => $field,
             'value' => $value,
             'required' => array_get($options, 'required', true),
@@ -263,19 +258,19 @@ class QueryBuilder
     /**
      * Execute the current query and return a paginator for the results.
      *
-     * @param int $num
+     * @param int $perPage
      *
      * @return \Illuminate\Pagination\Paginator
      */
-    public function paginate($num = 15)
+    public function paginate($perPage = 15)
     {
         $paginator = App::make('paginator');
 
         $page = (int)Input::get('page', 1);
 
-        $this->limit($num, ($page - 1) * $num);
+        $this->limit($perPage, ($page - 1) * $perPage);
 
-        return $paginator->make($this->get(), $this->count(), $num);
+        return $paginator->make($this->get(), $this->count(), $perPage);
     }
 
     /**
@@ -314,7 +309,7 @@ class QueryBuilder
         $hits = $this->executeQuery($this->query, $options);
 
         // Convert hits to models.
-        return $this->convertToModels($hits);
+        return $this->search->config()->models($hits);
     }
 
 
@@ -332,13 +327,13 @@ class QueryBuilder
             return;
         }
 
-        $callbacks_executed = true;
-
         foreach ($this->callbacks as $callback) {
-            if ($q = call_user_func($callback, $this->query)) {
-                $this->query = $q;
+            if ($query = $callback($this->query)) {
+                $this->query = $query;
             }
         }
+
+        $callbacks_executed = true;
     }
 
     /**
@@ -365,30 +360,6 @@ class QueryBuilder
         }
 
         return $hits;
-    }
-
-    /**
-     * Convert hits to models.
-     *
-     * Return an array of records where each record is an
-     * instance of Illuminate\Database\Eloquent\Model class.
-     *
-     * @param \ZendSearch\Lucene\Search\QueryHit[] $hits
-     * @return Model[]
-     */
-    protected function convertToModels($hits)
-    {
-        // Get models from hits.
-        $results = array_map(function ($hit) {
-            return $this->config->model($hit);
-        }, $hits);
-
-        // Skip empty.
-        $results = array_filter($results, function ($model) {
-            return !is_null($model);
-        });
-
-        return $results;
     }
 
     /**

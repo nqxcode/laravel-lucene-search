@@ -32,12 +32,12 @@ class SearchTraitTest extends TestCase
     public function testUpdateIndex()
     {
         \Search::shouldReceive('update')->with($this->dummy)->once();
-        $this->dummy->updateIndex();
+        $this->dummy->updateSearchIndex();
     }
 
     public function testDeleteIndex()
     {
         \Search::shouldReceive('delete')->with($this->dummy)->once();
-        $this->dummy->deleteIndex();
+        $this->dummy->deleteSearchIndex();
     }
 }

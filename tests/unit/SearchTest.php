@@ -31,10 +31,10 @@ class SearchTest extends TestCase
         $this->connection->shouldReceive('getIndexPath');
 
         $this->config = m::mock('Nqxcode\LaravelSearch\Config');
-        $this->config->shouldReceive('privateKey')
+        $this->config->shouldReceive('privateKeyPair')
             ->with($this->model)
             ->andReturn(['private_key', 1]);
-        $this->config->shouldReceive('classUid')
+        $this->config->shouldReceive('classUidPair')
             ->with($this->model)
             ->andReturn(['class_uid', '12345']);
         $this->config->shouldReceive('fields')

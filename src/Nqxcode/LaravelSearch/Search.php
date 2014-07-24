@@ -9,8 +9,8 @@ use ZendSearch\Lucene\Document\Field;
 /**
  * Class Search
  *
- * @method QueryBuilder find($field, $value, array $options = [])
- * @method QueryBuilder where($field, $value, array $options = [])
+ * @method QueryRunner find($field, $value, array $options = [])
+ * @method QueryRunner where($field, $value, array $options = [])
  * @package Nqxcode\LaravelSearch
  */
 class Search
@@ -46,7 +46,7 @@ class Search
     }
 
     /**
-     * @var QueryBuilder
+     * @var QueryRunner
      */
     private $queryBuilder;
 
@@ -54,12 +54,14 @@ class Search
      * Create index instance.
      *
      * @param Connection $connection
-     * @param Config $configurator
+     * @param Config $config
      */
-    public function __construct(Connection $connection, Config $configurator)
-    {
+    public function __construct(
+        Connection $connection,
+        Config $config
+    ) {
         $this->connection = $connection;
-        $this->config = $configurator;
+        $this->config = $config;
     }
 
     /**
@@ -84,11 +86,11 @@ class Search
         $query = new MultiTerm();
 
         // Add model's class UID.
-        list($name, $value) = $this->config->privateKey($model);
+        list($name, $value) = $this->config->privateKeyPair($model);
         $query->addTerm(new Term($value, $name), true);
 
         // Add class uid for identification of model's class.
-        list($name, $value) = $this->config->classUid($model);
+        list($name, $value) = $this->config->classUidPair($model);
         $query->addTerm(new Term($value, $name), true);
 
         return $this->index()->find($query);
@@ -114,13 +116,13 @@ class Search
         // Create new document for model.
         $doc = new Document();
 
-        list($name, $value) = $this->config->privateKey($model);
+        list($name, $value) = $this->config->privateKeyPair($model);
 
         // Add private key.
         $doc->addField(Field::keyword($name, $value));
 
         // Add model's class UID.
-        list($name, $value) = $this->config->classUid($model);
+        list($name, $value) = $this->config->classUidPair($model);
 
         // Add class uid for identification of model's class.
         $doc->addField(Field::Keyword($name, $value));
@@ -151,7 +153,7 @@ class Search
     }
 
     /**
-     * All calls of inaccessible methods send to QueryBuilder object.
+     * All calls of inaccessible methods send to QueryRunner object.
      *
      * @param $name
      * @param $arguments
@@ -159,13 +161,13 @@ class Search
      */
     public function __call($name, $arguments)
     {
-        $this->queryBuilder = new QueryBuilder($this);
+        $this->queryBuilder = \App::make('Nqxcode\LaravelSearch\QueryRunner');
         return call_user_func_array([$this->queryBuilder, $name], $arguments);
     }
 
 
-    public function getLastBooleanQueryStrings()
+    public function getLastQueryClauses()
     {
-        return $this->queryBuilder->getLastBooleanQueryStrings();
+        return $this->queryBuilder->getLastQueryClauses();
     }
 }

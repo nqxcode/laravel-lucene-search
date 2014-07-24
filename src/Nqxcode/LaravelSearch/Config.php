@@ -1,7 +1,7 @@
 <?php namespace Nqxcode\LaravelSearch;
 
 use Illuminate\Database\Eloquent\Model;
-use \ZendSearch\Lucene\Search\QueryHit;
+use ZendSearch\Lucene\Search\QueryHit;
 
 /**
  * Class Config
@@ -23,13 +23,9 @@ class Config
      * @param $repositoryCreator
      * @throws \InvalidArgumentException
      */
-    public function __construct(array $configuration, RepoCreator $repositoryCreator)
+    public function __construct(array $configuration, RepoFactory $repositoryCreator)
     {
         $this->repositoryCreator = $repositoryCreator;
-
-        if (count($configuration) == 0) {
-            throw new \InvalidArgumentException('No models found in configuration.');
-        }
 
         foreach ($configuration as $className => $options) {
 
@@ -37,7 +33,7 @@ class Config
 
             if (count($fields) == 0) {
                 throw new \InvalidArgumentException(
-                    "For the class '{$className}' parameter 'fields' shall be specified."
+                    "Parameter 'fields' for the class '{$className}' should be specified."
                 );
             }
 
@@ -45,7 +41,7 @@ class Config
 
             $this->configuration[] = [
                 'repository' => $repo,
-                'class_uid' => $repositoryCreator->hash($repo),
+                'class_uid' => $repositoryCreator->classUid($repo),
                 'fields' => $fields,
                 'private_key' => array_get($options, 'private_key', 'id')
             ];
@@ -61,7 +57,7 @@ class Config
      */
     private function config(Model $model)
     {
-        $hash = $this->repositoryCreator->hash($model);
+        $hash = $this->repositoryCreator->classUid($model);
 
         foreach ($this->configuration as $config) {
             if ($config['class_uid'] === $hash) {
@@ -89,7 +85,7 @@ class Config
             }
         }
 
-        throw new \InvalidArgumentException("Can't find class for hash: '{$classUid}'.");
+        throw new \InvalidArgumentException("Can't find class for classUid: '{$classUid}'.");
     }
 
     /**
@@ -97,34 +93,34 @@ class Config
      *
      * @return Model[]
      */
-    public function models()
+    public function repositories()
     {
-        $models = [];
+        $repositories = [];
         foreach ($this->configuration as $config) {
-            $models[] = $config['repository'];
+            $repositories[] = $config['repository'];
         }
-        return $models;
+        return $repositories;
     }
 
     /**
-     * Get private key for model.
+     * Get 'key-value' pair for private key for model.
      *
      * @param Model $model
      * @return array
      */
-    public function privateKey(Model $model)
+    public function privateKeyPair(Model $model)
     {
         $c = $this->config($model);
         return ['private_key', $model->{$c['private_key']}];
     }
 
     /**
-     * Get UID for model class.
+     * Get 'key-value' pair for UID of model class.
      *
      * @param Model $model
      * @return array
      */
-    public function classUid(Model $model)
+    public function classUidPair(Model $model)
     {
         $c = $this->config($model);
         return ['class_uid', $c['class_uid']];
@@ -152,5 +148,26 @@ class Config
     {
         $model = $this->createModelByClassUid($hit->class_uid);
         return $model->find($hit->private_key);
+    }
+
+    /**
+     * Get all models by query hits.
+     *
+     * @param QueryHit[] $hits
+     * @return array
+     */
+    public function models($hits)
+    {
+        // Get models from hits.
+        $results = array_map(function ($hit) {
+            return $this->model($hit);
+        }, $hits);
+
+        // Skip empty.
+        $results = array_filter($results, function ($model) {
+            return !is_null($model);
+        });
+
+        return $results;
     }
 }
