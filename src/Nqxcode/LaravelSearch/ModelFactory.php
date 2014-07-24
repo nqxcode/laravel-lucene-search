@@ -1,6 +1,6 @@
 <?php namespace Nqxcode\LaravelSearch;
 
-class RepoFactory
+class ModelFactory
 {
     public function create($className)
     {

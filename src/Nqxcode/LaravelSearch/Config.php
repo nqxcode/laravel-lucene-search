@@ -23,7 +23,7 @@ class Config
      * @param $repositoryCreator
      * @throws \InvalidArgumentException
      */
-    public function __construct(array $configuration, RepoFactory $repositoryCreator)
+    public function __construct(array $configuration, ModelFactory $repositoryCreator)
     {
         $this->repositoryCreator = $repositoryCreator;
 
