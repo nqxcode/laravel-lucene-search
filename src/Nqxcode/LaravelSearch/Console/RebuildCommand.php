@@ -37,7 +37,7 @@ class RebuildCommand extends Command
             }
             $this->info('Search index updated for all models!');
         } else {
-            $this->error('No models found..');
+            $this->error('No models found in config.php file..');
         }
     }
 }
