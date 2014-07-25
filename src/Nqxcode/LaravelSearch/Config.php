@@ -17,6 +17,13 @@ class Config
     private $configuration = [];
 
     /**
+     * Model factory.
+     *
+     * @var \Nqxcode\LaravelSearch\ModelFactory
+     */
+    private $modelFactory;
+
+    /**
      * Create configuration for models.
      *
      * @param array $configuration
@@ -25,7 +32,7 @@ class Config
      */
     public function __construct(array $configuration, ModelFactory $modelFactory)
     {
-        $this->repositoryCreator = $modelFactory;
+        $this->modelFactory = $modelFactory;
 
         foreach ($configuration as $className => $options) {
 
@@ -58,7 +65,7 @@ class Config
      */
     private function config(Model $model)
     {
-        $classUid = $this->repositoryCreator->classUid($model);
+        $classUid = $this->modelFactory->classUid($model);
 
         foreach ($this->configuration as $config) {
             if ($config['class_uid'] === $classUid) {
@@ -104,7 +111,7 @@ class Config
     }
 
     /**
-     * Get 'key-value' pair for private key for model.
+     * Get 'key-value' pair for private key of model.
      *
      * @param Model $model
      * @return array

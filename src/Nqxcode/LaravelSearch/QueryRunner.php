@@ -1,12 +1,13 @@
 <?php namespace Nqxcode\LaravelSearch;
 
 use Illuminate\Database\Eloquent\Model;
-use ZendSearch\Lucene\Search\QueryParser;
+use ZendSearch\Lucene\Search\Query\AbstractQuery;
 use ZendSearch\Lucene\Search\Query\Boolean as QueryBoolean;
 use ZendSearch\Lucene\Search\QueryHit;
 
 use App;
 use Input;
+use ZendSearch\Lucene\Search\QueryParser;
 
 class QueryRunner
 {
@@ -16,9 +17,10 @@ class QueryRunner
     private $search;
 
     /**
-     * @var QueryBoolean
+     * @var string|AbstractQuery
      */
     private $query;
+
 
     /**
      * The maximum number of records to return.
@@ -35,48 +37,58 @@ class QueryRunner
     protected $offset;
 
     /**
-     * Any user defined callback functions to help manipulate the raw
-     * query instance.
+     * Callback functions to help manipulate the raw query instance.
      *
      * @var array
      */
-    protected $callbacks = array();
+    protected $callbacks = [];
 
     /**
-     * An array of cached query totals to help reduce subsequent count calls.
+     * List of cached query totals.
      *
      * @var array
      */
     private $cached_query_totals;
 
     /**
-     * The last executed query.
+     * List of clauses of current query.
+     *
+     * @var string[]
+     */
+    private $current_query_clauses;
+
+    /**
+     * Last executed query.
      *
      * @var
      */
-    private $last_query;
+    private static $last_query;
 
     /**
-     * Get the last executed query.
+     * Get last executed query.
      *
      * @return mixed
      */
-    public function getLastQuery()
+    public static function getLastQuery()
     {
-        return $this->last_query;
+        return self::$last_query;
     }
 
     /**
+     * List of clauses of last query.
+     *
      * @var string[]
      */
-    private $last_query_clauses;
+    private static $last_query_clauses;
 
     /**
+     * Get list of clauses of last query.
+     *
      * @return string[]
      */
-    public function getLastQueryClauses()
+    public static function getLastQueryClauses()
     {
-        return $this->last_query_clauses;
+        return self::$last_query_clauses;
     }
 
     /**
@@ -90,77 +102,26 @@ class QueryRunner
     }
 
     /**
-     * Add a "andWhere" clause to the given query based on the given condition.
+     * Build raw query.
      *
-     * @param QueryBoolean $query
-     * @param array $condition - field      : name of the field
-     *                         - value      : value to match
-     *                         - required   : must match (boolean)
-     *                         - prohibited : must not match (boolean)
-     *                         - phrase     : match as a phrase (boolean)
-     *                         - proximity  : value of distance between words (unsigned integer)
-     **                        - fuzzy      : fuzziness value (float, 0 - 1)
-     * @return QueryBoolean
+     * @param $query
+     * @return $this
      */
-    public function addCondition(QueryBoolean $query, array $condition)
+    public function rawQuery($query)
     {
-        $value = trim($this->escape(array_get($condition, 'value')));
-
-        if (array_get($condition, 'phrase') || array_get($condition, 'proximity')) {
-            $value = '"' . $value . '"';
-        }
-        if (isset($condition['fuzzy']) && false !== $condition['fuzzy']) {
-            $fuzziness = '';
-            if (is_numeric($condition['fuzzy']) && $condition['fuzzy'] >= 0 && $condition['fuzzy'] <= 1) {
-                $fuzziness = $condition['fuzzy'];
-            }
-
-            $words = array();
-            foreach (explode(' ', $value) as $word) {
-                $words[] = $word . '~' . $fuzziness;
-            }
-            $value = implode(' ', $words);
+        if ($query instanceof AbstractQuery) {
+            $this->query = $query;
+        } elseif (is_callable($query)) {
+            $this->query = $query();
         }
 
-        $sign = null;
-        if (!empty($condition['required'])) {
-            $sign = true;
-        } elseif (!empty($condition['prohibited'])) {
-            $sign = false;
-        }
-
-        $field = array_get($condition, 'field');
-        if (empty($field) || '*' === $field) {
-            $field = null;
-        }
-
-        if (isset($condition['proximity']) && false !== $condition['proximity']) {
-            if (is_integer($condition['proximity']) && $condition['proximity'] > 0) {
-                $proximity = $condition['proximity'];
-                $value = $value . '~' . $proximity;
-            }
-        }
-
-        if (is_array($field)) {
-            $values = array();
-            foreach ($field as $f) {
-                $values[] = trim($f) . ':(' . $value . ')';
-            }
-            $value = implode(' OR ', $values);
-        } elseif ($field) {
-            $value = trim(array_get($condition, 'field')) . ':(' . $value . ')';
-        }
-
-        $this->last_query_clauses[] = $value;
-        $query->addSubquery(QueryParser::parse($value), $sign);
-
-        return $query;
+        return $this;
     }
 
     /**
-     * Add a custom callback fn to be called just before the query is executed.
+     * Use for customize query.
      *
-     * @param callable $closure
+     * @param callable $closure should return
      *
      * @return $this
      */
@@ -172,19 +133,22 @@ class QueryRunner
     }
 
     /**
-     * Add a basic where clause to the query. A where clause filter attemtps
-     * to match the value you specify as an entire "phrase". It does not
-     * guarantee an exact match of the entire field value.
+     * Add where clause to the query for phrase search.
      *
      * @param string $field
      * @param mixed $value
-     * @param mixed $options
-     *
+     * @param array $options - field      : field name
+     *                       - value      : value to match
+     *                       - required   : should match (boolean)
+     *                       - prohibited : should not match (boolean)
+     *                       - phrase     : phrase match (boolean)
+     *                       - proximity  : value of distance between words (unsigned integer)
+     **                      - fuzzy      : value of fuzzy(float, 0 ... 1)
      * @return $this
      */
     public function where($field, $value, array $options = [])
     {
-        $this->query = $this->addCondition($this->query, [
+        $this->query = $this->addSubquery($this->query, [
             'field' => $field,
             'value' => $value,
             'required' => array_get($options, 'required', true),
@@ -202,16 +166,16 @@ class QueryRunner
      *
      * @param $value
      * @param $field
-     * @param array $options - required   : requires a match (default)
-     *                       - prohibited : requires a non-match
-     *                       - phrase     : match the $value as a phrase
-     *                       - fuzzy      : perform a fuzzy search (true, or numeric between 0-1)
-     *                       - proximity  : finding words are a within a specific distance (unsigned integer)
+     * @param array $options - required   : should match (boolean)
+     *                       - prohibited : should not match (boolean)
+     *                       - phrase     : phrase match (boolean)
+     *                       - proximity  : value of distance between words (unsigned integer)
+     **                      - fuzzy      : value of fuzzy(float, 0 ... 1)
      * @return $this
      */
     public function find($value, $field = '*', array $options = [])
     {
-        $this->query = $this->addCondition($this->query, [
+        $this->query = $this->addSubquery($this->query, [
             'field' => $field,
             'value' => $value,
             'required' => array_get($options, 'required', true),
@@ -224,6 +188,133 @@ class QueryRunner
         return $this;
     }
 
+    /**
+     * Add subquery to boolean query.
+     *
+     * @param QueryBoolean $query
+     * @param array $options
+     * @return QueryBoolean
+     */
+    public function addSubquery(QueryBoolean $query, array $options)
+    {
+        list($value, $sign) = $this->buildRawLuceneQuery($options);
+        $query->addSubquery(QueryParser::parse($value), $sign);
+
+        $this->current_query_clauses[] = $value;
+        return $query;
+    }
+
+    /**
+     * Build raw Lucene query by given options.
+     *
+     * @param array $options - field      : field name
+     *                       - value      : value to match
+     *                       - phrase     : phrase match (boolean)
+     *                       - required   : should match (boolean)
+     *                       - prohibited : should not match (boolean)
+     *                       - proximity  : value of distance between words (unsigned integer)
+     **                      - fuzzy      : value of fuzzy(float, 0 ... 1)
+     * @return array contains string query and sign
+     */
+    public function buildRawLuceneQuery($options)
+    {
+        $field = array_get($options, 'field');
+
+        $value = trim($this->escapeSpecialChars(array_get($options, 'value')));
+
+        if (empty($field) || '*' === $field) {
+            $field = null;
+        }
+
+        if (array_get($options, 'phrase') || array_get($options, 'proximity')) {
+            $value = '"' . $value . '"';
+        } else {
+            $value = $this->escapeSpecialOperators($value);
+        }
+
+        if (isset($options['proximity']) && false !== $options['proximity']) {
+            if (is_integer($options['proximity']) && $options['proximity'] > 0) {
+                $proximity = $options['proximity'];
+                $value = $value . '~' . $proximity;
+            }
+        }
+
+        if (isset($options['fuzzy']) && false !== $options['fuzzy']) {
+            $fuzzy = '';
+            if (is_numeric($options['fuzzy']) && $options['fuzzy'] >= 0 && $options['fuzzy'] <= 1) {
+                $fuzzy = $options['fuzzy'];
+            }
+
+            $words = array();
+            foreach (explode(' ', $value) as $word) {
+                $words[] = $word . '~' . $fuzzy;
+            }
+            $value = implode(' ', $words);
+        }
+
+        if (is_array($field)) {
+            $values = array();
+            foreach ($field as $f) {
+                $values[] = trim($f) . ':(' . $value . ')';
+            }
+            $value = implode(' OR ', $values);
+        } elseif ($field) {
+            $value = trim($field) . ':(' . $value . ')';
+        }
+
+        if (!empty($options['required'])) {
+            $sign = true;
+        } elseif (!empty($options['prohibited'])) {
+            $sign = false;
+        } else {
+            $sign = null;
+        }
+
+        return [$value, $sign];
+    }
+
+    /**
+     * Escape special characters for Lucene query.
+     *
+     * @param string $str
+     *
+     * @return string
+     */
+    private function escapeSpecialChars($str)
+    {
+        // List of all special chars.
+        $special_chars = ['\\', '+', '-', '&&', '||', '!', '(', ')', '{', '}', '[', ']', '^', '"', '~', '*', '?', ':'];
+
+
+        // Escape all special characters.
+        foreach ($special_chars as $ch) {
+            $str = str_replace($ch, "\\{$ch}", $str);
+        }
+
+        return $str;
+    }
+
+    /**
+     * Escape special operators for Lucene query.
+     *
+     * @param $str
+     * @return mixed
+     */
+    private function escapeSpecialOperators($str)
+    {
+        // List of query operators.
+        $query_operators = ['to', 'or', 'and', 'not'];
+
+        // Add spaces to operators.
+        $query_operators = array_map(function ($operator) {
+            return " {$operator} ";
+        }, $query_operators);
+
+        // Remove other operators.
+        $str = str_ireplace($query_operators, ' ', $str);
+
+        return $str;
+    }
 
     /**
      * Set the "limit" and "offset" value of the query.
@@ -251,8 +342,8 @@ class QueryRunner
     {
         $results = $this->get();
 
-        foreach ($results as $result) {
-            $this->search->delete($result);
+        foreach ($results as $model) {
+            $this->search->delete($model);
         }
     }
 
@@ -263,15 +354,12 @@ class QueryRunner
      *
      * @return \Illuminate\Pagination\Paginator
      */
-    public function paginate($perPage = 15)
+    public function paginate($perPage = 25)
     {
-        $paginator = App::make('paginator');
-
         $page = (int)Input::get('page', 1);
-
         $this->limit($perPage, ($page - 1) * $perPage);
 
-        return $paginator->make($this->get(), $this->count(), $perPage);
+        return App::make('paginator')->make($this->get(), $this->count(), $perPage);
     }
 
     /**
@@ -291,7 +379,7 @@ class QueryRunner
     }
 
     /**
-     * Execute the current query and return the results.
+     * Execute current query and return list of models.
      *
      * @return Model[]
      */
@@ -306,7 +394,7 @@ class QueryRunner
 
         $this->executeCallbacks();
 
-        // Get found hits.
+        // Get hits.
         $hits = $this->executeQuery($this->query, $options);
 
         // Convert hits to models.
@@ -315,7 +403,7 @@ class QueryRunner
 
 
     /**
-     * Execute any callback functions. Only execute once.
+     * Execute added callback functions.
      *
      * @return void
      */
@@ -340,7 +428,7 @@ class QueryRunner
     /**
      * Execute the given query and return the query hits.
      *
-     * @param QueryBoolean $query
+     * @param string|AbstractQuery $query
      * @param array $options - limit  : max number of records to return
      *                       - offset : number of records to skip
      * @return array|QueryHit
@@ -353,7 +441,8 @@ class QueryRunner
         $this->cached_query_totals[md5(serialize($query))] = count($hits);
 
         // Remember running query.
-        $this->last_query = $query;
+        self::$last_query = $query;
+        self::$last_query_clauses = $this->current_query_clauses;
 
         // Limit results.
         if (isset($options['limit']) && isset($options['offset'])) {
@@ -361,36 +450,5 @@ class QueryRunner
         }
 
         return $hits;
-    }
-
-    /**
-     * Escape special characters for Lucene query.
-     *
-     * @param string $str
-     *
-     * @return string
-     */
-    public function escape($str)
-    {
-        // List of all special chars.
-        $special_chars = ['\\', '+', '-', '&&', '||', '!', '(', ')', '{', '}', '[', ']', '^', '"', '~', '*', '?', ':'];
-
-        // List of query operators.
-        $query_operators = ['to', 'or', 'and', 'not'];
-
-        // Escape all special characters.
-        foreach ($special_chars as $ch) {
-            $str = str_replace($ch, "\\{$ch}", $str);
-        }
-
-        // Add spaces to operators.
-        $query_operators = array_map(function ($operator) {
-            return " {$operator} ";
-        }, $query_operators);
-
-        // Remove other operators.
-        $str = str_ireplace($query_operators, ' ', $str);
-
-        return $str;
     }
 }

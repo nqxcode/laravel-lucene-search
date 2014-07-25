@@ -50,7 +50,7 @@ class LaravelSearchServiceProvider extends ServiceProvider
             return new CaseInsensitive;
         });
 
-        $this->app->bind('search.analyzer.config', function () {
+        $this->app->bind('Nqxcode\LaravelSearch\Analyzer\Config', function () {
             return new AnalyzerConfig([], []); // TODO !!!
         });
 
@@ -59,7 +59,10 @@ class LaravelSearchServiceProvider extends ServiceProvider
         });
 
         $this->app->bindShared('search.connection', function ($app) {
-            return new Connection($app['search.index_path'], $app['search.analyzer.config']);
+            return new Connection(
+                $app['search.index_path'],
+                $app->make('Nqxcode\LaravelSearch\Analyzer\Config')
+            );
         });
 
         $this->app->bindShared('search.models', function () {

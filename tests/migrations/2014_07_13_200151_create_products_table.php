@@ -21,32 +21,7 @@ class CreateProductsTable extends Migration
             $table->timestamps();
         });
 
-        $now = Carbon::now();
-
-        foreach (range(0, 1) as $i) {
-            DB::table('products')->insert(array(
-                'name' => 'clock',
-                'description' => 'very fucking test more cool',
-                'created_at' => $now,
-                'updated_at' => $now,
-            ));
-        }
-
-        foreach (range(0, 1) as $i) {
-            DB::table('products')->insert(array(
-                'name' => 'very fun cool',
-                'description' => 'very big',
-                'created_at' => $now,
-                'updated_at' => $now,
-            ));
-        }
-
-        DB::table('products')->insert(array(
-            'name' => 'cool',
-            'description' => 'not very big',
-            'created_at' => $now,
-            'updated_at' => $now,
-        ));
+        $this->seed();
     }
 
     /**
@@ -57,5 +32,48 @@ class CreateProductsTable extends Migration
     public function down()
     {
         Schema::drop('products');
+    }
+
+    /**
+     * Fill database.
+     */
+    private function seed()
+    {
+        $now = Carbon::now();
+
+        DB::table('products')->insert(array(
+            'name' => 'big analog clock',
+            'description' => 'very big, analog',
+            'created_at' => $now,
+            'updated_at' => $now,
+        ));
+
+        DB::table('products')->insert(array(
+            'name' => 'simple analog clock',
+            'description' => 'not very big, analog',
+            'created_at' => $now,
+            'updated_at' => $now,
+        ));
+
+        DB::table('products')->insert(array(
+            'name' => 'electronic clock',
+            'description' => 'very small, electronic',
+            'created_at' => $now,
+            'updated_at' => $now,
+        ));
+
+        DB::table('products')->insert(array(
+            'name' => 'acoustic system',
+            'description' => 'small and compact',
+            'created_at' => $now,
+            'updated_at' => $now,
+        ));
+
+        DB::table('products')->insert(array(
+            'name' => 'monitor',
+            'description' => 'sensor, compact, small',
+            'created_at' => $now,
+            'updated_at' => $now,
+        ));
     }
 }

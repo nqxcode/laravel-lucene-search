@@ -1,11 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Config;
-
 return array(
     /*
      |--------------------------------------------------------------------------
-     | Index settings
+     | Path to Lucene search index.
      |--------------------------------------------------------------------------
      |
      | TODO Write description!
@@ -14,14 +12,23 @@ return array(
      */
     'index_path' => storage_path() . '/laravel-search/index',
 
-    'models' => [
-        /*
-            'namespace\DummyModel' => [
-                'fields' => [
-                    'name',
-                    'description',
-                ]
-            ]
-        */
-    ]
+    /*
+     |--------------------------------------------------------------------------
+     | List of models descriptions.
+     |
+     | Each description should contain class of model and fields available
+     | for search indexing.
+     |
+     |--------------------------------------------------------------------------
+     |
+     | For example, one of model's description can be such as this:
+     |
+     |      'namespace\DummyModel' => [
+     |          'fields' => [
+     |              'name', 'description',
+     |          ]
+     |      ]
+     |
+     */
+    'models' => []
 );

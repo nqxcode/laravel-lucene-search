@@ -2,7 +2,6 @@
 
 use Nqxcode\LaravelSearch\Analyzer\Config as AnalyzerConfig;
 use Nqxcode\LaravelSearch\QueryRunner;
-use ZendSearch\Lucene\Analysis\Analyzer\Analyzer;
 
 /**
  * Class Html
@@ -36,12 +35,12 @@ class Html
     }
 
     /**
-     * Подсветка результата поиска в html-фрагменте
+     * Highlight matches in HTML fragment.
      *
-     * @param string $inputHTMLFragment исходный фрагмента html
-     * @param string $inputEncoding Кодировка исходного фрагмента html
-     * @param string $outputEncoding Кодировка резульрирующего фрагмента html
-     * @return string html фрагмент с подсвеченными результатами поиска
+     * @param string $inputHTMLFragment
+     * @param string $inputEncoding
+     * @param string $outputEncoding
+     * @return string
      */
     public function highlightMatches($inputHTMLFragment, $inputEncoding = 'utf-8', $outputEncoding = 'utf-8')
     {

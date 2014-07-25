@@ -3,6 +3,7 @@
 use ZendSearch\Lucene\Analysis\Analyzer\Analyzer;
 use ZendSearch\Lucene\Analysis\Analyzer\Common\AbstractCommon;
 use ZendSearch\Lucene\Analysis\TokenFilter\StopWords;
+use ZendSearch\Lucene\Search\QueryParser;
 
 use \App;
 
@@ -17,6 +18,8 @@ class Config
 
     public function __construct(array $filers, array $stopWordFiles)
     {
+        QueryParser::setDefaultEncoding('utf-8');
+
         $this->filters = $filers;
         $this->stopWordFiles = $stopWordFiles;
     }
@@ -24,7 +27,7 @@ class Config
     public function setDefaultAnalyzer()
     {
         /** @var AbstractCommon $analyzer */
-        $analyzer = \App::make('search.analyzer');
+        $analyzer = App::make('search.analyzer');
 
         foreach ($this->stopWordFiles as $stopWordFile) {
             $stopWordsFilter = new StopWords;

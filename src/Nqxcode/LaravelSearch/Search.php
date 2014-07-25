@@ -1,12 +1,13 @@
 <?php namespace Nqxcode\LaravelSearch;
 
 use Illuminate\Database\Eloquent\Model;
-use Nqxcode\LaravelSearch\Highlighting\Highlighter;
 use Nqxcode\LaravelSearch\Highlighting\Html;
 use ZendSearch\Lucene\Document;
 use ZendSearch\Lucene\Index\Term;
 use ZendSearch\Lucene\Search\Query\MultiTerm;
 use ZendSearch\Lucene\Document\Field;
+
+use \App;
 
 /**
  * Class Search
@@ -46,11 +47,6 @@ class Search
     {
         return $this->config;
     }
-
-    /**
-     * @var QueryRunner
-     */
-    private $queryBuilder;
 
     /**
      * Create index instance.
@@ -110,7 +106,7 @@ class Search
         $this->delete($model);
 
         if (method_exists($model, 'isSearchable')) {
-            // The model is available to an indexing?
+            // Is model available for search indexing?
             if (!$model->{'isSearchable'}()) {
                 return;
             }
@@ -151,7 +147,7 @@ class Search
         // Find all hits for model.
         $hits = $this->findHits($model);
         foreach ($hits as $hit) {
-            $this->index()->delete($hit->id); // delete document from index by hit's ID.
+            $this->index()->delete($hit->id); // delete document from index by ID of hit.
         }
     }
 
@@ -164,25 +160,30 @@ class Search
      */
     public function __call($name, $arguments)
     {
-        switch ($name) {
-            case 'highlightMatches':
+        $queryRunner = App::make('Nqxcode\LaravelSearch\QueryRunner');
+        return call_user_func_array([$queryRunner, $name], $arguments);
+    }
 
-                $highlighter = \App::make('Nqxcode\LaravelSearch\Highlighting\Highlighter');
-                $analyzerConfig = \App::make('search.analyzer.config');
-
-                $html = new Html($this->queryBuilder, $highlighter, $analyzerConfig);
-
-                return call_user_func_array([$html, $name], $arguments);
-
-            default:
-                $this->queryBuilder = \App::make('Nqxcode\LaravelSearch\QueryRunner');
-                return call_user_func_array([$this->queryBuilder, $name], $arguments);
-        }
+    /**
+     * Highlight matches in html fragment.
+     *
+     * @param string $html
+     * @param string $inputEncoding
+     * @param string $outputEncoding
+     * @return string
+     */
+    public function highlightMatches($html, $inputEncoding = 'utf-8', $outputEncoding = 'utf-8')
+    {
+        /** @var Html $highlighter */
+        $highlighter = App::make('Nqxcode\LaravelSearch\Highlighting\Html');
+        return $highlighter->highlightMatches($html, $inputEncoding, $outputEncoding);
     }
 
 
     public function getLastQueryClauses()
     {
-        return $this->queryBuilder->getLastQueryClauses();
+        /** @var QueryRunner $queryRunner */
+        $queryRunner = App::make('Nqxcode\LaravelSearch\QueryRunner');
+        return $queryRunner->getLastQueryClauses();
     }
 }
