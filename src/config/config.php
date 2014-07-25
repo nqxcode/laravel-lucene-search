@@ -30,5 +30,10 @@ return array(
      |      ]
      |
      */
-    'models' => []
+    'models' => [],
+
+
+    'filters' => [],
+
+    'stop_words_paths' => [],
 );

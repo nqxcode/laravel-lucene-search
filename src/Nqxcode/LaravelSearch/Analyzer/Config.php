@@ -16,12 +16,17 @@ class Config
     private $filters;
     private $stopWordFiles;
 
-    public function __construct(array $filers, array $stopWordFiles)
+    public function __construct(array $filerClasses, array $stopWordFiles)
     {
         QueryParser::setDefaultEncoding('utf-8');
 
-        $this->filters = $filers;
-        $this->stopWordFiles = $stopWordFiles;
+        $this->filters = array_map(function ($filer) {
+            return new $filer;
+        }, $filerClasses);
+
+        $this->stopWordFiles = array_filter($stopWordFiles, function ($stopWordFile) {
+            return is_file($stopWordFile);
+        });
     }
 
     public function setDefaultAnalyzer()
