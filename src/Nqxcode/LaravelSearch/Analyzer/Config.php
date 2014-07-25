@@ -24,9 +24,13 @@ class Config
             return new $filer;
         }, $filerClasses);
 
-        $this->stopWordFiles = array_filter($stopWordFiles, function ($stopWordFile) {
-            return is_file($stopWordFile);
-        });
+        foreach ($stopWordFiles as $stopWordFile) {
+            if (!is_file($stopWordFile)) {
+                throw new \InvalidArgumentException("File '{$stopWordFile}' with stop words doesn't exit.");
+            }
+        }
+
+        $this->stopWordFiles = $stopWordFiles;
     }
 
     public function setDefaultAnalyzer()
