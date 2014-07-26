@@ -58,7 +58,7 @@ class LaravelSearchServiceProvider extends ServiceProvider
         });
 
         $this->app->bindShared('search.index_path', function () {
-            return rtrim(Config::get('laravel-search::index_path'), '/');
+            return Config::get('laravel-search::index_path');
         });
 
         $this->app->bindShared('search.connection', function ($app) {
