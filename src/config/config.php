@@ -11,16 +11,18 @@ return array(
 
     /*
      |--------------------------------------------------------------------------
-     | List of models descriptions.
+     | Models
      |--------------------------------------------------------------------------
      |
-     | Each description should contain class of model and fields available
+     | The list of the descriptions for models.
+     |
+     | Each description should contains class of model and fields available
      | for search indexing.
      |
      |
-     | For example, one of model's description can be such as this:
+     | For example, model's description can be like this:
      |
-     |      'namespace\DummyModel' => [
+     |      'namespace\ModelClass' => [
      |          'fields' => [
      |              'name', 'description',
      |          ]
@@ -30,22 +32,22 @@ return array(
     'models' => [],
 
     /*
-     |----------     |----------------------------------------------------------------
-     | List of filter for search index analyzer.
+     |--------------------------------------------------------------------------
+     | ZendSearch token filters
      |--------------------------------------------------------------------------
      |
-     | Each filter is a class implements interface TokenFilterInterface
-     | from ZendSearch library.
-     |
+     | The list of classes implementing the TokenFilterInterface interface.
      |
     */
     'token_filters' => [],
 
     /*
      |--------------------------------------------------------------------------
-     | List of files with stop words.
+     | Stop words files
      |--------------------------------------------------------------------------
      |
+     | The list of pathes to files with stopwords.
+     |
     */
-    'stop_words_paths' => [],
+    'stopwords_files' => [],
 );

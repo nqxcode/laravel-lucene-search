@@ -53,7 +53,7 @@ class LaravelSearchServiceProvider extends ServiceProvider
         $this->app->bind('Nqxcode\LaravelSearch\Analyzer\Config', function () {
             return new AnalyzerConfig(
                 Config::get('laravel-search::token_filters', []),
-                Config::get('laravel-search::stop_words_paths', [])
+                Config::get('laravel-search::stopwords_files', [])
             );
         });
 
