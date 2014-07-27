@@ -18,10 +18,10 @@ class Config
 
     public function __construct(array $filerClasses, array $stopWordFiles)
     {
-        QueryParser::setDefaultEncoding('utf-8');
+        QueryParser::setDefaultEncoding('utf-8'); // TODO remove it in other place
 
-        $this->filters = array_map(function ($filer) {
-            return new $filer;
+        $this->filters = array_map(function ($filerClass) {
+            return App::make($filerClass);
         }, $filerClasses);
 
         foreach ($stopWordFiles as $stopWordFile) {

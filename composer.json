@@ -7,16 +7,11 @@
             "email": "nc101ux@gmail.com"
         }
     ],
-    "repositories": [
-        {
-            "url": "https://github.com/nqxcode/ZendSearch.git",
-            "type": "git"
-        }
-    ],
     "require": {
         "php": ">=5.4.0",
         "illuminate/support": "4.2.*",
-        "zendframework/zendsearch": "dev-master"
+        "nqxcode/zendsearch": "dev-master",
+        "nqxcode/lucene-morphofilter-en-ru": "1.0.*@dev"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*",
@@ -35,5 +30,5 @@
             "tests\\": "tests/"
         }
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "dev"
 }

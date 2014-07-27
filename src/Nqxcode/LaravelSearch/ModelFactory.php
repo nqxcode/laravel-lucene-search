@@ -1,5 +1,7 @@
 <?php namespace Nqxcode\LaravelSearch;
 
+use \App;
+
 class ModelFactory
 {
     public function create($className)
@@ -12,7 +14,7 @@ class ModelFactory
             );
         }
 
-        return new $className;
+        return App::make($className);
     }
 
     /**
