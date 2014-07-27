@@ -39,7 +39,7 @@ return array(
      | The list of classes implementing the TokenFilterInterface interface.
      |
     */
-    'token_filters' => [],
+    'token_filters' => ['Nqxcode\MorphoFilter\TokenFilterEnRu'],
 
     /*
      |--------------------------------------------------------------------------
