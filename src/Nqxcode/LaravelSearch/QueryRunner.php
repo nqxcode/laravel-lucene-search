@@ -106,6 +106,7 @@ class QueryRunner
      *
      * @param $query
      * @return $this
+     * @throws \InvalidArgumentException
      */
     public function rawQuery($query)
     {
@@ -113,6 +114,13 @@ class QueryRunner
             $this->query = $query;
         } elseif (is_callable($query)) {
             $this->query = $query();
+        } elseif (is_string($query)) {
+            $this->query = $query;
+        } else {
+            throw new \InvalidArgumentException(
+                "Argument 'query' should be a string or ZendSearch\\Lucene\\Search\\Query\\AbstractQuery instance or " .
+                "callable returning a string or ZendSearch\\Lucene\\Search\\Query\\AbstractQuery instance."
+            );
         }
 
         return $this;

@@ -57,10 +57,12 @@ class SearchTest extends TestCase
 
     public function testSearchRawQuery()
     {
+        $query = \Search::rawQuery('description:big');
+        $this->assertEquals(2, $query->count());
+
         $query = \Search::rawQuery(function () {
             return 'description:big';
         });
-
         $this->assertEquals(2, $query->count());
 
         $query = \Search::rawQuery(function () {
@@ -68,7 +70,6 @@ class SearchTest extends TestCase
             $query->addSubquery(QueryParser::parse('description:big OR name:monitor'));
             return $query;
         });
-
         $this->assertEquals(3, $query->count());
     }
 
