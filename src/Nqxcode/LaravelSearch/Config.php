@@ -40,7 +40,7 @@ class Config
 
             if (count($fields) == 0) {
                 throw new \InvalidArgumentException(
-                    "Parameter 'fields' for the class '{$className}' should be specified."
+                    "Parameter 'fields' for the class '{$className}' must be specified."
                 );
             }
 

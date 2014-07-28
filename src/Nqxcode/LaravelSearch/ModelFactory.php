@@ -10,7 +10,7 @@ class ModelFactory
 
         if (!is_subclass_of($className, $baseClass)) {
             throw new \InvalidArgumentException(
-                "The class '{$className}' should be inherited from '{$baseClass}'."
+                "The class '{$className}' must be inherited from '{$baseClass}'."
             );
         }
 

@@ -16,7 +16,7 @@ return array(
      |
      | The list of the descriptions for models.
      |
-     | Each description should contains class of model and fields available
+     | Each description must contains class of model and fields available
      | for search indexing.
      |
      |
