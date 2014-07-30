@@ -24,7 +24,7 @@ return array(
      |
      |      'namespace\ModelClass' => [
      |          'fields' => [
-     |              'name', 'description',
+     |              'name', 'description', // Fields for indexing.
      |          ]
      |      ]
      |
@@ -37,16 +37,19 @@ return array(
      |--------------------------------------------------------------------------
      |
      | The list of classes implementing the TokenFilterInterface interface.
+     | Stemming token filter for english/russian words is enabled by default.
+     | To disable it remove class 'Nqxcode\Stemming\TokenFilterEnRu' from
+     | token filters.
      |
     */
-    'token_filters' => ['Nqxcode\MorphoFilter\TokenFilterEnRu'],
+    'token_filters' => ['Nqxcode\Stemming\TokenFilterEnRu'],
 
     /*
      |--------------------------------------------------------------------------
      | Stop words files
      |--------------------------------------------------------------------------
      |
-     | The list of pathes to files with stopwords.
+     | The list of path1s to files with stopwords.
      |
     */
     'stopwords_files' => [],
