@@ -118,7 +118,7 @@ class QueryRunner
             $this->query = $query;
         } else {
             throw new \InvalidArgumentException(
-                "Argument 'query' should be a string or ZendSearch\\Lucene\\Search\\Query\\AbstractQuery instance or " .
+                "Argument 'query' must be a string or ZendSearch\\Lucene\\Search\\Query\\AbstractQuery instance or " .
                 "callable returning a string or ZendSearch\\Lucene\\Search\\Query\\AbstractQuery instance."
             );
         }
