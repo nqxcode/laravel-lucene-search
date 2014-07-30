@@ -52,5 +52,5 @@ return array(
      | The list of path1s to files with stopwords.
      |
     */
-    'stopwords_files' => [],
+    'stopwords_files' => \Nqxcode\Search\Stopwords::files(),
 );

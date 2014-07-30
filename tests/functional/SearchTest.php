@@ -39,8 +39,11 @@ class SearchTest extends TestCase
         $query = \Search::find('small clock');
         $this->assertEquals(5, $query->count());
 
-        $query = \Search::find('small clock')->where('description', 'not big analog', ['proximity' => 1]);
-        $this->assertEquals(1, $query->count());
+//        $query = \Search::find('small clock')->where('description', 'not big analog', ['proximity' => 1]);
+//        $this->assertEquals(1, $query->count());
+
+        $query = \Search::find('small clock')->where('description', 'big analog', ['proximity' => 1]);
+        $this->assertEquals(2, $query->count());
 
         $query = \Search::find('simple clock', '*', ['phrase' => true]);
         $this->assertEquals(0, $query->count());
@@ -51,8 +54,11 @@ class SearchTest extends TestCase
         $query = \Search::where('name', 'clock');
         $this->assertEquals(3, $query->count());
 
+//        $query = \Search::where('name', 'clock')->where('description', 'not very big');
+//        $this->assertEquals(1, $query->count());
+
         $query = \Search::where('name', 'clock')->where('description', 'not very big');
-        $this->assertEquals(1, $query->count());
+        $this->assertEquals(2, $query->count());
     }
 
     public function testSearchRawQuery()
