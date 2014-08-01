@@ -9,9 +9,7 @@ use \Nqxcode\LaravelSearch\Config;
 
 class ConfigTest extends TestCase
 {
-    /**
-     * @var Config
-     */
+    /** @var Config */
     private $config;
     /** @var \Mockery\MockInterface */
     private $productRepoMock;
@@ -28,13 +26,13 @@ class ConfigTest extends TestCase
 
         $modelFactory = m::mock('Nqxcode\LaravelSearch\ModelFactory');
 
-        $modelFactory->shouldReceive('create')
+        $modelFactory->shouldReceive('newInstance')
             ->with('tests\lib\Product')
             ->andReturn($this->productRepoMock = m::mock(new Product));
 
         $this->productRepoMock->id = 1;
 
-        $modelFactory->shouldReceive('create')
+        $modelFactory->shouldReceive('newInstance')
             ->with('tests\lib\DummyModel')
             ->andReturn($this->dummyRepoMock = m::mock(new DummyModel));
 

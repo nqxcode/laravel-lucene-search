@@ -4,7 +4,7 @@ use \App;
 
 class ModelFactory
 {
-    public function create($className)
+    public function newInstance($className)
     {
         $baseClass = 'Illuminate\Database\Eloquent\Model';
 

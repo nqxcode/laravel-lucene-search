@@ -6,6 +6,7 @@ use ZendSearch\Exception\ExceptionInterface;
 
 class Connection
 {
+    /** @var \ZendSearch\Lucene\SearchIndexInterface */
     private $index;
 
     /**
@@ -60,18 +61,13 @@ class Connection
 
     /**
      * Destroy the entire index.
-     *
-     * @return bool
      */
     public function destroy()
     {
-        if (!file_exists($this->indexPath) || !is_dir($this->indexPath)) {
-            return false;
-        }
-
-        rmdir_recursive($this->indexPath);
         $this->index = null;
 
-        return true;
+        if (is_dir($this->indexPath)) {
+            rmdir_recursive($this->indexPath);
+        }
     }
 }

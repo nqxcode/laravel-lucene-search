@@ -44,7 +44,7 @@ class Config
                 );
             }
 
-            $modelRepository = $modelFactory->create($className);
+            $modelRepository = $modelFactory->newInstance($className);
             $classUid = $modelFactory->classUid($className);
 
             $this->configuration[] = [
