@@ -1,4 +1,4 @@
-<?php namespace tests\unit;
+<?php namespace tests\functional;
 
 use tests\TestCase;
 

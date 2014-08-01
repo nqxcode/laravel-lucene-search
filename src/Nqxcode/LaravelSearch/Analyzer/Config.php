@@ -5,7 +5,7 @@ use ZendSearch\Lucene\Analysis\Analyzer\Common\AbstractCommon;
 use ZendSearch\Lucene\Analysis\TokenFilter\StopWords;
 use ZendSearch\Lucene\Search\QueryParser;
 
-use \App;
+use App;
 
 /**
  * Class Config
@@ -13,12 +13,14 @@ use \App;
  */
 class Config
 {
+    /** @var array  */
     private $filters;
+    /** @var array  */
     private $stopWordFiles;
 
     public function __construct(array $filerClasses, array $stopWordFiles)
     {
-        QueryParser::setDefaultEncoding('utf-8'); // TODO remove it in other place
+        QueryParser::setDefaultEncoding('utf-8'); // Set default encoding for lucene query parser.
 
         $this->filters = array_map(function ($filerClass) {
             return App::make($filerClass);
@@ -33,6 +35,9 @@ class Config
         $this->stopWordFiles = $stopWordFiles;
     }
 
+    /**
+     * Set default analyzer for indexing.
+     */
     public function setDefaultAnalyzer()
     {
         /** @var AbstractCommon $analyzer */
@@ -51,10 +56,13 @@ class Config
         Analyzer::setDefault($analyzer);
     }
 
+    /**
+     * Set analyzer for words highlighting (not for indexing).
+     */
     public function setAnalyzerForHighlighter()
     {
         /** @var AbstractCommon $analyzer */
-        $analyzer = \App::make('search.analyzer');
+        $analyzer = App::make('search.analyzer');
 
         foreach ($this->filters as $filter) {
             $analyzer->addFilter($filter);

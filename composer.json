@@ -1,5 +1,5 @@
 {
-    "name": "nqxcode/laravel-search",
+    "name": "nqxcode/laravel-lucene-search",
     "description": "Laravel 4.x package for searching in Eloquent ORM models (based on ZF2 Lucene).",
     "keywords" :["laravel", "search", "lucene", "eloquent", "orm" ],
     "authors": [

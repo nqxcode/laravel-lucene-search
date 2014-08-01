@@ -25,7 +25,7 @@ class LaravelSearchServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->package('nqxcode/laravel-search');
+        $this->package('nqxcode/laravel-lucene-search');
     }
 
     /**
@@ -35,51 +35,51 @@ class LaravelSearchServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('search', function ($app) {
+        $this->app->bind('Nqxcode\LaravelSearch\Search', function ($app) {
+            return $app['search'];
+        });
+
+        $this->app->bindShared('search', function ($app) {
             return new Search(
                 $app['search.connection'],
                 $app['search.models.config']
             );
         });
 
-        $this->app->bind('Nqxcode\LaravelSearch\Search', function ($app) {
-            return $app['search'];
-        });
-
-        $this->app->bind('search.analyzer', function () {
+        $this->app['search.analyzer'] = function () {
             return new CaseInsensitive;
-        });
+        };
 
         $this->app->bind('Nqxcode\LaravelSearch\Analyzer\Config', function () {
             return new AnalyzerConfig(
-                Config::get('laravel-search::token_filters', []),
-                Config::get('laravel-search::stopwords_files', [])
+                Config::get('laravel-lucene-search::analyzer.filters', []),
+                Config::get('laravel-lucene-search::analyzer.stopwords', [])
             );
         });
 
-        $this->app->bindShared('search.index_path', function () {
-            return Config::get('laravel-search::index_path');
+        $this->app->bindShared('search.index.path', function () {
+            return Config::get('laravel-lucene-search::index.path');
         });
 
         $this->app->bindShared('search.connection', function ($app) {
             return new Connection(
-                $app['search.index_path'],
+                $app['search.index.path'],
                 $app->make('Nqxcode\LaravelSearch\Analyzer\Config')
             );
         });
 
-        $this->app->bindShared('search.models', function () {
-            return Config::get('laravel-search::models');
+        $this->app->bindShared('search.index.models', function () {
+            return Config::get('laravel-lucene-search::index.models');
         });
 
         $this->app->bindShared('search.models.config', function ($app) {
             return new ModelsConfig(
-                $app['search.models'],
+                $app['search.index.models'],
                 $app->make('Nqxcode\LaravelSearch\ModelFactory')
             );
         });
 
-        $this->app->bindShared('command.search.rebuild-index', function () {
+        $this->app->bindShared('command.search.rebuild', function () {
             return new Console\RebuildCommand;
         });
 
@@ -87,7 +87,7 @@ class LaravelSearchServiceProvider extends ServiceProvider
             return new Console\ClearCommand;
         });
 
-        $this->commands(array('command.search.rebuild-index', 'command.search.clear'));
+        $this->commands(array('command.search.rebuild', 'command.search.clear'));
     }
 
     /**
@@ -97,6 +97,6 @@ class LaravelSearchServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return array('search', 'command.search.rebuild-index', 'command.search.clear');
+        return array('search', 'command.search.rebuild', 'command.search.clear');
     }
 }

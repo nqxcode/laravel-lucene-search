@@ -1,5 +1,7 @@
 <?php namespace Nqxcode\LaravelSearch;
 
+use Search;
+
 trait SearchTrait
 {
     /**
@@ -7,7 +9,7 @@ trait SearchTrait
      */
     public function updateSearchIndex()
     {
-        \Search::update($this);
+        Search::update($this);
     }
 
     /**
@@ -15,6 +17,6 @@ trait SearchTrait
      */
     public function deleteSearchIndex()
     {
-        \Search::delete($this);
+        Search::delete($this);
     }
 }

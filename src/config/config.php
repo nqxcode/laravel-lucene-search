@@ -1,24 +1,15 @@
 <?php
 
-return array(
+return [
     /*
      |--------------------------------------------------------------------------
-     | Path to Lucene search index.
+     | The configurations of search index.
      |--------------------------------------------------------------------------
      |
-     */
-    'index_path' => storage_path() . '/laravel-search/index',
-
-    /*
-     |--------------------------------------------------------------------------
-     | Models
-     |--------------------------------------------------------------------------
+     | The "path" is the path to Lucene search index.
      |
-     | The list of the descriptions for models.
-     |
-     | Each description must contains class of model and fields available
-     | for search indexing.
-     |
+     | The "models" is the list of the descriptions for models. Each description
+     | must contains class of model and fields available for search indexing.
      |
      | For example, model's description can be like this:
      |
@@ -29,28 +20,34 @@ return array(
      |      ]
      |
      */
-    'models' => [],
+    'index' => [
+
+        'path' => storage_path() . '/laravel-lucene-search/index',
+
+        'models' => [], // Add models descriptions here.
+    ],
 
     /*
      |--------------------------------------------------------------------------
      | ZendSearch token filters
      |--------------------------------------------------------------------------
      |
-     | The list of classes implementing the TokenFilterInterface interface.
+     | The "filters" is the list of ZendSearch token filters classes.
+     | Each class must implement the TokenFilterInterface interface.
      | Stemming token filter for english/russian words is enabled by default.
      | To disable it remove class 'Nqxcode\Stemming\TokenFilterEnRu' from
      | token filters.
      |
+     | The "stopwords" is the list of paths to files with stopwords.
+     | By default,
+     |
     */
-    'token_filters' => ['Nqxcode\Stemming\TokenFilterEnRu'],
+    'analyzer' => [
 
-    /*
-     |--------------------------------------------------------------------------
-     | Stop words files
-     |--------------------------------------------------------------------------
-     |
-     | The list of path1s to files with stopwords.
-     |
-    */
-    'stopwords_files' => \Nqxcode\Search\Stopwords::files(),
-);
+        'filters' => [
+            'Nqxcode\Stemming\TokenFilterEnRu',
+        ],
+
+        'stopwords' => \Nqxcode\Search\Stopwords::files(),
+    ],
+];

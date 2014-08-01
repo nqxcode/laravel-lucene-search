@@ -7,7 +7,7 @@ use \App;
 
 class RebuildCommand extends Command
 {
-    protected $name = 'search:rebuild-index';
+    protected $name = 'search:rebuild';
     protected $description = 'Rebuild the search index';
 
     public function __construct()
