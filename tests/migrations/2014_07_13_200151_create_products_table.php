@@ -17,6 +17,7 @@ class CreateProductsTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('description');
+            $table->boolean('publish')->default(1);
 
             $table->timestamps();
         });
@@ -74,6 +75,14 @@ class CreateProductsTable extends Migration
             'description' => 'sensor, compact, small',
             'created_at' => $now,
             'updated_at' => $now,
+        ));
+
+        DB::table('products')->insert(array(
+            'name' => 'not published product',
+            'description' => 'not published product',
+            'created_at' => $now,
+            'updated_at' => $now,
+            'publish' => 0,
         ));
     }
 }

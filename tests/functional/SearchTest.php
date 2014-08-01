@@ -41,6 +41,10 @@ class SearchTest extends BaseTestCase
 
         $query = Search::where('name', 'clock')->where('description', 'not very big');
         $this->assertEquals(1, $query->count());
+
+        $query = Search::where('name', 'not published product')->where('description', 'not published product');
+        $this->assertEquals(0, $query->count());
+
     }
 
     public function testSearchRawQuery()

@@ -1,11 +1,29 @@
 <?php namespace tests\lib;
 
 use \Illuminate\Database\Eloquent\Model;
+use Nqxcode\LaravelSearch\Searchable;
 
-class Product extends Model
+/**
+ * Class Product
+ * @property boolean $publish
+ * @package tests\lib
+ */
+class Product extends Model implements Searchable
 {
+    /**
+     * @inheritdoc
+     */
     public function isSearchable()
     {
-        return true;
+        return $this->publish;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function allSearchable()
+    {
+        return $this->wherePublish(1)->get();
+    }
+
 }
