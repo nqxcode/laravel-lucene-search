@@ -1,11 +1,13 @@
 <?php namespace tests\lib;
 
-use \Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Nqxcode\LaravelSearch\Searchable;
 
 /**
  * Class Product
  * @property boolean $publish
+ * @method Builder wherePublish
  * @package tests\lib
  */
 class Product extends Model implements Searchable
@@ -25,5 +27,4 @@ class Product extends Model implements Searchable
     {
         return $this->wherePublish(1)->get();
     }
-
 }
