@@ -39,29 +39,22 @@ class Html
      *
      * @param string $inputHTMLFragment
      * @param string $inputEncoding
-     * @param string $outputEncoding
      * @return string
      */
-    public function highlightMatches($inputHTMLFragment, $inputEncoding = 'utf-8', $outputEncoding = 'utf-8')
+    public function highlightMatches($inputHTMLFragment, $inputEncoding = 'utf-8')
     {
         $highlightedHTMLFragment = '';
 
         $lastQuery = $this->queryRunner->getLastQuery();
 
         if (!empty($lastQuery)) {
-            $this->analyzerConfig->setAnalyzerForHighlighter();
 
+            $this->analyzerConfig->setAnalyzerForHighlighter();
             $highlightedHTMLFragment =
                 $lastQuery->htmlFragmentHighlightMatches($inputHTMLFragment, $inputEncoding, $this->highlighter);
-
             $this->analyzerConfig->setDefaultAnalyzer();
-
-
-            $highlightedHTMLFragment = mb_convert_encoding($highlightedHTMLFragment, $outputEncoding, 'utf-8');
         }
 
-        $result = !empty($highlightedHTMLFragment) ? $highlightedHTMLFragment : $inputHTMLFragment;
-
-        return $result;
+        return !empty($highlightedHTMLFragment) ? $highlightedHTMLFragment : $inputHTMLFragment;
     }
 }

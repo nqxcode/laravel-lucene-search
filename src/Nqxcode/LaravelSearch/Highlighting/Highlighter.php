@@ -42,11 +42,17 @@ class Highlighter implements HighlighterInterface
      */
     public function highlight($words)
     {
-        $this->_doc->highlightExtended($words, array($this, 'applyColour'), array());
+        $this->_doc->highlightExtended($words, [$this, 'wrapWords'], []);
     }
 
-    public function applyColour($words)
+    /**
+     * Wrap words in highlight tags.
+     *
+     * @param $words
+     * @return string
+     */
+    public function wrapWords($words)
     {
-        return "<span class='highlight'>{$words}</span>";
+        return '<span class="highlight">' . $words . '</span>';
     }
 }
