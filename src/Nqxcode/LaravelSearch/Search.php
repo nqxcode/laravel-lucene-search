@@ -178,12 +178,4 @@ class Search
         $highlighter = App::make('Nqxcode\LaravelSearch\Highlighting\Html');
         return $highlighter->highlightMatches($html, $inputEncoding, $outputEncoding);
     }
-
-
-    public function getLastQueryClauses()
-    {
-        /** @var QueryRunner $queryRunner */
-        $queryRunner = App::make('Nqxcode\LaravelSearch\QueryRunner');
-        return $queryRunner->getLastQueryClauses();
-    }
 }

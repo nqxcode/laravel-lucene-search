@@ -1,5 +1,6 @@
 <?php namespace tests\functional;
 
+use tests\lib\Product;
 use tests\TestCase;
 use ZendSearch\Lucene\Search\Query\Boolean;
 use ZendSearch\Lucene\Search\QueryParser;

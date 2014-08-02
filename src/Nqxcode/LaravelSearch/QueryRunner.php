@@ -39,9 +39,9 @@ class QueryRunner
     /**
      * Callback functions to help manipulate the raw query instance.
      *
-     * @var array
+     * @var callable[]
      */
-    protected $callbacks = [];
+    protected $query_filters = [];
 
     /**
      * List of cached query totals.
@@ -49,13 +49,6 @@ class QueryRunner
      * @var array
      */
     private $cached_query_totals;
-
-    /**
-     * List of clauses of current query.
-     *
-     * @var string[]
-     */
-    private $current_query_clauses;
 
     /**
      * Last executed query.
@@ -75,21 +68,11 @@ class QueryRunner
     }
 
     /**
-     * List of clauses of last query.
+     * Is the raw query build?
      *
-     * @var string[]
+     * @var boolean
      */
-    private static $last_query_clauses;
-
-    /**
-     * Get list of clauses of last query.
-     *
-     * @return string[]
-     */
-    public static function getLastQueryClauses()
-    {
-        return self::$last_query_clauses;
-    }
+    private $isRawQueryBuilt = false;
 
     /**
      * @param Search $search
@@ -123,19 +106,20 @@ class QueryRunner
             );
         }
 
+        $this->isRawQueryBuilt = true;
         return $this;
     }
 
     /**
-     * Use for customize query.
+     * Use filter for query customization.
      *
-     * @param callable $closure should return
+     * @param callable $callable
      *
      * @return $this
      */
-    public function addCallback(callable $closure)
+    public function addFilter(callable $callable)
     {
-        $this->callbacks[] = $closure;
+        $this->query_filters[] = $callable;
 
         return $this;
     }
@@ -197,19 +181,106 @@ class QueryRunner
     }
 
     /**
+     * Set the "limit" and "offset" value of the query.
+     *
+     * @param int $limit
+     * @param int $offset
+     *
+     * @return $this
+     */
+    public function limit($limit, $offset = 0)
+    {
+        $this->limit = $limit;
+        $this->offset = $offset;
+
+        return $this;
+    }
+
+    /**
+     * Execute the current query and perform delete operations on each document found.
+     *
+     * @return void
+     */
+    public function delete()
+    {
+        $models = $this->get();
+
+        foreach ($models as $model) {
+            $this->search->delete($model);
+        }
+    }
+
+    /**
+     * Execute the current query and return a paginator for the results.
+     *
+     * @param int $perPage
+     *
+     * @return \Illuminate\Pagination\Paginator
+     */
+    public function paginate($perPage = 25)
+    {
+        $page = intval(Input::get('page', 1));
+        $this->limit($perPage, ($page - 1) * $perPage);
+        return App::make('paginator')->make($this->get(), $this->count(), $perPage);
+    }
+
+    /**
+     * Execute the current query and return the total number of results.
+     *
+     * @return int
+     */
+    public function count()
+    {
+        $this->executeQueryFilters();
+
+        if (isset($this->cached_query_totals[md5(serialize($this->query))])) {
+            return $this->cached_query_totals[md5(serialize($this->query))];
+        }
+
+        return count($this->executeQuery($this->query));
+    }
+
+    /**
+     * Execute current query and return list of models.
+     *
+     * @return Model[]
+     */
+    public function get()
+    {
+        $options = [];
+
+        if ($this->limit) {
+            $options['limit'] = $this->limit;
+            $options['offset'] = $this->offset;
+        }
+
+        // Modify query if filters were added.
+        $this->executeQueryFilters();
+
+        // Get all query hits.
+        $hits = $this->executeQuery($this->query, $options);
+
+        // Convert all hits to models.
+        return $this->search->config()->models($hits);
+    }
+
+    /**
      * Add subquery to boolean query.
      *
      * @param QueryBoolean $query
      * @param array $options
      * @return QueryBoolean
+     * @throws \RuntimeException
      */
-    public function addSubquery(QueryBoolean $query, array $options)
+    protected function addSubquery($query, array $options)
     {
-        list($value, $sign) = $this->buildRawLuceneQuery($options);
-        $query->addSubquery(QueryParser::parse($value), $sign);
-
-        $this->current_query_clauses[] = $value;
-        return $query;
+        if (!$this->isRawQueryBuilt && $query instanceof QueryBoolean) {
+            list($value, $sign) = $this->buildRawLuceneQuery($options);
+            $query->addSubquery(QueryParser::parse($value), $sign);
+            return $query;
+        } else {
+            throw new \RuntimeException("Can't use chain methods on the raw query.");
+        }
     }
 
     /**
@@ -224,7 +295,7 @@ class QueryRunner
      **                      - fuzzy      : value of fuzzy(float, 0 ... 1)
      * @return array contains string query and sign
      */
-    public function buildRawLuceneQuery($options)
+    protected function buildRawLuceneQuery($options)
     {
         $field = array_get($options, 'field');
 
@@ -288,7 +359,7 @@ class QueryRunner
      *
      * @return string
      */
-    private function escapeSpecialChars($str)
+    protected function escapeSpecialChars($str)
     {
         // List of all special chars.
         $special_chars = ['\\', '+', '-', '&&', '||', '!', '(', ')', '{', '}', '[', ']', '^', '"', '~', '*', '?', ':'];
@@ -308,7 +379,7 @@ class QueryRunner
      * @param $str
      * @return mixed
      */
-    private function escapeSpecialOperators($str)
+    protected function escapeSpecialOperators($str)
     {
         // List of query operators.
         $query_operators = ['to', 'or', 'and', 'not'];
@@ -325,112 +396,26 @@ class QueryRunner
     }
 
     /**
-     * Set the "limit" and "offset" value of the query.
-     *
-     * @param int $limit
-     * @param int $offset
-     *
-     * @return $this
-     */
-    public function limit($limit, $offset = 0)
-    {
-        $this->limit = $limit;
-        $this->offset = $offset;
-
-        return $this;
-    }
-
-    /**
-     * Execute the current query and perform delete operations on each
-     * document found.
-     *
-     * @return void
-     */
-    public function delete()
-    {
-        $results = $this->get();
-
-        foreach ($results as $model) {
-            $this->search->delete($model);
-        }
-    }
-
-    /**
-     * Execute the current query and return a paginator for the results.
-     *
-     * @param int $perPage
-     *
-     * @return \Illuminate\Pagination\Paginator
-     */
-    public function paginate($perPage = 25)
-    {
-        $page = (int)Input::get('page', 1);
-        $this->limit($perPage, ($page - 1) * $perPage);
-
-        return App::make('paginator')->make($this->get(), $this->count(), $perPage);
-    }
-
-    /**
-     * Execute the current query and return the total number of results.
-     *
-     * @return int
-     */
-    public function count()
-    {
-        $this->executeCallbacks();
-
-        if (isset($this->cached_query_totals[md5(serialize($this->query))])) {
-            return $this->cached_query_totals[md5(serialize($this->query))];
-        }
-
-        return count($this->executeQuery($this->query));
-    }
-
-    /**
-     * Execute current query and return list of models.
-     *
-     * @return Model[]
-     */
-    public function get()
-    {
-        $options = [];
-
-        if ($this->limit) {
-            $options['limit'] = $this->limit;
-            $options['offset'] = $this->offset;
-        }
-
-        $this->executeCallbacks();
-
-        // Get hits.
-        $hits = $this->executeQuery($this->query, $options);
-
-        // Convert hits to models.
-        return $this->search->config()->models($hits);
-    }
-
-
-    /**
      * Execute added callback functions.
      *
      * @return void
      */
-    protected function executeCallbacks()
+    protected function executeQueryFilters()
     {
-        static $callbacks_executed;
+        static $executed;
 
         // Prevent multiple executions.
-        if ($callbacks_executed) {
+        if ($executed) {
             return;
         }
 
-        foreach ($this->callbacks as $callback) {
+        foreach ($this->query_filters as $callback) {
             if ($query = $callback($this->query)) {
                 $this->query = $query;
             }
         }
 
-        $callbacks_executed = true;
+        $executed = true;
     }
 
     /**
@@ -441,7 +426,7 @@ class QueryRunner
      *                       - offset : number of records to skip
      * @return array|QueryHit
      */
-    public function executeQuery($query, array $options = [])
+    protected function executeQuery($query, array $options = [])
     {
         $hits = $this->search->index()->find($query);
 
@@ -450,7 +435,6 @@ class QueryRunner
 
         // Remember running query.
         self::$last_query = $query;
-        self::$last_query_clauses = $this->current_query_clauses;
 
         // Limit results.
         if (isset($options['limit']) && isset($options['offset'])) {
