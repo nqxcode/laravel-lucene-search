@@ -41,21 +41,21 @@ class QueryRunner
      *
      * @var callable[]
      */
-    protected $query_filters = [];
+    protected $queryFilters = [];
 
     /**
      * List of cached query totals.
      *
      * @var array
      */
-    private $cached_query_totals;
+    private $cachedQueryTotals;
 
     /**
      * Last executed query.
      *
      * @var
      */
-    private static $last_query;
+    private static $lastQuery;
 
     /**
      * Get last executed query.
@@ -64,7 +64,7 @@ class QueryRunner
      */
     public static function getLastQuery()
     {
-        return self::$last_query;
+        return self::$lastQuery;
     }
 
     /**
@@ -73,6 +73,13 @@ class QueryRunner
      * @var boolean
      */
     private $isRawQueryBuilt = false;
+
+    /**
+     * Is query callback filters already executed?
+     *
+     * @var bool
+     */
+    private $isQueryFiltersExecuted = false;
 
     /**
      * @param Search $search
@@ -119,7 +126,7 @@ class QueryRunner
      */
     public function addFilter(callable $callable)
     {
-        $this->query_filters[] = $callable;
+        $this->queryFilters[] = $callable;
 
         return $this;
     }
@@ -197,7 +204,7 @@ class QueryRunner
     }
 
     /**
-     * Execute the current query and perform delete operations on each document found.
+     * Execute the current query and delete all found models from the search index.
      *
      * @return void
      */
@@ -233,8 +240,8 @@ class QueryRunner
     {
         $this->executeQueryFilters();
 
-        if (isset($this->cached_query_totals[md5(serialize($this->query))])) {
-            return $this->cached_query_totals[md5(serialize($this->query))];
+        if (isset($this->cachedQueryTotals[md5(serialize($this->query))])) {
+            return $this->cachedQueryTotals[md5(serialize($this->query))];
         }
 
         return count($this->executeQuery($this->query));
@@ -305,19 +312,6 @@ class QueryRunner
             $field = null;
         }
 
-        if (array_get($options, 'phrase') || array_get($options, 'proximity')) {
-            $value = '"' . $value . '"';
-        } else {
-            $value = $this->escapeSpecialOperators($value);
-        }
-
-        if (isset($options['proximity']) && false !== $options['proximity']) {
-            if (is_integer($options['proximity']) && $options['proximity'] > 0) {
-                $proximity = $options['proximity'];
-                $value = $value . '~' . $proximity;
-            }
-        }
-
         if (isset($options['fuzzy']) && false !== $options['fuzzy']) {
             $fuzzy = '';
             if (is_numeric($options['fuzzy']) && $options['fuzzy'] >= 0 && $options['fuzzy'] <= 1) {
@@ -331,6 +325,19 @@ class QueryRunner
             $value = implode(' ', $words);
         }
 
+        if (array_get($options, 'phrase') || array_get($options, 'proximity')) {
+            $value = '"' . $value . '"';
+        } else {
+            $value = $this->escapeSpecialOperators($value);
+        }
+
+        if (isset($options['proximity']) && false !== $options['proximity']) {
+            if (is_integer($options['proximity']) && $options['proximity'] > 0) {
+                $proximity = $options['proximity'];
+                $value = $value . '~' . $proximity;
+            }
+        }
+
         if (is_array($field)) {
             $values = array();
             foreach ($field as $f) {
@@ -341,12 +348,12 @@ class QueryRunner
             $value = trim($field) . ':(' . $value . ')';
         }
 
+        $sign = null;
         if (!empty($options['required'])) {
             $sign = true;
-        } elseif (!empty($options['prohibited'])) {
+        }
+        if (!empty($options['prohibited'])) {
             $sign = false;
-        } else {
-            $sign = null;
         }
 
         return [$value, $sign];
@@ -402,20 +409,18 @@ class QueryRunner
      */
     protected function executeQueryFilters()
     {
-        static $executed;
-
         // Prevent multiple executions.
-        if ($executed) {
+        if ($this->isQueryFiltersExecuted) {
             return;
         }
 
-        foreach ($this->query_filters as $callback) {
+        foreach ($this->queryFilters as $callback) {
             if ($query = $callback($this->query)) {
                 $this->query = $query;
             }
         }
 
-        $executed = true;
+        $this->isQueryFiltersExecuted = true;
     }
 
     /**
@@ -431,10 +436,10 @@ class QueryRunner
         $hits = $this->search->index()->find($query);
 
         // Remember total number of results.
-        $this->cached_query_totals[md5(serialize($query))] = count($hits);
+        $this->cachedQueryTotals[md5(serialize($query))] = count($hits);
 
         // Remember running query.
-        self::$last_query = $query;
+        self::$lastQuery = $query;
 
         // Limit results.
         if (isset($options['limit']) && isset($options['offset'])) {
