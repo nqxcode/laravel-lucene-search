@@ -70,7 +70,7 @@ class QueryRunnerTest extends TestCase
 
     public function getWhereWithOptionsDataProvider()
     {
-        return [
+        $data = [
             [['test:("test value")', 0] , ['test', 'test value', ['required' => false] ]],
             [['test:("test value")', 0] , ['test', 'test value', ['prohibited' => true] ]],
             [['test:("test value")', null] , ['test', 'test value', ['required' => false, 'prohibited' => false] ]],
@@ -84,6 +84,11 @@ class QueryRunnerTest extends TestCase
             [['field1:("value"~10) OR field2:("value"~10)', 1], [['field1', 'field2'], 'value', ['proximity' => 10] ]],
             [['field1:("value~0.1"~10) OR field2:("value~0.1"~10)', 1], [['field1', 'field2'], 'value', ['proximity' => 10, 'fuzzy' => 0.1] ]],
         ];
+
+        $data =  array_merge($data, $this->getExpectedAndSourceDataForQueryWithSpecialOperators());
+        $data = array_merge($data, $this->getExpectedAndSourceDataForQueryWithSpecialChars());
+
+        return $data;
     }
 
     public function testFindWithDefaultOptions()
@@ -130,7 +135,7 @@ class QueryRunnerTest extends TestCase
 
     public function getFindWithOptionsDataProvider()
     {
-        return [
+        $data = [
             [['test:(test value)', 0] , ['test', 'test value', ['required' => false] ]],
             [['test:(test value)', 0] , ['test', 'test value', ['prohibited' => true] ]],
             [['test:(test value)', null] , ['test', 'test value', ['required' => false, 'prohibited' => false] ]],
@@ -145,9 +150,14 @@ class QueryRunnerTest extends TestCase
             [['field1:("value"~10) OR field2:("value"~10)', 1], [['field1', 'field2'], 'value', ['proximity' => 10] ]],
             [['field1:("value~0.1"~10) OR field2:("value~0.1"~10)', 1], [['field1', 'field2'], 'value', ['proximity' => 10, 'fuzzy' => 0.1] ]],
         ];
+
+        $data =  array_merge($data, $this->getExpectedAndSourceDataForQueryWithSpecialOperators());
+        $data = array_merge($data, $this->getExpectedAndSourceDataForQueryWithSpecialChars());
+
+        return $data;
     }
 
-    public function testGetResultForStringRawQuery()
+    public function testGetForStringRawQuery()
     {
         $this->queryRunner->rawQuery('test query');
         $this->queryRunner->limit(2, 3);
@@ -157,6 +167,11 @@ class QueryRunnerTest extends TestCase
 
         $query = 'test query first modification second modification';
 
+        $this->getAssertions($query);
+    }
+
+    private function getAssertions($query)
+    {
         $this->search->shouldReceive('index->find')
             ->with($query)
             ->andReturn($hits = [1, 2, 3, 4, 5])->once();
@@ -165,5 +180,32 @@ class QueryRunnerTest extends TestCase
         $this->assertEquals('test result', $this->queryRunner->get());
         $this->assertEquals(5, $this->queryRunner->count());
         $this->assertEquals($query, $this->queryRunner->getLastQuery());
+    }
+
+    private function getExpectedAndSourceDataForQueryWithSpecialOperators()
+    {
+        return [
+
+            [['test:("test not value")', 1], ['test', 'test not value', ['phrase' => true] ]],
+            [['test:("test to value")', 1], ['test', 'test to value', ['phrase' => true] ]],
+            [['test:("test and value")', 1], ['test', 'test and value', ['phrase' => true] ]],
+            [['test:("test or value")', 1], ['test', 'test or value', ['phrase' => true] ]],
+
+            [['test:(test value)', 1], ['test', 'test not value', ['phrase' => false] ]],
+            [['test:(test value)', 1], ['test', 'test to value', ['phrase' => false] ]],
+            [['test:(test value)', 1], ['test', 'test and value', ['phrase' => false] ]],
+            [['test:(test value)', 1], ['test', 'test or value', ['phrase' => false] ]],
+        ];
+    }
+
+    private function getExpectedAndSourceDataForQueryWithSpecialChars()
+    {
+        $data = [];
+        $special_chars = ['\\', '+', '-', '&&', '||', '!', '(', ')', '{', '}', '[', ']', '^', '"', '~', '*', '?', ':'];
+        foreach($special_chars as $ch) {
+            $expected = str_replace($ch, "\\{$ch}", "test {$ch} value");
+            $data[] = [["test:({$expected})", 1], ['test', "test {$ch} value", ['phrase' => false] ]];
+        }
+        return $data;
     }
 }
