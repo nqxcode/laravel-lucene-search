@@ -1,4 +1,4 @@
 laravel-lucene-search
 ==============
 
-Laravel 4.x package for searching in Eloquent ORM models (based on ZF2 Lucene).
+Laravel 4 full-text search based on ZF2 Lucene for Eloquent ORM.
