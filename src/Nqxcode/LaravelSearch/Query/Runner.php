@@ -1,5 +1,5 @@
-<?php
-namespace Nqxcode\LaravelSearch\Query;
+<?php namespace Nqxcode\LaravelSearch\Query;
+
 use Nqxcode\LaravelSearch\Search;
 use ZendSearch\Lucene\Search\Query\AbstractQuery;
 use ZendSearch\Lucene\Search\QueryHit;
@@ -26,16 +26,6 @@ class Runner
      * @var
      */
     private static $lastQuery;
-
-    /**
-     * Get last executed query.
-     *
-     * @return mixed
-     */
-    public static function getLastQuery()
-    {
-        return self::$lastQuery;
-    }
 
     /**
      * @param Search $search
@@ -93,6 +83,12 @@ class Runner
     }
 
     /**
+     * Get count of m::mock('Nqxcode\LaravelSearch\QueryRunner');
+        $this->highlighter = m::mock('Nqxcode\LaravelSearch\Highlighting\Highlighter');
+        $this->analyzerConfig = m::mock('Nqxcode\LaravelSearch\Analyzer\Config');
+
+        $this->html = new Html($this->queryRunner, $this->highlighter, $this->analyzerConfig);results of executed query.
+     *
      * @param $query
      * @return null|int
      */
@@ -102,6 +98,12 @@ class Runner
         return isset($this->cachedCounts[$hash]) ? $this->cachedCounts[$hash] : null;
     }
 
+    /**
+     * Set count of results for query.
+     *
+     * @param $query
+     * @param $count
+     */
     public function setCachedCount($query, $count)
     {
         $hash = $this->hash($query);
@@ -117,5 +119,15 @@ class Runner
     private function hash($query)
     {
         return md5(serialize($query));
+    }
+
+    /**
+     * Get last executed query.
+     *
+     * @return mixed
+     */
+    public static function getLastQuery()
+    {
+        return self::$lastQuery;
     }
 } 

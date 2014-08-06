@@ -9,7 +9,7 @@ use \App;
 use ZendSearch\Lucene\Search\Query\Boolean;
 use ZendSearch\Lucene\Search\QueryParser;
 
-class QueryRunnerTest extends TestCase
+abstract class QueryRunnerTest extends TestCase
 {
     /** @var  \Mockery\MockInterface */
     private $search;

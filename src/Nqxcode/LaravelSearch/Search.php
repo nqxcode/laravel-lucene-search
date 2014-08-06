@@ -12,8 +12,6 @@ use \App;
 /**
  * Class Search
  *
- * @method QueryRunner find($field, $value, array $options = [])
- * @method QueryRunner where($field, $value, array $options = [])
  * @package Nqxcode\LaravelSearch
  */
 class Search

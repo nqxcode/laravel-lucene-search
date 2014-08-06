@@ -23,7 +23,7 @@ class HtmlTest extends TestCase
 
     public function setUp()
     {
-        $this->queryRunner = m::mock('Nqxcode\LaravelSearch\QueryRunner');
+        $this->queryRunner = m::mock('Nqxcode\LaravelSearch\Query\Runner');
         $this->highlighter = m::mock('Nqxcode\LaravelSearch\Highlighting\Highlighter');
         $this->analyzerConfig = m::mock('Nqxcode\LaravelSearch\Analyzer\Config');
 

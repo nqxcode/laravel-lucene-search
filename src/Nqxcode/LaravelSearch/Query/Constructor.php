@@ -36,11 +36,11 @@ class Constructor extends Builder
      *
      * @param $value
      * @param $field
-     * @param array $options - required   : should match (boolean)
-     *                       - prohibited : should not match (boolean)
-     *                       - phrase     : phrase match (boolean)
+     * @param array $options - required   : should match (boolean, true by default)
+     *                       - prohibited : should not match (boolean, false by default)
+     *                       - phrase     : phrase match (boolean, false by default)
      *                       - proximity  : value of distance between words (unsigned integer)
-     **                      - fuzzy      : value of fuzzy(float, 0 ... 1)
+     *                       - fuzzy      : value of fuzzy(float, 0 ... 1)
      * @return $this
      */
     public function find($value, $field = '*', array $options = [])
@@ -65,9 +65,9 @@ class Constructor extends Builder
      * @param mixed $value
      * @param array $options - field      : field name
      *                       - value      : value to match
-     *                       - required   : should match (boolean)
-     *                       - prohibited : should not match (boolean)
-     *                       - phrase     : phrase match (boolean)
+     *                       - required   : should match (boolean, true by default)
+     *                       - prohibited : should not match (boolean, false by default)
+     *                       - phrase     : phrase match (boolean, true by default)
      *                       - proximity  : value of distance between words (unsigned integer)
      **                      - fuzzy      : value of fuzzy(float, 0 ... 1)
      * @return $this
