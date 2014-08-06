@@ -220,26 +220,28 @@ class QueryRunnerTest extends TestCase
 
     public function testGetForQueryBuiltByConstructor()
     {
-//        $this->query->shouldReceive('addSubquery')->with(m::on(function ($arg) {
-//            $query = QueryParser::parse('test query');
-//            $this->assertEquals($query, $arg);
-//            return true;
-//        }), true)->once()->byDefault();
-//
-//        $this->queryRunner->find('test query');
-//        $this->queryRunner->limit(2, 3);
+       $test = serialize($this->query);
 
-//        $this->query->shouldReceive('addSubquery')->with('first')->once();
-//        $this->query->shouldReceive('addSubquery')->with('second')->once();
+        $this->query->shouldReceive('addSubquery')->with(m::on(function ($arg) {
+            $query = QueryParser::parse('test query');
+            $this->assertEquals($query, $arg);
+            return true;
+        }), true)->byDefault();
 
+        $this->queryRunner->find('test query');
+        $this->queryRunner->limit(2, 3);
+
+        //$this->query->shouldReceive('addSubquery')->with('first')->andReturn('first')->once();
+        //$this->query->shouldReceive('addSubquery')->with('second')->andReturn('second')->once();
+
+        $this->queryRunner->addFilter(function ($query) {
+            return $query->addSubquery(QueryParser::parse("test query"), true);
+        });
 //        $this->queryRunner->addFilter(function ($query) {
 //            return $query->addSubquery(m::any());
 //        });
-//        $this->queryRunner->addFilter(function ($query) {
-//            return $query->addSubquery(m::any());
-//        });
 
-//        $this->assertionsForTestingOfGettingResults($this->query);
+        $this->assertionsForTestingOfGettingResults($this->query);
     }
 
     private function assertionsForTestingOfGettingResults($expectedQuery)

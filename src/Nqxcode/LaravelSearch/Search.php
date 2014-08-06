@@ -160,8 +160,14 @@ class Search
      */
     public function __call($name, $arguments)
     {
-        $queryRunner = App::make('Nqxcode\LaravelSearch\QueryRunner');
-        return call_user_func_array([$queryRunner, $name], $arguments);
+        switch($name) {
+            case 'rawQuery':
+                $queryBuilder = App::make('Nqxcode\LaravelSearch\Query\RawBuilder');
+                break;
+            default:
+                $queryBuilder = App::make('Nqxcode\LaravelSearch\Query\Constructor');
+        }
+        return call_user_func_array([$queryBuilder, $name], $arguments);
     }
 
     /**

@@ -1,6 +1,7 @@
 <?php namespace Nqxcode\LaravelSearch\Highlighting;
 
 use Nqxcode\LaravelSearch\Analyzer\Config as AnalyzerConfig;
+use Nqxcode\LaravelSearch\Query\Runner;
 use Nqxcode\LaravelSearch\QueryRunner;
 
 /**
@@ -10,7 +11,7 @@ use Nqxcode\LaravelSearch\QueryRunner;
 class Html
 {
     /**
-     * @var QueryRunner
+     * @var Runner
      */
     private $queryRunner;
 
@@ -25,7 +26,7 @@ class Html
     private $analyzerConfig;
 
     public function __construct(
-        QueryRunner $queryRunner,
+        Runner $queryRunner,
         Highlighter $highlighter,
         AnalyzerConfig $analyzerConfig
     ) {
