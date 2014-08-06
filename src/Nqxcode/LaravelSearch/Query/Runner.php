@@ -83,11 +83,7 @@ class Runner
     }
 
     /**
-     * Get count of m::mock('Nqxcode\LaravelSearch\QueryRunner');
-        $this->highlighter = m::mock('Nqxcode\LaravelSearch\Highlighting\Highlighter');
-        $this->analyzerConfig = m::mock('Nqxcode\LaravelSearch\Analyzer\Config');
-
-        $this->html = new Html($this->queryRunner, $this->highlighter, $this->analyzerConfig);results of executed query.
+     * Get count of results for query.
      *
      * @param $query
      * @return null|int
