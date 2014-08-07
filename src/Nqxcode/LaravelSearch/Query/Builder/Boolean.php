@@ -1,19 +1,26 @@
 <?php
-namespace Nqxcode\LaravelSearch\Query;
+namespace Nqxcode\LaravelSearch\Query\Builder;
 
+use Nqxcode\LaravelSearch\Query\LuceneQueryBuilder;
+use Nqxcode\LaravelSearch\Query\Runner;
 use ZendSearch\Lucene\Search\Query\Boolean as QueryBoolean;
 use ZendSearch\Lucene\Search\QueryParser;
 
-class Constructor extends Builder
+class Boolean extends AbstractBuilder
 {
-    /** @var \Nqxcode\LaravelSearch\Query\Lucene */
-    private $rawQueryBuilder;
+    /** @var \Nqxcode\LaravelSearch\Query\LuceneQueryBuilder */
+    private $queryBuilder;
 
-    public function __construct(Runner $runner, QueryBoolean $query, Lucene $rawQueryBuilder)
+    /**
+     * @param Runner $runner
+     * @param QueryBoolean $query
+     * @param LuceneQueryBuilder $queryBuilder
+     */
+    public function __construct(Runner $runner, QueryBoolean $query, LuceneQueryBuilder $queryBuilder)
     {
         parent::__construct($runner);
         $this->query = $query;
-        $this->rawQueryBuilder = $rawQueryBuilder;
+        $this->queryBuilder = $queryBuilder;
     }
 
     /**
@@ -26,7 +33,7 @@ class Constructor extends Builder
      */
     protected function addSubquery($query, array $options)
     {
-        list($value, $sign) = $this->rawQueryBuilder->buildRawQuery($options);
+        list($value, $sign) = $this->queryBuilder->build($options);
         $query->addSubquery(QueryParser::parse($value), $sign);
         return $query;
     }

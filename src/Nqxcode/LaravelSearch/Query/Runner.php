@@ -62,6 +62,8 @@ class Runner
     }
 
     /**
+     * Run query and get all finding models.
+     *
      * @param $query
      * @param $options
      * @return array

@@ -160,10 +160,10 @@ class Search
     {
         switch($name) {
             case 'rawQuery':
-                $queryBuilder = App::make('Nqxcode\LaravelSearch\Query\RawBuilder');
+                $queryBuilder = App::make('Nqxcode\LaravelSearch\Query\Builder\Raw');
                 break;
             default:
-                $queryBuilder = App::make('Nqxcode\LaravelSearch\Query\Constructor');
+                $queryBuilder = App::make('Nqxcode\LaravelSearch\Query\Builder\Boolean');
         }
         return call_user_func_array([$queryBuilder, $name], $arguments);
     }

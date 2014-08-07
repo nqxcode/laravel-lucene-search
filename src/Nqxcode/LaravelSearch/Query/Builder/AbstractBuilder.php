@@ -1,20 +1,43 @@
-<?php namespace Nqxcode\LaravelSearch\Query;
+<?php namespace Nqxcode\LaravelSearch\Query\Builder;
 
+use Nqxcode\LaravelSearch\Query\Runner;
 use Input;
 use App;
 
 /**
- * Class Builder
+ * Class AbstractBuilder
  * @package Nqxcode\LaravelSearch\Query
  */
-abstract class Builder
+abstract class AbstractBuilder
 {
+    /** @var \Nqxcode\LaravelSearch\Query\Runner  */
     private $runner;
 
+    /** @var int */
     private $limit;
+
+    /** @var int */
     private $offset;
+
+    /**
+     * Main query.
+     *
+     * @var mixed
+     */
     protected $query;
+
+    /**
+     * List of query filters applying before query running.
+     *
+     * @var array
+     */
     private $filters = [];
+
+    /**
+     * Is filers already executed?
+     *
+     * @var bool
+     */
     private $isFiltersExecuted;
 
     public function __construct(Runner $runner)
@@ -23,7 +46,7 @@ abstract class Builder
     }
 
     /**
-     * Use to add filter for query customization.
+     * Add query filter for query customization (each filter applying before query running).
      *
      * @param callable $callable
      *

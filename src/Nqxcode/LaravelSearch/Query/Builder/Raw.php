@@ -1,11 +1,12 @@
-<?php namespace Nqxcode\LaravelSearch\Query;
+<?php namespace Nqxcode\LaravelSearch\Query\Builder;
+
 use ZendSearch\Lucene\Search\Query\AbstractQuery;
 
 /**
  * Class RawBuilder
  * @package Nqxcode\LaravelSearch\Query
  */
-class RawBuilder extends Builder
+class Raw extends AbstractBuilder
 {
     /**
      * Build raw query.

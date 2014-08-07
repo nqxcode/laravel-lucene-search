@@ -1,13 +1,13 @@
 <?php namespace Nqxcode\LaravelSearch\Query;
 
 /**
- * Class Lucene
+ * Class LuceneQueryBuilder
  * @package Nqxcode\LaravelSearch\Query
  */
-class Lucene
+class LuceneQueryBuilder
 {
     /**
-     * Build raw Lucene query by given options.
+     * Build raw LuceneQueryBuilder query by given options.
      *
      * @param array $options - field      : field name
      *                       - value      : value to match
@@ -18,7 +18,7 @@ class Lucene
      **                      - fuzzy      : value of fuzzy(float, 0 ... 1)
      * @return array contains string query and sign
      */
-    public function buildRawQuery($options)
+    public function build($options)
     {
         $field = array_get($options, 'field');
 
@@ -76,7 +76,7 @@ class Lucene
     }
 
     /**
-     * Escape special characters for Lucene query.
+     * Escape special characters for LuceneQueryBuilder query.
      *
      * @param string $str
      *
@@ -97,7 +97,7 @@ class Lucene
     }
 
     /**
-     * Escape special operators for Lucene query.
+     * Escape special operators for LuceneQueryBuilder query.
      *
      * @param $str
      * @return mixed
