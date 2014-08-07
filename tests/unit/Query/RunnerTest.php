@@ -45,7 +45,7 @@ class RunnerTest extends TestCase
     public function testDelete()
     {
         $model = m::mock('Illuminate\Database\Eloquent\Model');
-        $this->search->shouldReceive('delete')->with($model)->byDefault();
+        $this->search->shouldReceive('delete')->with($model)->once();
         $this->runner->delete($model);
     }
-} 
+}

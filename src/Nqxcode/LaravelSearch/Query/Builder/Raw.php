@@ -17,11 +17,13 @@ class Raw extends AbstractBuilder
      */
     public function rawQuery($query)
     {
-        if ($query instanceof AbstractQuery) {
-            $this->query = $query;
+        if (is_string($query)) {
+            $query = $this->queryBuilder->parse($query);
         } elseif (is_callable($query)) {
-            $this->query = $query();
-        } elseif (is_string($query)) {
+            $query = $this->queryBuilder->parse($query());
+        }
+
+        if ($query instanceof AbstractQuery) {
             $this->query = $query;
         } else {
             throw new \InvalidArgumentException(

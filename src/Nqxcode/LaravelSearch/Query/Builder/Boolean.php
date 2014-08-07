@@ -1,26 +1,21 @@
 <?php
 namespace Nqxcode\LaravelSearch\Query\Builder;
 
+use Nqxcode\LaravelSearch\Query\Filter;
 use Nqxcode\LaravelSearch\Query\LuceneQueryBuilder;
 use Nqxcode\LaravelSearch\Query\Runner;
 use ZendSearch\Lucene\Search\Query\Boolean as QueryBoolean;
-use ZendSearch\Lucene\Search\QueryParser;
 
 class Boolean extends AbstractBuilder
 {
-    /** @var \Nqxcode\LaravelSearch\Query\LuceneQueryBuilder */
-    private $queryBuilder;
-
-    /**
-     * @param Runner $runner
-     * @param QueryBoolean $query
-     * @param LuceneQueryBuilder $queryBuilder
-     */
-    public function __construct(Runner $runner, QueryBoolean $query, LuceneQueryBuilder $queryBuilder)
-    {
-        parent::__construct($runner);
+    public function __construct(
+        Runner $runner,
+        Filter $filter,
+        LuceneQueryBuilder $queryBuilder,
+        QueryBoolean $query
+    ) {
+        parent::__construct($runner, $filter, $queryBuilder);
         $this->query = $query;
-        $this->queryBuilder = $queryBuilder;
     }
 
     /**
@@ -34,7 +29,7 @@ class Boolean extends AbstractBuilder
     protected function addSubquery($query, array $options)
     {
         list($value, $sign) = $this->queryBuilder->build($options);
-        $query->addSubquery(QueryParser::parse($value), $sign);
+        $query->addSubquery($this->queryBuilder->parse($value), $sign);
         return $query;
     }
 
@@ -52,15 +47,11 @@ class Boolean extends AbstractBuilder
      */
     public function find($value, $field = '*', array $options = [])
     {
-        $this->query = $this->addSubquery($this->query, [
-            'field' => $field,
-            'value' => $value,
-            'required' => array_get($options, 'required', true),
-            'prohibited' => array_get($options, 'prohibited', false),
-            'phrase' => array_get($options, 'phrase', false),
-            'fuzzy' => array_get($options, 'fuzzy', null),
-            'proximity' => array_get($options, 'proximity', null),
-        ]);
+        $options['field'] = $field;
+        $options['value'] = $value;
+        $options = $this->defaultOptions($options);
+
+        $this->query = $this->addSubquery($this->query, $options);
 
         return $this;
     }
@@ -81,16 +72,33 @@ class Boolean extends AbstractBuilder
      */
     public function where($field, $value, array $options = [])
     {
-        $this->query = $this->addSubquery($this->query, [
-            'field' => $field,
-            'value' => $value,
-            'required' => array_get($options, 'required', true),
-            'prohibited' => array_get($options, 'prohibited', false),
-            'phrase' => array_get($options, 'phrase', true),
-            'fuzzy' => array_get($options, 'fuzzy', null),
-            'proximity' => array_get($options, 'proximity', null),
-        ]);
+        $options['field'] = $field;
+        $options['value'] = $value;
+        $options = $this->defaultOptions($options);
+
+        $options['phrase'] = true;
+
+        $this->query = $this->addSubquery($this->query, $options);
 
         return $this;
+    }
+
+    /**
+     * Get default values for options.
+     *
+     * @param $options
+     * @return array
+     */
+    private function defaultOptions($options)
+    {
+        return [
+            'field' => array_get($options, 'field'),
+            'value' => array_get($options, 'value', ''),
+            'required' => array_get($options, 'required', true),
+            'prohibited' => array_get($options, 'prohibited', false),
+            'phrase' => array_get($options, 'phrase', false),
+            'fuzzy' => array_get($options, 'fuzzy', null),
+            'proximity' => array_get($options, 'proximity', null),
+        ];
     }
 } 

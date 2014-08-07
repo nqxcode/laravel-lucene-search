@@ -2,6 +2,7 @@
 
 use tests\TestCase;
 use Mockery as m;
+use ZendSearch\Lucene\Search\QueryParser;
 
 /**
  * Class RunnerTest
@@ -89,5 +90,11 @@ class LuceneQueryBuilderTest extends TestCase
             $data[] = [["field1:({$expected})", null], ['field' => 'field1', 'value' => "test {$ch} value"]];
         }
         return $data;
+    }
+
+    public function testParse()
+    {
+        $this->assertEquals(QueryParser::parse(''), $this->builder->parse(''));
+        $this->assertEquals(QueryParser::parse('test'), $this->builder->parse('test'));
     }
 }

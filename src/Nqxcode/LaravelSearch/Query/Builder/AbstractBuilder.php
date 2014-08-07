@@ -1,5 +1,7 @@
 <?php namespace Nqxcode\LaravelSearch\Query\Builder;
 
+use Nqxcode\LaravelSearch\Query\Filter;
+use Nqxcode\LaravelSearch\Query\LuceneQueryBuilder;
 use Nqxcode\LaravelSearch\Query\Runner;
 use Input;
 use App;
@@ -10,14 +12,17 @@ use App;
  */
 abstract class AbstractBuilder
 {
-    /** @var \Nqxcode\LaravelSearch\Query\Runner  */
-    private $runner;
+    /** @var \Nqxcode\LaravelSearch\Query\Runner */
+    protected $runner;
+    /** @var \Nqxcode\LaravelSearch\Query\Filter */
+    protected $filter;
+    /** @var \Nqxcode\LaravelSearch\Query\LuceneQueryBuilder */
+    protected $queryBuilder;
 
     /** @var int */
-    private $limit;
-
+    protected $limit;
     /** @var int */
-    private $offset;
+    protected $offset;
 
     /**
      * Main query.
@@ -26,58 +31,11 @@ abstract class AbstractBuilder
      */
     protected $query;
 
-    /**
-     * List of query filters applying before query running.
-     *
-     * @var array
-     */
-    private $filters = [];
-
-    /**
-     * Is filers already executed?
-     *
-     * @var bool
-     */
-    private $isFiltersExecuted;
-
-    public function __construct(Runner $runner)
+    public function __construct(Runner $runner, Filter $filter, LuceneQueryBuilder $queryBuilder)
     {
         $this->runner = $runner;
-    }
-
-    /**
-     * Add query filter for query customization (each filter applying before query running).
-     *
-     * @param callable $callable
-     *
-     * @return $this
-     */
-    public function addFilter(callable $callable)
-    {
-        $this->filters[] = $callable;
-
-        return $this;
-    }
-
-    /**
-     * Execute added callback functions for modification of query.
-     *
-     * @return void
-     */
-    protected function runFilters()
-    {
-        // Prevent multiple executions.
-        if ($this->isFiltersExecuted) {
-            return;
-        }
-
-        foreach ($this->filters as $callback) {
-            if ($query = $callback($this->query)) {
-                $this->query = $query;
-            }
-        }
-
-        $this->isFiltersExecuted = true;
+        $this->filter = $filter;
+        $this->queryBuilder = $queryBuilder;
     }
 
     /**
@@ -110,7 +68,7 @@ abstract class AbstractBuilder
             $options['offset'] = $this->offset;
         }
 
-        $this->runFilters(); // Modify query if filters were added.
+        $this->filter->applyFilters($this->query); // Modify query if filters were added.
 
         return $this->runner->models($this->query, $options);
     }
@@ -122,7 +80,7 @@ abstract class AbstractBuilder
      */
     public function count()
     {
-        $this->runFilters();
+        $this->filter->applyFilters($this->query);
 
         $count = $this->runner->getCachedCount($this->query);
 
@@ -158,5 +116,18 @@ abstract class AbstractBuilder
         foreach ($models as $model) {
             $this->runner->delete($model);
         }
+    }
+
+    /**
+     * Add filter for constructing query.
+     *
+     * @param callable $closure
+     * @return $this
+     */
+    public function addFilter(callable $closure)
+    {
+        $this->filter->add($closure);
+
+        return $this;
     }
 } 

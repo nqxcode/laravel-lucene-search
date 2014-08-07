@@ -1,5 +1,7 @@
 <?php namespace Nqxcode\LaravelSearch\Query;
 
+use ZendSearch\Lucene\Search\QueryParser;
+
 /**
  * Class LuceneQueryBuilder
  * @package Nqxcode\LaravelSearch\Query
@@ -72,6 +74,17 @@ class LuceneQueryBuilder
         }
 
         return [$value, $sign];
+    }
+
+    /**
+     * Get query object by given query string.
+     *
+     * @param string $strQuery
+     * @return \ZendSearch\Lucene\Search\Query\AbstractQuery
+     */
+    public function parse($strQuery)
+    {
+        return QueryParser::parse($strQuery);
     }
 
     /**
