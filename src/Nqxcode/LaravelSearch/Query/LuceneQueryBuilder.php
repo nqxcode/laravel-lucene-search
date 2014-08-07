@@ -67,8 +67,7 @@ class LuceneQueryBuilder
         $sign = null;
         if (!empty($options['required'])) {
             $sign = true;
-        }
-        if (!empty($options['prohibited'])) {
+        }elseif (!empty($options['prohibited'])) {
             $sign = false;
         }
 
