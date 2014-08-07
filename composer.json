@@ -1,6 +1,6 @@
 {
     "name": "nqxcode/laravel-lucene-search",
-    "description": "Laravel 4 full-text search based on ZF2 Lucene for Eloquent ORM.",
+    "description": "Laravel 4 package for full-text search over Eloquent models based on ZF2 Lucene.",
     "keywords" :["laravel", "search", "lucene", "eloquent", "orm" ],
     "authors": [
         {
@@ -32,5 +32,7 @@
             "tests\\": "tests/"
         }
     },
+
+    "prefer-stable" : true,
     "minimum-stability": "dev"
 }
