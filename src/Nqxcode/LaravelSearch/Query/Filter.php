@@ -15,7 +15,7 @@ class Filter
     private $filters = [];
 
     /**
-     * Is filers already applied?
+     * Are filers already applied?
      *
      * @var bool
      */
