@@ -149,7 +149,5 @@ class BuilderTest extends TestCase
         $this->assertEquals($this->constructor, $this->constructor->rawQuery($closure));
 
         $this->assertEquals($this->constructor, $this->constructor->rawQuery(new Boolean));
-
     }
-
 } 
