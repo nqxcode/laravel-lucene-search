@@ -39,7 +39,7 @@ return [
      | token filters.
      |
      | The "stopwords" is the list of paths to files with stopwords.
-     | By default,
+     | By default english/russian stopwords are used.
      |
     */
     'analyzer' => [
