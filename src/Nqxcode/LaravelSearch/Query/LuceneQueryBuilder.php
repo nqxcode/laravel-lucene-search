@@ -9,7 +9,7 @@ use ZendSearch\Lucene\Search\QueryParser;
 class LuceneQueryBuilder
 {
     /**
-     * Build raw LuceneQueryBuilder query by given options.
+     * Build raw lucene query by given options.
      *
      * @param array $options - field      : field name
      *                       - value      : value to match
@@ -20,7 +20,7 @@ class LuceneQueryBuilder
      **                      - fuzzy      : value of fuzzy(float, 0 ... 1)
      * @return array contains string query and sign
      */
-    public function build($options)
+    public function buildRaw($options)
     {
         $field = array_get($options, 'field');
 

@@ -24,7 +24,7 @@ class LuceneQueryBuilderTest extends TestCase
      */
     public function testBuild($expected, $options)
     {
-        $actual = $this->builder->build($options);
+        $actual = $this->builder->buildRaw($options);
 
         $this->assertEquals($expected[0], $actual[0]);
         $this->assertTrue($expected[1] === $actual[1]);
