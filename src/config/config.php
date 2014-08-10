@@ -48,6 +48,9 @@ return [
             'Nqxcode\Stemming\TokenFilterEnRu',
         ],
 
-        'stopwords' => \Nqxcode\Search\Stopwords::files(),
+        'stopwords' => [
+            __DIR__ . '/../resources/stopwords/en',
+            __DIR__ . '/../resources/stopwords/ru',
+        ],
     ],
 ];
