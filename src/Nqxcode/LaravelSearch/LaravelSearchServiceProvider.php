@@ -1,14 +1,11 @@
 <?php namespace Nqxcode\LaravelSearch;
 
-use Illuminate\Support\ServiceProvider;
+use Config;
 use Nqxcode\LaravelSearch\Analyzer\Config as AnalyzerConfig;
 use Nqxcode\LaravelSearch\Config as ModelsConfig;
+use ZendSearch\Lucene\Analysis\Analyzer\Common\Utf8Num\CaseInsensitive;
 
-use Config;
-
-use \ZendSearch\Lucene\Analysis\Analyzer\Common\Utf8Num\CaseInsensitive;
-
-class LaravelSearchServiceProvider extends ServiceProvider
+class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
 
     /**

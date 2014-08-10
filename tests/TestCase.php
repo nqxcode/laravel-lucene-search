@@ -35,7 +35,7 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
 
     protected function getPackageProviders()
     {
-        return array('Nqxcode\LaravelSearch\LaravelSearchServiceProvider');
+        return array('Nqxcode\LaravelSearch\ServiceProvider');
     }
 
     protected function getPackageAliases()
