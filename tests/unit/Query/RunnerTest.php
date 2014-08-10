@@ -22,7 +22,7 @@ class RunnerTest extends TestCase
         $this->app->instance('Nqxcode\LaravelSearch\Search', $this->search);
         $this->runner = $this->app->make('Nqxcode\LaravelSearch\Query\Runner');
 
-        $this->search->shouldReceive('index->find')->with('test')->andReturn([1, 2, 3, 4, 5])->byDefault();
+        $this->search->shouldReceive('index->find')->with('test')->andReturn([1, 2, 3, 4, 5]);
     }
 
     public function testRun()
@@ -36,8 +36,12 @@ class RunnerTest extends TestCase
 
     public function testModels()
     {
-        $this->search->shouldReceive('config->models')->with([1, 2, 3, 4, 5])->andReturn('models')->byDefault();
+        $this->search->shouldReceive('config->models')->with([1, 2, 3, 4, 5])->andReturn('models');
         $this->assertEquals('models', $this->runner->models('test'));
+    }
+
+    public function testModelsWithLimitOprions()
+    {
         $this->search->shouldReceive('config->models')->with([4, 5])->andReturn('models');
         $this->assertEquals('models', $this->runner->models('test', ['limit' => 2, 'offset' => 3]));
     }

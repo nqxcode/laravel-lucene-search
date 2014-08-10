@@ -3,13 +3,11 @@ namespace tests\functional;
 
 use tests\TestCase;
 
-use Config;
-
 /**
  * Class BaseTestCase
  * @package tests\functional
  */
-class BaseTestCase extends TestCase
+abstract class BaseTestCase extends TestCase
 {
     public function setUp()
     {

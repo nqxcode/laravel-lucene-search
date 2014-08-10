@@ -2,7 +2,7 @@
 
 use \Mockery as m;
 
-class TestCase extends \Orchestra\Testbench\TestCase
+abstract class TestCase extends \Orchestra\Testbench\TestCase
 {
     public function setUp()
     {
