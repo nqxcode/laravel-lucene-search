@@ -167,14 +167,12 @@ class Search
      * Highlight matches in html fragment.
      *
      * @param string $html
-     * @param string $inputEncoding
-     * @param string $outputEncoding
      * @return string
      */
-    public function highlight($html, $inputEncoding = 'utf-8', $outputEncoding = 'utf-8')
+    public function highlight($html)
     {
         /** @var Html $highlighter */
         $highlighter = App::make('Nqxcode\LaravelSearch\Highlighting\Html');
-        return $highlighter->highlight($html, $inputEncoding, $outputEncoding);
+        return $highlighter->highlight($html);
     }
 }

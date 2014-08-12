@@ -3,6 +3,7 @@
 use ZendSearch\Lucene\Analysis\Analyzer\Analyzer;
 use ZendSearch\Lucene\Analysis\Analyzer\Common\AbstractCommon;
 
+use ZendSearch\Lucene\Search\QueryParser;
 use App;
 
 /**
@@ -21,6 +22,8 @@ class Config
 
     public function __construct(array $filterClasses, array $stopWordFiles, StopwordsFilterFactory $stopwordsFilterFactory)
     {
+        QueryParser::setDefaultEncoding('utf-8');
+
         $this->filterClasses = $filterClasses;
         $this->stopWordFiles = $stopWordFiles;
         $this->stopwordsFilterFactory = $stopwordsFilterFactory;
