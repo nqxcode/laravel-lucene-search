@@ -8,15 +8,15 @@ use ZendSearch\Lucene\Search\QueryParser;
  * Class RunnerTest
  * @package tests\unit\Query
  */
-class LuceneQueryBuilderTest extends TestCase
+class RawQueryBuilderTest extends TestCase
 {
-    /** @var \Nqxcode\LaravelSearch\Query\LuceneQueryBuilder */
+    /** @var \Nqxcode\LaravelSearch\Query\RawQueryBuilder */
     private $builder;
 
     public function setUp()
     {
         parent::setUp();
-        $this->builder = $this->app->make('Nqxcode\LaravelSearch\Query\LuceneQueryBuilder');
+        $this->builder = $this->app->make('Nqxcode\LaravelSearch\Query\RawQueryBuilder');
     }
 
     /**
@@ -24,7 +24,7 @@ class LuceneQueryBuilderTest extends TestCase
      */
     public function testBuild($expected, $options)
     {
-        $actual = $this->builder->buildRaw($options);
+        $actual = $this->builder->build($options);
 
         $this->assertEquals($expected[0], $actual[0]);
         $this->assertTrue($expected[1] === $actual[1]);

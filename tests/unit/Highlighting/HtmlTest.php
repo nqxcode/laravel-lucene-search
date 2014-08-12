@@ -30,7 +30,7 @@ class HtmlTest extends TestCase
         $this->html = new Html($this->queryRunner, $this->highlighter, $this->analyzerConfig);
     }
 
-    public function testHighlightMatches()
+    public function testHighlight()
     {
         $this->queryRunner->shouldReceive('getLastQuery')
             ->andReturn($lastQuery = m::mock())->ordered();
@@ -40,16 +40,16 @@ class HtmlTest extends TestCase
             ->with('test', 'utf-8', $this->highlighter)->andReturn('highlighted')->ordered();
         $this->analyzerConfig->shouldReceive('setDefaultAnalyzer')->once()->ordered();
 
-        $this->assertEquals('highlighted', $this->html->highlightMatches('test'));
+        $this->assertEquals('highlighted', $this->html->highlight('test'));
     }
 
-    public function testHighlightMatchesLastQueryIsEmpty()
+    public function testHighlightLastQueryIsEmpty()
     {
         $this->queryRunner->shouldReceive('getLastQuery')
             ->andReturn(false);
         $this->analyzerConfig->shouldReceive('setAnalyzerForHighlighter')->never();
         $this->analyzerConfig->shouldReceive('setDefaultAnalyzer')->never();
 
-        $this->assertEquals('test', $this->html->highlightMatches('test'));
+        $this->assertEquals('test', $this->html->highlight('test'));
     }
 } 

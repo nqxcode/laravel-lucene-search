@@ -150,7 +150,7 @@ class Search
     }
 
     /**
-     * All calls of inaccessible methods send to QueryRunner object.
+     * All calls of inaccessible methods send to query builder object.
      *
      * @param $name
      * @param $arguments
@@ -170,10 +170,10 @@ class Search
      * @param string $outputEncoding
      * @return string
      */
-    public function highlightMatches($html, $inputEncoding = 'utf-8', $outputEncoding = 'utf-8')
+    public function highlight($html, $inputEncoding = 'utf-8', $outputEncoding = 'utf-8')
     {
         /** @var Html $highlighter */
         $highlighter = App::make('Nqxcode\LaravelSearch\Highlighting\Html');
-        return $highlighter->highlightMatches($html, $inputEncoding, $outputEncoding);
+        return $highlighter->highlight($html, $inputEncoding, $outputEncoding);
     }
 }

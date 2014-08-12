@@ -1,6 +1,7 @@
 <?php  namespace Nqxcode\LaravelSearch\Console;
 
 use Illuminate\Console\Command;
+use Config;
 
 class ClearCommand extends Command
 {
@@ -9,12 +10,10 @@ class ClearCommand extends Command
 
     public function fire()
     {
-        $indexPath = \Config::get('laravel-lucene-search::index.path');
-
-        if ($result = rmdir_recursive($indexPath)) {
+        if ($result = rmdir_recursive(Config::get('laravel-lucene-search::index.path'))) {
             $this->info('Search index storage cleared!');
         } else {
-            $this->error('No search index storage found..');
+            $this->info('No search index storage found..');
         }
     }
 }

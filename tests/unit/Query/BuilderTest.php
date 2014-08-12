@@ -22,7 +22,7 @@ class BuilderTest extends TestCase
     /** @var  \Mockery\MockInterface */
     private $query;
     /** @var  \Mockery\MockInterface */
-    private $luceneQueryBuilder;
+    private $rawQueryBuilder;
 
     public function setUp()
     {
@@ -31,15 +31,15 @@ class BuilderTest extends TestCase
         $this->runner = m::mock('Nqxcode\LaravelSearch\Query\Runner');
         $this->filter = m::mock('Nqxcode\LaravelSearch\Query\Filter');
         $this->query = m::mock('ZendSearch\Lucene\Search\Query\Boolean');
-        $this->luceneQueryBuilder = m::mock('Nqxcode\LaravelSearch\Query\LuceneQueryBuilder');
+        $this->rawQueryBuilder = m::mock('Nqxcode\LaravelSearch\Query\RawQueryBuilder');
 
         $this->app->instance('Nqxcode\LaravelSearch\Query\Runner', $this->runner);
         $this->app->instance('Nqxcode\LaravelSearch\Query\Filter', $this->filter);
         $this->app->instance('ZendSearch\Lucene\Search\Query\Boolean', $this->query);
-        $this->app->instance('Nqxcode\LaravelSearch\Query\LuceneQueryBuilder', $this->luceneQueryBuilder);
+        $this->app->instance('Nqxcode\LaravelSearch\Query\RawQueryBuilder', $this->rawQueryBuilder);
 
-        $this->luceneQueryBuilder->shouldReceive('buildRaw')->with($this->defaultFindOptions())->andReturn(['test', true]);
-        $this->luceneQueryBuilder->shouldReceive('parse')->with('test')->andReturn($this->luceneQuery = new Boolean)->byDefault();
+        $this->rawQueryBuilder->shouldReceive('build')->with($this->defaultFindOptions())->andReturn(['test', true]);
+        $this->rawQueryBuilder->shouldReceive('parse')->with('test')->andReturn($this->luceneQuery = new Boolean)->byDefault();
 
         $this->query->shouldReceive('addSubquery')->with($this->luceneQuery, true);
 
@@ -62,7 +62,7 @@ class BuilderTest extends TestCase
 
     public function testWhere()
     {
-        $this->luceneQueryBuilder->shouldReceive('buildRaw')->with($this->defaultWhereOptions())->andReturn(['test', true]);
+        $this->rawQueryBuilder->shouldReceive('build')->with($this->defaultWhereOptions())->andReturn(['test', true]);
         $query = $this->constructor->where('field', 'test');
 
         $this->assertEquals([1, 2, 3], $query->get());
@@ -120,15 +120,6 @@ class BuilderTest extends TestCase
         return $this;
     }
 
-    public function testDelete()
-    {
-        $query = $this->constructor->find('test');
-        $this->runner->shouldReceive('delete')->with(1)->once()->byDefault();
-        $this->runner->shouldReceive('delete')->with(2)->once()->byDefault();
-        $this->runner->shouldReceive('delete')->with(3)->once()->byDefault();
-        $query->delete();
-    }
-
     public function testPaginate()
     {
         $query = $this->constructor->find('test');
@@ -145,7 +136,7 @@ class BuilderTest extends TestCase
         $this->assertEquals($this->constructor, $this->constructor->rawQuery('test'));
 
         $closure = function(){return 'test';};
-        $this->luceneQueryBuilder->shouldReceive('parse')->with($closure)->andReturn(new Boolean)->byDefault();
+        $this->rawQueryBuilder->shouldReceive('parse')->with($closure)->andReturn(new Boolean)->byDefault();
         $this->assertEquals($this->constructor, $this->constructor->rawQuery($closure));
 
         $this->assertEquals($this->constructor, $this->constructor->rawQuery(new Boolean));

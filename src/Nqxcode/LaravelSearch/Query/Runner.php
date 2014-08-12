@@ -122,7 +122,7 @@ class Runner
     /**
      * Get last executed query.
      *
-     * @return mixed
+     * @return AbstractQuery
      */
     public static function getLastQuery()
     {

@@ -20,8 +20,6 @@ class Config
 
     public function __construct(array $filerClasses, array $stopWordFiles)
     {
-        QueryParser::setDefaultEncoding('utf-8'); // Set default encoding for lucene query parser.
-
         $this->filters = array_map(function ($filerClass) {
             return App::make($filerClass);
         }, $filerClasses);

@@ -80,11 +80,11 @@ class SearchTest extends BaseTestCase
     public function testSearchHighlightResults()
     {
         Search::find('nearly all words must be highlighted')->get();
-        $highlighted = Search::highlightMatches('all words');
+        $highlighted = Search::highlight('all words');
         $this->assertEquals('<span class="highlight">all</span> <span class="highlight">words</span>', $highlighted);
 
         Search::find('почти все слова должны быть выделены')->get();
-        $highlighted = Search::highlightMatches('все слова');
+        $highlighted = Search::highlight('все слова');
         $this->assertEquals('<span class="highlight">все</span> <span class="highlight">слова</span>', $highlighted);
     }
 }

@@ -29,7 +29,8 @@ class Html
         Runner $queryRunner,
         Highlighter $highlighter,
         AnalyzerConfig $analyzerConfig
-    ) {
+    )
+    {
         $this->queryRunner = $queryRunner;
         $this->highlighter = $highlighter;
         $this->analyzerConfig = $analyzerConfig;
@@ -38,24 +39,22 @@ class Html
     /**
      * Highlight matches in HTML fragment.
      *
-     * @param string $inputHTMLFragment
-     * @param string $inputEncoding
+     * @param string $html
      * @return string
      */
-    public function highlightMatches($inputHTMLFragment, $inputEncoding = 'utf-8')
+    public function highlight($html)
     {
-        $highlightedHTMLFragment = '';
+        $highlighted = '';
 
         $lastQuery = $this->queryRunner->getLastQuery();
 
         if (!empty($lastQuery)) {
 
             $this->analyzerConfig->setAnalyzerForHighlighter();
-            $highlightedHTMLFragment =
-                $lastQuery->htmlFragmentHighlightMatches($inputHTMLFragment, $inputEncoding, $this->highlighter);
+            $highlighted = $lastQuery->htmlFragmentHighlightMatches($html, 'utf-8', $this->highlighter);
             $this->analyzerConfig->setDefaultAnalyzer();
         }
 
-        return !empty($highlightedHTMLFragment) ? $highlightedHTMLFragment : $inputHTMLFragment;
+        return !empty($highlighted) ? $highlighted : $html;
     }
 }

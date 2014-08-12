@@ -1,5 +1,6 @@
 <?php namespace Nqxcode\LaravelSearch\Query;
 
+use Illuminate\Pagination\Factory as PaginatorFactory;
 use ZendSearch\Lucene\Search\Query\AbstractQuery;
 use ZendSearch\Lucene\Search\Query\Boolean as QueryBoolean;
 use Input;
@@ -15,7 +16,7 @@ class Builder
     protected $runner;
     /** @var \Nqxcode\LaravelSearch\Query\Filter */
     protected $filter;
-    /** @var \Nqxcode\LaravelSearch\Query\LuceneQueryBuilder */
+    /** @var \Nqxcode\LaravelSearch\Query\RawQueryBuilder */
     protected $queryBuilder;
 
     /** @var int */
@@ -30,7 +31,7 @@ class Builder
      */
     protected $query;
 
-    public function __construct(Runner $runner, Filter $filter, LuceneQueryBuilder $queryBuilder, QueryBoolean $query)
+    public function __construct(Runner $runner, Filter $filter, RawQueryBuilder $queryBuilder, QueryBoolean $query)
     {
         $this->runner = $runner;
         $this->filter = $filter;
@@ -106,21 +107,10 @@ class Builder
         $models = $this->get();
         $count = $this->count();
 
-        return App::make('paginator')->make($models, $count, $perPage);
-    }
+        /** @var PaginatorFactory $paginator */
+        $paginator = App::make('paginator');
 
-    /**
-     * Execute the current query and delete all found models from the search index.
-     *
-     * @return void
-     */
-    public function delete()
-    {
-        $models = $this->get();
-
-        foreach ($models as $model) {
-            $this->runner->delete($model);
-        }
+        return $paginator->make($models, $count, $perPage);
     }
 
     /**
@@ -146,7 +136,7 @@ class Builder
      */
     protected function addSubquery($query, array $options)
     {
-        list($value, $sign) = $this->queryBuilder->buildRaw($options);
+        list($value, $sign) = $this->queryBuilder->build($options);
         $query->addSubquery($this->queryBuilder->parse($value), $sign);
         return $query;
     }
@@ -175,7 +165,7 @@ class Builder
     }
 
     /**
-     * Add where clause to the query for phrase search.
+     * Add where clause to the query for search by phrase.
      *
      * @param string $field
      * @param mixed $value
@@ -223,7 +213,7 @@ class Builder
     /**
      * Build raw query.
      *
-     * @param $query
+     * @param string|AbstractQuery $query
      * @return $this
      * @throws \InvalidArgumentException
      */

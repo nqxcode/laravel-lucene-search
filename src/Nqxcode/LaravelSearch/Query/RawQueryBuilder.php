@@ -3,10 +3,10 @@
 use ZendSearch\Lucene\Search\QueryParser;
 
 /**
- * Class LuceneQueryBuilder
+ * Class RawQueryBuilder
  * @package Nqxcode\LaravelSearch\Query
  */
-class LuceneQueryBuilder
+class RawQueryBuilder
 {
     /**
      * Build raw lucene query by given options.
@@ -20,7 +20,7 @@ class LuceneQueryBuilder
      **                      - fuzzy      : value of fuzzy(float, 0 ... 1)
      * @return array contains string query and sign
      */
-    public function buildRaw($options)
+    public function build($options)
     {
         $field = array_get($options, 'field');
 
@@ -88,7 +88,7 @@ class LuceneQueryBuilder
     }
 
     /**
-     * Escape special characters for LuceneQueryBuilder query.
+     * Escape special characters for RawQueryBuilder query.
      *
      * @param string $str
      *
@@ -109,7 +109,7 @@ class LuceneQueryBuilder
     }
 
     /**
-     * Escape special operators for LuceneQueryBuilder query.
+     * Escape special operators for RawQueryBuilder query.
      *
      * @param $str
      * @return mixed
