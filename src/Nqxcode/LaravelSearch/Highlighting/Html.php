@@ -2,7 +2,6 @@
 
 use Nqxcode\LaravelSearch\Analyzer\Config as AnalyzerConfig;
 use Nqxcode\LaravelSearch\Query\Runner;
-use Nqxcode\LaravelSearch\QueryRunner;
 
 /**
  * Class Html
@@ -50,7 +49,7 @@ class Html
 
         if (!empty($lastQuery)) {
 
-            $this->analyzerConfig->setAnalyzerForHighlighter();
+            $this->analyzerConfig->setHighlighterAnalyzer();
             $highlighted = $lastQuery->htmlFragmentHighlightMatches($html, 'utf-8', $this->highlighter);
             $this->analyzerConfig->setDefaultAnalyzer();
         }

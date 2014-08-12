@@ -1,8 +1,8 @@
-<?php namespace Nqxcode\LaravelSearch;
+<?php namespace Nqxcode\LaravelSearch\Model;
 
-use \App;
+use App;
 
-class ModelFactory
+class Factory
 {
     public function newInstance($className)
     {

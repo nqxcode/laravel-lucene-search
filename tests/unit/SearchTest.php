@@ -30,7 +30,7 @@ class SearchTest extends TestCase
         $this->connection = m::mock('Nqxcode\LaravelSearch\Connection');
         $this->connection->shouldReceive('getIndexPath');
 
-        $this->config = m::mock('Nqxcode\LaravelSearch\Config');
+        $this->config = m::mock('Nqxcode\LaravelSearch\Model\Config');
         $this->config->shouldReceive('privateKeyPair')
             ->with($this->model)
             ->andReturn(['private_key', 1]);

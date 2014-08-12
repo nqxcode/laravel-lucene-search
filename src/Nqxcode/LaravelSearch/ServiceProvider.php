@@ -2,7 +2,8 @@
 
 use Config;
 use Nqxcode\LaravelSearch\Analyzer\Config as AnalyzerConfig;
-use Nqxcode\LaravelSearch\Config as ModelsConfig;
+use Nqxcode\LaravelSearch\Analyzer\StopwordsFilterFactory;
+use Nqxcode\LaravelSearch\Model\Config as ModelsConfig;
 use ZendSearch\Lucene\Analysis\Analyzer\Common\Utf8Num\CaseInsensitive;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
@@ -43,14 +44,15 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             );
         });
 
-        $this->app['search.analyzer'] = function () {
+        $this->app->bind('ZendSearch\Lucene\Analysis\Analyzer\Common\AbstractCommon', function () {
             return new CaseInsensitive;
-        };
+        });
 
         $this->app->bind('Nqxcode\LaravelSearch\Analyzer\Config', function () {
             return new AnalyzerConfig(
                 Config::get('laravel-lucene-search::analyzer.filters', []),
-                Config::get('laravel-lucene-search::analyzer.stopwords', [])
+                Config::get('laravel-lucene-search::analyzer.stopwords', []),
+                new StopwordsFilterFactory
             );
         });
 
@@ -72,7 +74,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->app->bindShared('search.models.config', function ($app) {
             return new ModelsConfig(
                 $app['search.index.models'],
-                $app->make('Nqxcode\LaravelSearch\ModelFactory')
+                $app->make('Nqxcode\LaravelSearch\Model\Factory')
             );
         });
 

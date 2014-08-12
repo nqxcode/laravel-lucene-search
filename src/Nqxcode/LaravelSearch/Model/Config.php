@@ -1,4 +1,4 @@
-<?php namespace Nqxcode\LaravelSearch;
+<?php namespace Nqxcode\LaravelSearch\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use ZendSearch\Lucene\Search\QueryHit;
@@ -19,7 +19,7 @@ class Config
     /**
      * Model factory.
      *
-     * @var \Nqxcode\LaravelSearch\ModelFactory
+     * @var \Nqxcode\LaravelSearch\Model\Factory
      */
     private $modelFactory;
 
@@ -27,10 +27,10 @@ class Config
      * Create configuration for models.
      *
      * @param array $configuration
-     * @param ModelFactory $modelFactory
+     * @param Factory $modelFactory
      * @throws \InvalidArgumentException
      */
-    public function __construct(array $configuration, ModelFactory $modelFactory)
+    public function __construct(array $configuration, Factory $modelFactory)
     {
         $this->modelFactory = $modelFactory;
 
@@ -40,7 +40,7 @@ class Config
 
             if (count($fields) == 0) {
                 throw new \InvalidArgumentException(
-                    "Parameter 'fields' for the class '{$className}' must be specified."
+                    "Parameter 'fields' for '{$className}' class must be specified."
                 );
             }
 

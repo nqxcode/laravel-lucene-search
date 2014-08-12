@@ -2,12 +2,13 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Nqxcode\LaravelSearch\Highlighting\Html;
+use Nqxcode\LaravelSearch\Model\Config;
 use ZendSearch\Lucene\Document;
 use ZendSearch\Lucene\Index\Term;
 use ZendSearch\Lucene\Search\Query\MultiTerm;
 use ZendSearch\Lucene\Document\Field;
 
-use \App;
+use App;
 
 /**
  * Class Search
@@ -39,7 +40,7 @@ class Search
     private $config;
 
     /**
-     * @return \Nqxcode\LaravelSearch\Config
+     * @return \Nqxcode\LaravelSearch\Model\Config
      */
     public function config()
     {

@@ -35,7 +35,7 @@ class HtmlTest extends TestCase
         $this->queryRunner->shouldReceive('getLastQuery')
             ->andReturn($lastQuery = m::mock())->ordered();
 
-        $this->analyzerConfig->shouldReceive('setAnalyzerForHighlighter')->once()->ordered();
+        $this->analyzerConfig->shouldReceive('setHighlighterAnalyzer')->once()->ordered();
         $lastQuery->shouldReceive('htmlFragmentHighlightMatches')
             ->with('test', 'utf-8', $this->highlighter)->andReturn('highlighted')->ordered();
         $this->analyzerConfig->shouldReceive('setDefaultAnalyzer')->once()->ordered();
@@ -47,7 +47,7 @@ class HtmlTest extends TestCase
     {
         $this->queryRunner->shouldReceive('getLastQuery')
             ->andReturn(false);
-        $this->analyzerConfig->shouldReceive('setAnalyzerForHighlighter')->never();
+        $this->analyzerConfig->shouldReceive('setHighlighterAnalyzer')->never();
         $this->analyzerConfig->shouldReceive('setDefaultAnalyzer')->never();
 
         $this->assertEquals('test', $this->html->highlight('test'));

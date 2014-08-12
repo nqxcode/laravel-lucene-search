@@ -2,8 +2,6 @@
 
 use ZendSearch\Lucene\Analysis\Analyzer\Analyzer;
 use ZendSearch\Lucene\Analysis\Analyzer\Common\AbstractCommon;
-use ZendSearch\Lucene\Analysis\TokenFilter\StopWords;
-use ZendSearch\Lucene\Search\QueryParser;
 
 use App;
 
@@ -13,24 +11,19 @@ use App;
  */
 class Config
 {
-    /** @var array  */
-    private $filters;
-    /** @var array  */
+    /** @var array */
+    private $filterClasses;
+    /** @var array */
     private $stopWordFiles;
 
-    public function __construct(array $filerClasses, array $stopWordFiles)
+    /** @var \Nqxcode\LaravelSearch\Analyzer\StopwordsFilterFactory */
+    private $stopwordsFilterFactory;
+
+    public function __construct(array $filterClasses, array $stopWordFiles, StopwordsFilterFactory $stopwordsFilterFactory)
     {
-        $this->filters = array_map(function ($filerClass) {
-            return App::make($filerClass);
-        }, $filerClasses);
-
-        foreach ($stopWordFiles as $stopWordFile) {
-            if (!is_file($stopWordFile)) {
-                throw new \InvalidArgumentException("File '{$stopWordFile}' with stop words doesn't exit.");
-            }
-        }
-
+        $this->filterClasses = $filterClasses;
         $this->stopWordFiles = $stopWordFiles;
+        $this->stopwordsFilterFactory = $stopwordsFilterFactory;
     }
 
     /**
@@ -39,16 +32,14 @@ class Config
     public function setDefaultAnalyzer()
     {
         /** @var AbstractCommon $analyzer */
-        $analyzer = App::make('search.analyzer');
+        $analyzer = App::make('ZendSearch\Lucene\Analysis\Analyzer\Common\AbstractCommon');
 
-        foreach ($this->stopWordFiles as $stopWordFile) {
-            $stopWordsFilter = new StopWords;
-            $stopWordsFilter->loadFromFile($stopWordFile);
-            $analyzer->addFilter($stopWordsFilter);
+        foreach ($this->stopWordFiles as $file) {
+            $analyzer->addFilter($this->stopwordsFilterFactory->newInstance($file));
         }
 
-        foreach ($this->filters as $filter) {
-            $analyzer->addFilter($filter);
+        foreach ($this->filterClasses as $filterClass) {
+            $analyzer->addFilter(App::make($filterClass));
         }
 
         Analyzer::setDefault($analyzer);
@@ -57,13 +48,13 @@ class Config
     /**
      * Set analyzer for words highlighting (not for indexing).
      */
-    public function setAnalyzerForHighlighter()
+    public function setHighlighterAnalyzer()
     {
         /** @var AbstractCommon $analyzer */
-        $analyzer = App::make('search.analyzer');
+        $analyzer = App::make('ZendSearch\Lucene\Analysis\Analyzer\Common\AbstractCommon');
 
-        foreach ($this->filters as $filter) {
-            $analyzer->addFilter($filter);
+        foreach ($this->filterClasses as $filterClass) {
+            $analyzer->addFilter(App::make($filterClass));
         }
 
         Analyzer::setDefault($analyzer);
