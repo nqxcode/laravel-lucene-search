@@ -1,8 +1,8 @@
 <?php namespace tests\unit;
 
-use \Mockery as m;
-use \Illuminate\Database\Eloquent\Model;
-use Nqxcode\LaravelSearch\SearchTrait;
+use Mockery as m;
+use Illuminate\Database\Eloquent\Model;
+use Nqxcode\LuceneSearch\SearchTrait;
 use tests\TestCase;
 
 /**

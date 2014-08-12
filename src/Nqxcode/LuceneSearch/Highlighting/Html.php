@@ -1,11 +1,11 @@
-<?php namespace Nqxcode\LaravelSearch\Highlighting;
+<?php namespace Nqxcode\LuceneSearch\Highlighting;
 
-use Nqxcode\LaravelSearch\Analyzer\Config as AnalyzerConfig;
-use Nqxcode\LaravelSearch\Query\Runner;
+use Nqxcode\LuceneSearch\Analyzer\Config as AnalyzerConfig;
+use Nqxcode\LuceneSearch\Query\Runner;
 
 /**
  * Class Html
- * @package Nqxcode\LaravelSearch
+ * @package Nqxcode\LuceneSearch
  */
 class Html
 {

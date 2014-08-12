@@ -1,7 +1,7 @@
-<?php  namespace Nqxcode\LaravelSearch\Console;
+<?php  namespace Nqxcode\LuceneSearch\Console;
 
 use Illuminate\Console\Command;
-use Nqxcode\LaravelSearch\Search;
+use Nqxcode\LuceneSearch\Search;
 
 use \App;
 

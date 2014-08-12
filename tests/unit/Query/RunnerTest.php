@@ -9,7 +9,7 @@ use Mockery as m;
  */
 class RunnerTest extends TestCase
 {
-    /** @var \Nqxcode\LaravelSearch\Query\Runner */
+    /** @var \Nqxcode\LuceneSearch\Query\Runner */
     private $runner;
     /** @var  \Mockery\MockInterface */
     private $search;
@@ -18,9 +18,9 @@ class RunnerTest extends TestCase
     {
         parent::setUp();
 
-        $this->search = m::mock('Nqxcode\LaravelSearch\Search');
-        $this->app->instance('Nqxcode\LaravelSearch\Search', $this->search);
-        $this->runner = $this->app->make('Nqxcode\LaravelSearch\Query\Runner');
+        $this->search = m::mock('Nqxcode\LuceneSearch\Search');
+        $this->app->instance('Nqxcode\LuceneSearch\Search', $this->search);
+        $this->runner = $this->app->make('Nqxcode\LuceneSearch\Query\Runner');
 
         $this->search->shouldReceive('index->find')->with('test')->andReturn([1, 2, 3, 4, 5]);
     }

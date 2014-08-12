@@ -35,13 +35,13 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
 
     protected function getPackageProviders()
     {
-        return array('Nqxcode\LaravelSearch\ServiceProvider');
+        return array('Nqxcode\LuceneSearch\ServiceProvider');
     }
 
     protected function getPackageAliases()
     {
         return array(
-            'Search' => 'Nqxcode\LaravelSearch\Facade',
+            'Search' => 'Nqxcode\LuceneSearch\Facade',
         );
     }
 }

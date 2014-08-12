@@ -2,7 +2,7 @@
 
 use \Mockery as m;
 
-use Nqxcode\LaravelSearch\Connection;
+use Nqxcode\LuceneSearch\Connection;
 use tests\TestCase;
 
 class ConnectionTest extends TestCase
@@ -14,7 +14,7 @@ class ConnectionTest extends TestCase
     {
         parent::setUp();
         $this->indexPath = sys_get_temp_dir() . '/temp_lucene_index';
-        $this->analyzerConfig = m::mock('Nqxcode\LaravelSearch\Analyzer\Config');
+        $this->analyzerConfig = m::mock('Nqxcode\LuceneSearch\Analyzer\Config');
         $this->analyzerConfig->shouldReceive('setDefaultAnalyzer');
     }
 

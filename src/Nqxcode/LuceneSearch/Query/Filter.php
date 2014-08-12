@@ -1,9 +1,9 @@
-<?php namespace Nqxcode\LaravelSearch\Query;
+<?php namespace Nqxcode\LuceneSearch\Query;
 use ZendSearch\Lucene\Search\Query\AbstractQuery;
 
 /**
  * Class Filter
- * @package Nqxcode\LaravelSearch\Query
+ * @package Nqxcode\LuceneSearch\Query
  */
 class Filter
 {

@@ -21,10 +21,10 @@
     },
     "autoload": {
         "files": [
-            "src/Nqxcode/LaravelSearch/helpers.php"
+            "src/Nqxcode/LuceneSearch/helpers.php"
         ],
         "psr-4": {
-            "Nqxcode\\LaravelSearch\\": "src/Nqxcode/LaravelSearch",
+            "Nqxcode\\LuceneSearch\\": "src/Nqxcode/LuceneSearch",
             "tests\\": "tests/"
         }
     },

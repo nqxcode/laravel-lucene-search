@@ -1,4 +1,4 @@
-<?php namespace Nqxcode\LaravelSearch\Model;
+<?php namespace Nqxcode\LuceneSearch\Model;
 
 use App;
 

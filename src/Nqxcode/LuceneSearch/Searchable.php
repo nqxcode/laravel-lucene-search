@@ -1,11 +1,11 @@
 <?php
-namespace Nqxcode\LaravelSearch;
+namespace Nqxcode\LuceneSearch;
 
 use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Interface Searchable
- * @package Nqxcode\LaravelSearch
+ * @package Nqxcode\LuceneSearch
  */
 interface Searchable
 {

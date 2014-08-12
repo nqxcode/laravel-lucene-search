@@ -1,4 +1,4 @@
-<?php namespace Nqxcode\LaravelSearch\Query;
+<?php namespace Nqxcode\LuceneSearch\Query;
 
 use Illuminate\Pagination\Factory as PaginatorFactory;
 use ZendSearch\Lucene\Search\Query\AbstractQuery;
@@ -8,15 +8,15 @@ use App;
 
 /**
  * Class Builder
- * @package Nqxcode\LaravelSearch\Query
+ * @package Nqxcode\LuceneSearch\Query
  */
 class Builder
 {
-    /** @var \Nqxcode\LaravelSearch\Query\Runner */
+    /** @var \Nqxcode\LuceneSearch\Query\Runner */
     protected $runner;
-    /** @var \Nqxcode\LaravelSearch\Query\Filter */
+    /** @var \Nqxcode\LuceneSearch\Query\Filter */
     protected $filter;
-    /** @var \Nqxcode\LaravelSearch\Query\RawQueryBuilder */
+    /** @var \Nqxcode\LuceneSearch\Query\RawQueryBuilder */
     protected $queryBuilder;
 
     /** @var int */

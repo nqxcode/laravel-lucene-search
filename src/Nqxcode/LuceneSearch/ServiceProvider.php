@@ -1,9 +1,9 @@
-<?php namespace Nqxcode\LaravelSearch;
+<?php namespace Nqxcode\LuceneSearch;
 
 use Config;
-use Nqxcode\LaravelSearch\Analyzer\Config as AnalyzerConfig;
-use Nqxcode\LaravelSearch\Analyzer\StopwordsFilterFactory;
-use Nqxcode\LaravelSearch\Model\Config as ModelsConfig;
+use Nqxcode\LuceneSearch\Analyzer\Config as AnalyzerConfig;
+use Nqxcode\LuceneSearch\Analyzer\StopwordsFilterFactory;
+use Nqxcode\LuceneSearch\Model\Config as ModelsConfig;
 use ZendSearch\Lucene\Analysis\Analyzer\Common\Utf8Num\CaseInsensitive;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
@@ -33,7 +33,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('Nqxcode\LaravelSearch\Search', function ($app) {
+        $this->app->bind('Nqxcode\LuceneSearch\Search', function ($app) {
             return $app['search'];
         });
 
@@ -48,7 +48,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             return new CaseInsensitive;
         });
 
-        $this->app->bind('Nqxcode\LaravelSearch\Analyzer\Config', function () {
+        $this->app->bind('Nqxcode\LuceneSearch\Analyzer\Config', function () {
             return new AnalyzerConfig(
                 Config::get('laravel-lucene-search::analyzer.filters', []),
                 Config::get('laravel-lucene-search::analyzer.stopwords', []),
@@ -63,7 +63,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->app->bindShared('search.connection', function ($app) {
             return new Connection(
                 $app['search.index.path'],
-                $app->make('Nqxcode\LaravelSearch\Analyzer\Config')
+                $app->make('Nqxcode\LuceneSearch\Analyzer\Config')
             );
         });
 
@@ -74,7 +74,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->app->bindShared('search.models.config', function ($app) {
             return new ModelsConfig(
                 $app['search.index.models'],
-                $app->make('Nqxcode\LaravelSearch\Model\Factory')
+                $app->make('Nqxcode\LuceneSearch\Model\Factory')
             );
         });
 

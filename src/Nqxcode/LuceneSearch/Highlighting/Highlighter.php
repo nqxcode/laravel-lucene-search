@@ -1,4 +1,4 @@
-<?php namespace Nqxcode\LaravelSearch\Highlighting;
+<?php namespace Nqxcode\LuceneSearch\Highlighting;
 
 use ZendSearch\Lucene\Document;
 use ZendSearch\Lucene\Search\Highlighter\HighlighterInterface;

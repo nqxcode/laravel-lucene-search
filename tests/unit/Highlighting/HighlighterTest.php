@@ -1,7 +1,7 @@
 <?php
 namespace tests\unit\Highlighting;
 
-use Nqxcode\LaravelSearch\Highlighting\Highlighter;
+use Nqxcode\LuceneSearch\Highlighting\Highlighter;
 use tests\TestCase;
 
 use Mockery as m;

@@ -1,7 +1,7 @@
 <?php
 namespace tests\unit\Highlighting;
 
-use Nqxcode\LaravelSearch\Highlighting\Html;
+use Nqxcode\LuceneSearch\Highlighting\Html;
 use tests\TestCase;
 
 use Mockery as m;
@@ -23,9 +23,9 @@ class HtmlTest extends TestCase
 
     public function setUp()
     {
-        $this->queryRunner = m::mock('Nqxcode\LaravelSearch\Query\Runner');
-        $this->highlighter = m::mock('Nqxcode\LaravelSearch\Highlighting\Highlighter');
-        $this->analyzerConfig = m::mock('Nqxcode\LaravelSearch\Analyzer\Config');
+        $this->queryRunner = m::mock('Nqxcode\LuceneSearch\Query\Runner');
+        $this->highlighter = m::mock('Nqxcode\LuceneSearch\Highlighting\Highlighter');
+        $this->analyzerConfig = m::mock('Nqxcode\LuceneSearch\Analyzer\Config');
 
         $this->html = new Html($this->queryRunner, $this->highlighter, $this->analyzerConfig);
     }

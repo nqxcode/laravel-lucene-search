@@ -2,7 +2,7 @@
 
 use \Mockery as m;
 
-use Nqxcode\LaravelSearch\Search;
+use Nqxcode\LuceneSearch\Search;
 use tests\lib\DummyModel;
 use tests\TestCase;
 use ZendSearch\Lucene\Document;
@@ -27,10 +27,10 @@ class SearchTest extends TestCase
         $this->model->id = 1;
         $this->model->name = 'test name';
 
-        $this->connection = m::mock('Nqxcode\LaravelSearch\Connection');
+        $this->connection = m::mock('Nqxcode\LuceneSearch\Connection');
         $this->connection->shouldReceive('getIndexPath');
 
-        $this->config = m::mock('Nqxcode\LaravelSearch\Model\Config');
+        $this->config = m::mock('Nqxcode\LuceneSearch\Model\Config');
         $this->config->shouldReceive('privateKeyPair')
             ->with($this->model)
             ->andReturn(['private_key', 1]);

@@ -1,8 +1,8 @@
-<?php namespace Nqxcode\LaravelSearch;
+<?php namespace Nqxcode\LuceneSearch;
 
 use Illuminate\Database\Eloquent\Model;
-use Nqxcode\LaravelSearch\Highlighting\Html;
-use Nqxcode\LaravelSearch\Model\Config;
+use Nqxcode\LuceneSearch\Highlighting\Html;
+use Nqxcode\LuceneSearch\Model\Config;
 use ZendSearch\Lucene\Document;
 use ZendSearch\Lucene\Index\Term;
 use ZendSearch\Lucene\Search\Query\MultiTerm;
@@ -13,7 +13,7 @@ use App;
 /**
  * Class Search
  *
- * @package Nqxcode\LaravelSearch
+ * @package Nqxcode\LuceneSearch
  */
 class Search
 {
@@ -40,7 +40,7 @@ class Search
     private $config;
 
     /**
-     * @return \Nqxcode\LaravelSearch\Model\Config
+     * @return \Nqxcode\LuceneSearch\Model\Config
      */
     public function config()
     {
@@ -159,7 +159,7 @@ class Search
      */
     public function __call($name, $arguments)
     {
-        $queryBuilder = App::make('Nqxcode\LaravelSearch\Query\Builder');
+        $queryBuilder = App::make('Nqxcode\LuceneSearch\Query\Builder');
         return call_user_func_array([$queryBuilder, $name], $arguments);
     }
 
@@ -172,7 +172,7 @@ class Search
     public function highlight($html)
     {
         /** @var Html $highlighter */
-        $highlighter = App::make('Nqxcode\LaravelSearch\Highlighting\Html');
+        $highlighter = App::make('Nqxcode\LuceneSearch\Highlighting\Html');
         return $highlighter->highlight($html);
     }
 }

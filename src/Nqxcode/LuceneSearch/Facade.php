@@ -1,4 +1,4 @@
-<?php namespace Nqxcode\LaravelSearch;
+<?php namespace Nqxcode\LuceneSearch;
 
 class Facade extends \Illuminate\Support\Facades\Facade
 {

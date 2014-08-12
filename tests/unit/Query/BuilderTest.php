@@ -10,7 +10,7 @@ use Input;
 
 class BuilderTest extends TestCase
 {
-    /** @var \Nqxcode\LaravelSearch\Query\Builder */
+    /** @var \Nqxcode\LuceneSearch\Query\Builder */
     private $constructor;
     /** @var  Boolean */
     private $luceneQuery;
@@ -28,15 +28,15 @@ class BuilderTest extends TestCase
     {
         parent::setUp();
 
-        $this->runner = m::mock('Nqxcode\LaravelSearch\Query\Runner');
-        $this->filter = m::mock('Nqxcode\LaravelSearch\Query\Filter');
+        $this->runner = m::mock('Nqxcode\LuceneSearch\Query\Runner');
+        $this->filter = m::mock('Nqxcode\LuceneSearch\Query\Filter');
         $this->query = m::mock('ZendSearch\Lucene\Search\Query\Boolean');
-        $this->rawQueryBuilder = m::mock('Nqxcode\LaravelSearch\Query\RawQueryBuilder');
+        $this->rawQueryBuilder = m::mock('Nqxcode\LuceneSearch\Query\RawQueryBuilder');
 
-        $this->app->instance('Nqxcode\LaravelSearch\Query\Runner', $this->runner);
-        $this->app->instance('Nqxcode\LaravelSearch\Query\Filter', $this->filter);
+        $this->app->instance('Nqxcode\LuceneSearch\Query\Runner', $this->runner);
+        $this->app->instance('Nqxcode\LuceneSearch\Query\Filter', $this->filter);
         $this->app->instance('ZendSearch\Lucene\Search\Query\Boolean', $this->query);
-        $this->app->instance('Nqxcode\LaravelSearch\Query\RawQueryBuilder', $this->rawQueryBuilder);
+        $this->app->instance('Nqxcode\LuceneSearch\Query\RawQueryBuilder', $this->rawQueryBuilder);
 
         $this->rawQueryBuilder->shouldReceive('build')->with($this->defaultFindOptions())->andReturn(['test', true]);
         $this->rawQueryBuilder->shouldReceive('parse')->with('test')->andReturn($this->luceneQuery = new Boolean)->byDefault();
@@ -49,7 +49,7 @@ class BuilderTest extends TestCase
 
         $this->filter->shouldReceive('applyFilters')->with($this->query);
 
-        $this->constructor = $this->app->make('Nqxcode\LaravelSearch\Query\Builder');
+        $this->constructor = $this->app->make('Nqxcode\LuceneSearch\Query\Builder');
     }
 
     public function testFind()

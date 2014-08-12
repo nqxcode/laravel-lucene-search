@@ -1,16 +1,16 @@
-<?php namespace Nqxcode\LaravelSearch\Query;
+<?php namespace Nqxcode\LuceneSearch\Query;
 
-use Nqxcode\LaravelSearch\Search;
+use Nqxcode\LuceneSearch\Search;
 use ZendSearch\Lucene\Search\Query\AbstractQuery;
 use ZendSearch\Lucene\Search\QueryHit;
 
 /**
  * Class Runner
- * @package Nqxcode\LaravelSearch\Query
+ * @package Nqxcode\LuceneSearch\Query
  */
 class Runner
 {
-    /** @var \Nqxcode\LaravelSearch\Search */
+    /** @var \Nqxcode\LuceneSearch\Search */
     private $search;
 
     /**

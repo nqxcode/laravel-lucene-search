@@ -1,10 +1,10 @@
-<?php namespace Nqxcode\LaravelSearch\Query;
+<?php namespace Nqxcode\LuceneSearch\Query;
 
 use ZendSearch\Lucene\Search\QueryParser;
 
 /**
  * Class RawQueryBuilder
- * @package Nqxcode\LaravelSearch\Query
+ * @package Nqxcode\LuceneSearch\Query
  */
 class RawQueryBuilder
 {

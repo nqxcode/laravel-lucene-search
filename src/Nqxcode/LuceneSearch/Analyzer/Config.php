@@ -1,4 +1,4 @@
-<?php namespace Nqxcode\LaravelSearch\Analyzer;
+<?php namespace Nqxcode\LuceneSearch\Analyzer;
 
 use ZendSearch\Lucene\Analysis\Analyzer\Analyzer;
 use ZendSearch\Lucene\Analysis\Analyzer\Common\AbstractCommon;
@@ -8,7 +8,7 @@ use App;
 
 /**
  * Class Config
- * @package Nqxcode\LaravelSearch\Analyzer
+ * @package Nqxcode\LuceneSearch\Analyzer
  */
 class Config
 {
@@ -17,7 +17,7 @@ class Config
     /** @var array */
     private $stopWordFiles;
 
-    /** @var \Nqxcode\LaravelSearch\Analyzer\StopwordsFilterFactory */
+    /** @var \Nqxcode\LuceneSearch\Analyzer\StopwordsFilterFactory */
     private $stopwordsFilterFactory;
 
     public function __construct(array $filterClasses, array $stopWordFiles, StopwordsFilterFactory $stopwordsFilterFactory)

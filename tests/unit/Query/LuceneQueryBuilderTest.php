@@ -10,13 +10,13 @@ use ZendSearch\Lucene\Search\QueryParser;
  */
 class RawQueryBuilderTest extends TestCase
 {
-    /** @var \Nqxcode\LaravelSearch\Query\RawQueryBuilder */
+    /** @var \Nqxcode\LuceneSearch\Query\RawQueryBuilder */
     private $builder;
 
     public function setUp()
     {
         parent::setUp();
-        $this->builder = $this->app->make('Nqxcode\LaravelSearch\Query\RawQueryBuilder');
+        $this->builder = $this->app->make('Nqxcode\LuceneSearch\Query\RawQueryBuilder');
     }
 
     /**

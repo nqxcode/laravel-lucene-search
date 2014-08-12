@@ -5,7 +5,7 @@ use Mockery as m;
 use tests\lib\DummyModel;
 use tests\lib\Product;
 use tests\TestCase;
-use \Nqxcode\LaravelSearch\Model\Config;
+use \Nqxcode\LuceneSearch\Model\Config;
 
 class ConfigTest extends TestCase
 {
@@ -24,7 +24,7 @@ class ConfigTest extends TestCase
 
         $configs = $this->getValidConfigs();
 
-        $modelFactory = m::mock('Nqxcode\LaravelSearch\Model\Factory');
+        $modelFactory = m::mock('Nqxcode\LuceneSearch\Model\Factory');
 
         $modelFactory->shouldReceive('newInstance')
             ->with('tests\lib\Product')

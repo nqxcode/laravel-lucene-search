@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Nqxcode\LaravelSearch\Searchable;
+use Nqxcode\LuceneSearch\Searchable;
 
 /**
  * Class Product

@@ -1,10 +1,10 @@
-<?php namespace Nqxcode\LaravelSearch\Analyzer;
+<?php namespace Nqxcode\LuceneSearch\Analyzer;
 
 use ZendSearch\Lucene\Analysis\TokenFilter\StopWords;
 
 /**
  * Class StopwordsFilterFactory
- * @package Nqxcode\LaravelSearch\Analyzer
+ * @package Nqxcode\LuceneSearch\Analyzer
  */
 class StopwordsFilterFactory
 {

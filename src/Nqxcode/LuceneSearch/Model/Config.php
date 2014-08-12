@@ -1,11 +1,11 @@
-<?php namespace Nqxcode\LaravelSearch\Model;
+<?php namespace Nqxcode\LuceneSearch\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use ZendSearch\Lucene\Search\QueryHit;
 
 /**
  * Class Config
- * @package Nqxcode\LaravelSearch
+ * @package Nqxcode\LuceneSearch
  */
 class Config
 {
@@ -19,7 +19,7 @@ class Config
     /**
      * Model factory.
      *
-     * @var \Nqxcode\LaravelSearch\Model\Factory
+     * @var \Nqxcode\LuceneSearch\Model\Factory
      */
     private $modelFactory;
 

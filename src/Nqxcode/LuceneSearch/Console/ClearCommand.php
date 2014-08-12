@@ -1,4 +1,4 @@
-<?php  namespace Nqxcode\LaravelSearch\Console;
+<?php  namespace Nqxcode\LuceneSearch\Console;
 
 use Illuminate\Console\Command;
 use Config;

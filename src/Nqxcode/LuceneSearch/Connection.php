@@ -1,6 +1,6 @@
-<?php namespace Nqxcode\LaravelSearch;
+<?php namespace Nqxcode\LuceneSearch;
 
-use Nqxcode\LaravelSearch\Analyzer\Config as AnalyzerConfig;
+use Nqxcode\LuceneSearch\Analyzer\Config as AnalyzerConfig;
 use ZendSearch\Lucene\Lucene;
 use ZendSearch\Exception\ExceptionInterface;
 
