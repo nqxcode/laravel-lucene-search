@@ -25,7 +25,7 @@ class Builder
     protected $offset;
 
     /**
-     * Main query.use ZendSearch\Lucene\Search\Query\Boolean as QueryBoolean;
+     * Main query.
      *
      * @var mixed
      */

@@ -18,4 +18,10 @@ class StopwordsFilterFactory
         $stopWordsFilter->loadFromFile($path);
         return $stopWordsFilter;
     }
+
+    public static function defaultStopwords()
+    {
+        $dir = __DIR__ . '/resources/stopwords';
+        return ["{$dir}/en", "{$dir}/ru",];
+    }
 } 

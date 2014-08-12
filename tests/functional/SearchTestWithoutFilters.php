@@ -7,7 +7,7 @@ use Config;
 
 use Search;
 
-class SearchTest extends BaseTestCase
+class SearchTestWithoutFilters extends BaseTestCase
 {
     protected function configure()
     {

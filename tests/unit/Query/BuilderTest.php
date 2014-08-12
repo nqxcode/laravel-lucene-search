@@ -115,9 +115,7 @@ class BuilderTest extends TestCase
         $closure = function(){return 'test';};
         $this->filter->shouldReceive('add')->with($closure)->once();
 
-       $this->assertEquals($this->constructor, $this->constructor->addFilter($closure));
-
-        return $this;
+       $this->assertEquals($this->constructor, $this->constructor->addFilter($closure));;
     }
 
     public function testPaginate()
