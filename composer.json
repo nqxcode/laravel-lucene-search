@@ -23,9 +23,6 @@
         "files": [
             "src/Nqxcode/LaravelSearch/helpers.php"
         ],
-        "classmap": [
-            "src/migrations"
-        ],
         "psr-4": {
             "Nqxcode\\LaravelSearch\\": "src/Nqxcode/LaravelSearch",
             "tests\\": "tests/"
