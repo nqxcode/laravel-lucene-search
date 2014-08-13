@@ -2,8 +2,8 @@
 
 use Mockery as m;
 
-use tests\lib\DummyModel;
-use tests\lib\Product;
+use tests\models\DummyModel;
+use tests\models\Product;
 use tests\TestCase;
 use \Nqxcode\LuceneSearch\Model\Config;
 
@@ -27,19 +27,19 @@ class ConfigTest extends TestCase
         $modelFactory = m::mock('Nqxcode\LuceneSearch\Model\Factory');
 
         $modelFactory->shouldReceive('newInstance')
-            ->with('tests\lib\Product')
+            ->with('tests\models\Product')
             ->andReturn($this->productRepoMock = m::mock(new Product));
 
         $this->productRepoMock->id = 1;
 
         $modelFactory->shouldReceive('newInstance')
-            ->with('tests\lib\DummyModel')
+            ->with('tests\models\DummyModel')
             ->andReturn($this->dummyRepoMock = m::mock(new DummyModel));
 
         $this->dummyRepoMock->pk = 2;
 
-        $modelFactory->shouldReceive('classUid')->with('tests\lib\Product')->andReturn('1');
-        $modelFactory->shouldReceive('classUid')->with('tests\lib\DummyModel')->andReturn('2');
+        $modelFactory->shouldReceive('classUid')->with('tests\models\Product')->andReturn('1');
+        $modelFactory->shouldReceive('classUid')->with('tests\models\DummyModel')->andReturn('2');
 
         $this->unknownRepoMock = m::mock('Illuminate\Database\Eloquent\Model');
         $modelFactory->shouldReceive('classUid')->with(get_class($this->unknownRepoMock))->andReturn('999');
@@ -113,14 +113,14 @@ class ConfigTest extends TestCase
     private function getValidConfigs()
     {
         return [
-            'tests\lib\Product' => [
+            'tests\models\Product' => [
                 'fields' => [
                     'name',
                     'description',
                 ]
             ]
             ,
-            'tests\lib\DummyModel' => [
+            'tests\models\DummyModel' => [
                 'private_key' => 'pk',
                 'fields' => [
                     'first_field',

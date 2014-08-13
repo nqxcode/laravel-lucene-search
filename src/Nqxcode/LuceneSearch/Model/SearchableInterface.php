@@ -1,13 +1,13 @@
 <?php
-namespace Nqxcode\LuceneSearch;
+namespace Nqxcode\LuceneSearch\Model;
 
 use Illuminate\Database\Eloquent\Collection;
 
 /**
- * Interface Searchable
+ * Interface SearchableInterface
  * @package Nqxcode\LuceneSearch
  */
-interface Searchable
+interface SearchableInterface
 {
     /**
      * Is the model available for search indexing?

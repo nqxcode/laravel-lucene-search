@@ -91,7 +91,7 @@ class BuilderTest extends TestCase
             'value' => 'test',
             'required' => true,
             'prohibited' => false,
-            'phrase' => false,
+            'phrase' => true,
             'fuzzy' => null,
             'proximity' => null,
         ];

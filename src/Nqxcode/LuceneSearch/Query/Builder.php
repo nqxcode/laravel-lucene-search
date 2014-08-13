@@ -184,8 +184,6 @@ class Builder
         $options['value'] = $value;
         $options = $this->defaultOptions($options);
 
-        $options['phrase'] = true;
-
         $this->query = $this->addSubquery($this->query, $options);
 
         return $this;
@@ -204,7 +202,7 @@ class Builder
             'value' => array_get($options, 'value', ''),
             'required' => array_get($options, 'required', true),
             'prohibited' => array_get($options, 'prohibited', false),
-            'phrase' => array_get($options, 'phrase', false),
+            'phrase' => array_get($options, 'phrase', true),
             'fuzzy' => array_get($options, 'fuzzy', null),
             'proximity' => array_get($options, 'proximity', null),
         ];
@@ -229,8 +227,8 @@ class Builder
             $this->query = $query;
         } else {
             throw new \InvalidArgumentException(
-                "Argument 'query' must be a string or ZendSearch\\Lucene\\Search\\Query\\AbstractQuery instance or " .
-                "callable returning a string or ZendSearch\\Lucene\\Search\\Query\\AbstractQuery instance."
+                "Argument 'query' must be a string or ZendSearch\\Lucene\\Search\\Query\\AbstractQuery instance " .
+                "or callable returning a string or ZendSearch\\Lucene\\Search\\Query\\AbstractQuery instance."
             );
         }
 

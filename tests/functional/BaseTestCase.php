@@ -20,10 +20,11 @@ abstract class BaseTestCase extends TestCase
         $this->app->bindShared('search.index.models', function () {
             return
                 [
-                    'tests\lib\Product' => [
+                    'tests\models\Product' => [
                         'fields' => [
                             'name',
                             'description',
+                            'price'
                         ]
                     ]
                 ];

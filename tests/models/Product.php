@@ -1,17 +1,21 @@
-<?php namespace tests\lib;
+<?php namespace tests\models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Nqxcode\LuceneSearch\Searchable;
+use Nqxcode\LuceneSearch\Model\SearchableInterface;
+use Nqxcode\LuceneSearch\Model\SearchTrait;
 
 /**
  * Class Product
+ * @property string $name
+ * @property string $description
  * @property boolean $publish
  * @method Builder wherePublish
- * @package tests\lib
+ * @package tests\models
  */
-class Product extends Model implements Searchable
+class Product extends Model implements SearchableInterface
 {
+    use SearchTrait;
     /**
      * @inheritdoc
      */
@@ -26,5 +30,10 @@ class Product extends Model implements Searchable
     public function allSearchable()
     {
         return $this->wherePublish(1)->get();
+    }
+
+    public static function boot()
+    {
+        self::mountSearchEvents();
     }
 }

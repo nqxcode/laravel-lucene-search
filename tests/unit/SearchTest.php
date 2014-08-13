@@ -1,9 +1,8 @@
 <?php namespace tests\unit;
 
-use \Mockery as m;
-
+use Mockery as m;
 use Nqxcode\LuceneSearch\Search;
-use tests\lib\DummyModel;
+use tests\models\DummyModel;
 use tests\TestCase;
 use ZendSearch\Lucene\Document;
 use ZendSearch\Lucene\Document\Field;

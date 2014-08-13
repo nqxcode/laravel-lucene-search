@@ -4,6 +4,11 @@ use App;
 
 class Factory
 {
+    /**
+     * @param $className
+     * @return \Illuminate\Database\Eloquent\Model
+     * @throws \InvalidArgumentException
+     */
     public function newInstance($className)
     {
         $baseClass = 'Illuminate\Database\Eloquent\Model';

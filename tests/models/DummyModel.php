@@ -1,4 +1,4 @@
-<?php  namespace tests\lib;
+<?php namespace tests\models;
 
 use Illuminate\Database\Eloquent\Model;
 
