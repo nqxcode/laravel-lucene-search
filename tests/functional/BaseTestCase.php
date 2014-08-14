@@ -2,6 +2,7 @@
 namespace tests\functional;
 
 use tests\TestCase;
+use Config;
 
 /**
  * Class BaseTestCase
@@ -17,6 +18,8 @@ abstract class BaseTestCase extends TestCase
 
     protected function configure()
     {
+        Config::set('laravel-lucene-search::index.path', storage_path() . '/laravel-lucene-search/index_' . uniqid());
+
         $this->app->bindShared('search.index.models', function () {
             return
                 [

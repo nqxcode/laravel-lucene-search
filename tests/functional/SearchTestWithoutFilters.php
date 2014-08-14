@@ -21,19 +21,19 @@ class SearchTestWithoutFilters extends BaseTestCase
 
     public function testSearchQueryChain()
     {
-        $query = Search::find('small clock');
-        $this->assertEquals(5, $query->count());
+        $query = Search::find('small');
+        $this->assertEquals(3, $query->count());
 
-        $query = Search::find('small clock')->where('description', 'not big analog', ['proximity' => 1]);
+        $query = Search::find('clock')->where('description', 'not big analog', ['proximity' => 1]);
         $this->assertEquals(1, $query->count());
 
-        $query = Search::find('small clock')->where('description', 'big analog', ['proximity' => 1]);
+        $query = Search::find('clock')->where('description', 'big analog', ['proximity' => 1]);
         $this->assertEquals(2, $query->count());
 
-        $query = Search::find('simple clock', '*', ['phrase' => true]);
+        $query = Search::find('simple clock');
         $this->assertEquals(0, $query->count());
 
-        $query = Search::find('simple clock', '*', ['phrase' => true, 'proximity' => 1]);
+        $query = Search::find('simple clock', '*', ['proximity' => 1]);
         $this->assertEquals(1, $query->count());
 
         $query = Search::where('name', 'clock');
