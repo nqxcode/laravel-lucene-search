@@ -11,9 +11,9 @@ class ClearCommand extends Command
     public function fire()
     {
         if ($result = rmdir_recursive(Config::get('laravel-lucene-search::index.path'))) {
-            $this->info('Search index storage cleared!');
+            $this->info('Search index is cleared.');
         } else {
-            $this->info('No search index storage found..');
+            $this->info('No search index found..');
         }
     }
 }
