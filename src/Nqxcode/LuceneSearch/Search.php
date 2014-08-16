@@ -53,10 +53,7 @@ class Search
      * @param Connection $connection
      * @param Config $config
      */
-    public function __construct(
-        Connection $connection,
-        Config $config
-    )
+    public function __construct(Connection $connection, Config $config)
     {
         $this->connection = $connection;
         $this->config = $config;

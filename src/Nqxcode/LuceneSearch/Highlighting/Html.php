@@ -24,11 +24,7 @@ class Html
      */
     private $analyzerConfig;
 
-    public function __construct(
-        Runner $queryRunner,
-        Highlighter $highlighter,
-        AnalyzerConfig $analyzerConfig
-    )
+    public function __construct(Runner $queryRunner, Highlighter $highlighter, AnalyzerConfig $analyzerConfig)
     {
         $this->queryRunner = $queryRunner;
         $this->highlighter = $highlighter;

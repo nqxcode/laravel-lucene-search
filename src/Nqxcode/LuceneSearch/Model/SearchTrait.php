@@ -1,6 +1,7 @@
 <?php namespace Nqxcode\LuceneSearch\Model;
 
 use Search;
+
 /**
  * Class SearchTrait
  * @package Nqxcode\LuceneSearch\Model
@@ -12,11 +13,11 @@ trait SearchTrait
      */
     public static function registerEventsForSearch()
     {
-        self::saved(function($model){
+        self::saved(function ($model) {
             Search::update($model);
         });
 
-        self::deleting(function($model){
+        self::deleting(function ($model) {
             Search::delete($model);
         });
     }

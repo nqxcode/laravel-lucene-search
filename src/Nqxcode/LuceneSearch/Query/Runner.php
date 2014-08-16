@@ -128,4 +128,4 @@ class Runner
     {
         return self::$lastQuery;
     }
-} 
+}

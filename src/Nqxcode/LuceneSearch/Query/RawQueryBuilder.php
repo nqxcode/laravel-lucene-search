@@ -129,4 +129,4 @@ class RawQueryBuilder
 
         return $str;
     }
-} 
+}

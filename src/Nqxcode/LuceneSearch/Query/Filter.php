@@ -1,4 +1,5 @@
 <?php namespace Nqxcode\LuceneSearch\Query;
+
 use ZendSearch\Lucene\Search\Query\AbstractQuery;
 
 /**
@@ -43,8 +44,7 @@ class Filter
      */
     public function applyFilters(AbstractQuery $query)
     {
-        // Prevent multiple executions.
-        if ($this->applied) {
+        if ($this->applied) { // Prevent multiple executions.
             return $query;
         }
 
@@ -56,4 +56,4 @@ class Filter
 
         return $query;
     }
-} 
+}

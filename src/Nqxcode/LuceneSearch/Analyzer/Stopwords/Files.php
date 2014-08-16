@@ -18,4 +18,4 @@ class Files
             __DIR__ . '/files/ru'
         ];
     }
-} 
+}
