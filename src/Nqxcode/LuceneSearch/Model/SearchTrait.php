@@ -10,7 +10,7 @@ trait SearchTrait
     /**
      * Set event handlers for updating of search index.
      */
-    public static function mountSearchEvents()
+    public static function registerEventsForSearch()
     {
         self::saved(function($model){
             Search::update($model);

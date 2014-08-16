@@ -34,6 +34,6 @@ class Product extends Model implements SearchableInterface
 
     public static function boot()
     {
-        self::mountSearchEvents();
+        self::registerEventsForSearch();
     }
 }
