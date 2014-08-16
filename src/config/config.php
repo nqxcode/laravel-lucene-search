@@ -24,7 +24,9 @@ return [
 
         'path' => storage_path() . '/laravel-lucene-search/index',
 
-        'models' => [], // Add models descriptions here.
+        'models' => [
+            // Add models descriptions here.
+        ],
     ],
 
     /*
@@ -32,14 +34,13 @@ return [
      | ZendSearch token filters
      |--------------------------------------------------------------------------
      |
-     | The "filters" is the list of ZendSearch token filters classes.
-     | Each class must implement the TokenFilterInterface interface.
-     | Stemming token filter for english/russian words is enabled by default.
-     | To disable it remove class 'Nqxcode\Stemming\TokenFilterEnRu' from
-     | token filters.
+     | The "filters" is the list of ZendSearch token filters classes. Each class
+     | must implement the TokenFilterInterface interface. Stemming token filter
+     | for english and russian words is enabled by default. To disable it remove
+     | class 'Nqxcode\Stemming\TokenFilterEnRu' from token filters.
      |
-     | The "stopwords" is the list of paths to files with stopwords.
-     | By default english/russian stopwords are used.
+     | The "stopwords" is the list of paths to files with stopwords. By default
+     | english and russian stopwords are used.
      |
     */
     'analyzer' => [
