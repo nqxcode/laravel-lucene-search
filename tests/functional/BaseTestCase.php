@@ -19,18 +19,16 @@ abstract class BaseTestCase extends TestCase
     protected function configure()
     {
         Config::set('laravel-lucene-search::index.path', storage_path() . '/laravel-lucene-search/index_' . uniqid());
-
-        $this->app->bindShared('search.index.models', function () {
-            return
-                [
-                    'tests\models\Product' => [
-                        'fields' => [
-                            'name',
-                            'description'
-                        ]
+        Config::set('laravel-lucene-search::index.models',
+            [
+                'tests\models\Product' => [
+                    'fields' => [
+                        'name',
+                        'description'
                     ]
-                ];
-        });
+                ]
+            ]
+        );
 
         $artisan = $this->app->make('artisan');
 

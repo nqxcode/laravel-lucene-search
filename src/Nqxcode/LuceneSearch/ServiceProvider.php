@@ -67,13 +67,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             );
         });
 
-        $this->app->bindShared('search.index.models', function () {
-            return Config::get('laravel-lucene-search::index.models');
-        });
-
         $this->app->bindShared('search.models.config', function ($app) {
             return new ModelsConfig(
-                $app['search.index.models'],
+                Config::get('laravel-lucene-search::index.models'),
                 $app->make('Nqxcode\LuceneSearch\Model\Factory')
             );
         });
