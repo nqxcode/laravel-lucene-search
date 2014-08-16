@@ -3,7 +3,8 @@
 use Illuminate\Console\Command;
 use Nqxcode\LuceneSearch\Search;
 
-use \App;
+use App;
+use Config;
 
 class RebuildCommand extends Command
 {
@@ -17,10 +18,12 @@ class RebuildCommand extends Command
 
     public function fire()
     {
-        $this->call('search:clear');
+        if (is_dir(Config::get('laravel-lucene-search::index.path'))) {
+            $this->call('search:clear');
+        }
 
         /** @var Search $search */
-        $search = \App::make('search');
+        $search = App::make('search');
 
         $modelRepositories = $search->config()->modelRepositories();
 
