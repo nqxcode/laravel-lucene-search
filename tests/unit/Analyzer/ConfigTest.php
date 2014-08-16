@@ -19,7 +19,7 @@ class ConfigTest extends TestCase
     {
         parent::setUp();
 
-        $this->stopwordsFilterFactory = m::mock('Nqxcode\LuceneSearch\Analyzer\StopwordsFilterFactory');
+        $this->stopwordsFilterFactory = m::mock('Nqxcode\LuceneSearch\Analyzer\Stopwords\FilterFactory');
         $this->analyzer = m::mock('ZendSearch\Lucene\Analysis\Analyzer\Common\AbstractCommon');
 
         $this->app->instance('ZendSearch\Lucene\Analysis\Analyzer\Common\AbstractCommon', $this->analyzer);

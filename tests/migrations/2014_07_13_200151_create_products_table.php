@@ -84,5 +84,13 @@ class CreateProductsTable extends Migration
             'updated_at' => $now,
             'publish' => 0,
         ));
+
+        DB::table('products')->insert(array(
+            'name' => 'тестовое название',
+            'description' => 'тестовое описание и не только со стоп-словами',
+            'created_at' => $now,
+            'updated_at' => $now,
+            'publish' => 1,
+        ));
     }
 }

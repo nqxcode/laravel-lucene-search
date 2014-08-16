@@ -1,6 +1,7 @@
 <?php namespace tests\functional;
 
 use Search;
+use Config;
 
 /**
  * Class SearchTestWithFilters
@@ -15,6 +16,9 @@ class SearchTestWithFilters extends BaseTestCase
 
         $query = Search::find('not', '*');
         $this->assertEquals(0, $query->count());
+
+        $query = Search::find('не и только', '*', ['phrase' => false]);
+        $this->assertEquals(0, $query->count());
     }
 
     public function testMorphologySearch()
@@ -27,5 +31,8 @@ class SearchTestWithFilters extends BaseTestCase
 
         $query = Search::find('smaller', '*');
         $this->assertEquals(3, $query->count());
+
+        $query = Search::find('поиск тестового товара', '*', ['phrase' => false]);
+        $this->assertEquals(1, $query->count());
     }
 } 

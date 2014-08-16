@@ -2,8 +2,8 @@
 
 use ZendSearch\Lucene\Analysis\Analyzer\Analyzer;
 use ZendSearch\Lucene\Analysis\Analyzer\Common\AbstractCommon;
-
 use ZendSearch\Lucene\Search\QueryParser;
+use Nqxcode\LuceneSearch\Analyzer\Stopwords\FilterFactory;
 use App;
 
 /**
@@ -17,10 +17,10 @@ class Config
     /** @var array */
     private $stopWordFiles;
 
-    /** @var \Nqxcode\LuceneSearch\Analyzer\StopwordsFilterFactory */
+    /** @var \Nqxcode\LuceneSearch\Analyzer\Stopwords\FilterFactory */
     private $stopwordsFilterFactory;
 
-    public function __construct(array $filterClasses, array $stopWordFiles, StopwordsFilterFactory $stopwordsFilterFactory)
+    public function __construct(array $filterClasses, array $stopWordFiles, FilterFactory $stopwordsFilterFactory)
     {
         QueryParser::setDefaultEncoding('utf-8');
 

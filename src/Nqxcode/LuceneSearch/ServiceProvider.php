@@ -2,7 +2,7 @@
 
 use Config;
 use Nqxcode\LuceneSearch\Analyzer\Config as AnalyzerConfig;
-use Nqxcode\LuceneSearch\Analyzer\StopwordsFilterFactory;
+use Nqxcode\LuceneSearch\Analyzer\Stopwords\FilterFactory;
 use Nqxcode\LuceneSearch\Model\Config as ModelsConfig;
 use ZendSearch\Lucene\Analysis\Analyzer\Common\Utf8Num\CaseInsensitive;
 
@@ -52,7 +52,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             return new AnalyzerConfig(
                 Config::get('laravel-lucene-search::analyzer.filters', []),
                 Config::get('laravel-lucene-search::analyzer.stopwords', []),
-                new StopwordsFilterFactory
+                new FilterFactory
             );
         });
 

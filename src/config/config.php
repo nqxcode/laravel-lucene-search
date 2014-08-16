@@ -1,7 +1,5 @@
 <?php
 
-use Nqxcode\LuceneSearch\Analyzer\StopwordsFilterFactory;
-
 return [
     /*
      |--------------------------------------------------------------------------
@@ -50,6 +48,6 @@ return [
             'Nqxcode\Stemming\TokenFilterEnRu',
         ],
 
-        'stopwords' => StopwordsFilterFactory::defaultStopwords(),
+        'stopwords' => Nqxcode\LuceneSearch\Analyzer\Stopwords\Files::get(),
     ],
 ];
