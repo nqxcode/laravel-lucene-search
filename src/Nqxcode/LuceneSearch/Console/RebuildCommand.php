@@ -27,18 +27,40 @@ class RebuildCommand extends Command
 
         $modelRepositories = $search->config()->modelRepositories();
 
-        if (count($modelRepositories)) {
+        if (count($modelRepositories) > 0) {
+
+            $modelsExist = false;
             foreach ($modelRepositories as $modelRepository) {
+                $this->info('Creating index for "' . get_class($modelRepository) . '":');
+
                 if (method_exists($modelRepository, 'allSearchable')) {
                     $all = $modelRepository->allSearchable();
                 } else {
                     $all = $modelRepository->all();
                 }
-                foreach ($all as $model) {
-                    $search->update($model);
+
+                $count = count($all);
+
+                if ($count > 0) {
+
+                    $modelsExist = true;
+
+                    $progress = $this->getHelperSet()->get('progress');
+                    $progress->start($this->getOutput(), $count);
+
+                    foreach ($all as $model) {
+                        $search->update($model);
+                        $progress->advance();
+                    }
+                    $progress->finish();
+                } else {
+                    $this->comment(' No available models found. ');
                 }
             }
-            $this->info('Search index is created.');
+
+            if ($modelsExist) {
+                $this->info('Operation is fully complete!');
+            }
         } else {
             $this->error('No models found in config.php file..');
         }
