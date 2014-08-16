@@ -31,7 +31,7 @@ return [
 
     /*
      |--------------------------------------------------------------------------
-     | ZendSearch token filters
+     | ZendSearch token filters.
      |--------------------------------------------------------------------------
      |
      | The "filters" is the list of ZendSearch token filters classes. Each class
