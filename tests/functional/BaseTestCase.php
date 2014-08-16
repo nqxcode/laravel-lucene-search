@@ -26,8 +26,7 @@ abstract class BaseTestCase extends TestCase
                     'tests\models\Product' => [
                         'fields' => [
                             'name',
-                            'description',
-                            'price'
+                            'description'
                         ]
                     ]
                 ];

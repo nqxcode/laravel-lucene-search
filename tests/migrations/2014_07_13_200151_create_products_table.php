@@ -18,7 +18,6 @@ class CreateProductsTable extends Migration
             $table->string('name')->nullable();
             $table->string('description')->nullable();
             $table->boolean('publish')->default(1);
-            $table->decimal('price')->default(0);
 
             $table->timestamps();
         });
@@ -48,7 +47,6 @@ class CreateProductsTable extends Migration
             'description' => 'very big, analog',
             'created_at' => $now,
             'updated_at' => $now,
-            'price' => 5,
         ));
 
         DB::table('products')->insert(array(
@@ -56,7 +54,6 @@ class CreateProductsTable extends Migration
             'description' => 'not very big, analog',
             'created_at' => $now,
             'updated_at' => $now,
-            'price' => 20,
         ));
 
         DB::table('products')->insert(array(
@@ -86,7 +83,6 @@ class CreateProductsTable extends Migration
             'created_at' => $now,
             'updated_at' => $now,
             'publish' => 0,
-            'price' => 15,
         ));
     }
 }
