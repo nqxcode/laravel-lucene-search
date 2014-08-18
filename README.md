@@ -85,7 +85,7 @@ php artisan search:clear
 ### Queries
 Build query in several ways:
 
-1. Using constructor:
+#### Using constructor:
 
 ```php
 
@@ -99,7 +99,7 @@ or
 $query = Search::find('clock')->where('short_description', 'analog');
 ```
 
-2. Using lucene raw queries:
+#### Using Lucene raw queries:
 
 ```php
 
