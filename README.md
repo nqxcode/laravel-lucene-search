@@ -59,8 +59,25 @@ In published config file add descriptions for models which need to be indexed, f
 	],
 	
 	// ...
-	
 ```
+By default the following filters are used by search:
+* Stemming filter for english/russian words,
+* Stopword filters for english/russian words.
+
+This filters can be deleted or replaced with others.
+```php
+
+    'analyzer' => [
+
+        'filters' => [
+            'Nqxcode\Stemming\TokenFilterEnRu',
+        ],
+
+        'stopwords' => Nqxcode\LuceneSearch\Analyzer\Stopwords\Files::get(), // List of pathes to files with stopwords. 
+    ],
+    
+```
+
 ## Usage
 ### Artisan commands
 #### Build/Rebuild search index
