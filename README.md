@@ -94,6 +94,24 @@ For clearing of search index run:
 php artisan search:clear
 ```
 
+### Register events for models
+
+For register models events (save/update/delete) `use SearchTrait` and call `registerEventsForSearch` method of trait in `boot` method of model:
+
+```php
+    
+    use SearchTrait;
+    
+    // ...
+    
+    public static function boot()
+    {
+    	parent::boot();
+        self::registerEventsForSearch();
+    }
+
+```
+
 ### Query building
 Build query in several ways:
 
@@ -119,7 +137,7 @@ $rawQuery = QueryParser::parse('short_description:"analog"');
 $query = Search::rawQuery($rawQuery);
 ```
 
-## Getting of results
+### Getting of results
 
 For built query are available following actions:
 
