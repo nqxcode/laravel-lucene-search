@@ -111,7 +111,7 @@ $query = Search::rawQuery($rawQuery);
 
 For built query are available following actions:
 
-#### Get all results
+#### Get all found models
 
 ```php
 $models = $query->get();
@@ -121,7 +121,7 @@ $models = $query->get();
 ```php
 $models = $query->limit(5)->get();
 ```
-#### Paginate getting results
+#### Paginate the found models
 
 ```php
 $paginator = $query->paginate(50);
