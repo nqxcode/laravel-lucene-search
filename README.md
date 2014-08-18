@@ -110,10 +110,10 @@ For built query are available following actions:
 ```php
 $models = $query->get();
 ```
-#### Get limit results
+#### Get limit results with offset
 
 ```php
-$models = $query->limit(5)->get();
+$models = $query->limit(5, 10)->get(); // Limit = 5 and offset = 10
 ```
 #### Paginate the found models
 
