@@ -21,9 +21,6 @@ After updating composer, add the ServiceProvider to the providers array in `app/
 
 ```php
 'providers' => [
-
-	// ...
-
 	'Nqxcode\LuceneSearch\ServiceProvider',
 ],
 ```
@@ -32,9 +29,6 @@ If you want to use the facade to search, add this to your facades in `app/config
 
 ```php
 'aliases' => [
-
-	// ...
-
 	'Search' => 'Nqxcode\LuceneSearch\Facade',
 ],
 ```
