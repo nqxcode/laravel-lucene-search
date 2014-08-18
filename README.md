@@ -159,4 +159,4 @@ $paginator = $query->paginate(50);
 
 ##
 ## License
-Search engine licenced under the MIT license.
+Package licenced under the MIT license.
