@@ -90,13 +90,15 @@ Build query in several ways:
 ```php
 
 $query = Search::find('clock');
-```
 
-or 
+// or 
 
-```php
+$query = Search::where('name', 'clock');
+
+// or
 
 $query = Search::find('clock')->where('short_description', 'analog');
+
 ```
 
 #### Using Lucene raw queries:
@@ -104,11 +106,8 @@ $query = Search::find('clock')->where('short_description', 'analog');
 ```php
 
 $query = Search::rawQuery('short_description:"analog"');
-```
 
-or
-
-```php
+// or
 
 $rawQuery = QueryParser::parse('short_description:"analog"');
 $query = Search::rawQuery($rawQuery);
