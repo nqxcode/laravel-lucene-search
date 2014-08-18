@@ -90,13 +90,9 @@ Build query in several ways:
 ```php
 
 $query = Search::find('clock');
-
 // or 
-
 $query = Search::where('name', 'clock');
-
 // or
-
 $query = Search::find('clock')->where('short_description', 'analog');
 
 ```
@@ -106,9 +102,7 @@ $query = Search::find('clock')->where('short_description', 'analog');
 ```php
 
 $query = Search::rawQuery('short_description:"analog"');
-
 // or
-
 $rawQuery = QueryParser::parse('short_description:"analog"');
 $query = Search::rawQuery($rawQuery);
 ```
