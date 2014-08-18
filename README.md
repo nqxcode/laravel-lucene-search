@@ -72,9 +72,9 @@ This filters can be deleted or replaced with others.
         	// Default stemming filter.
         	'Nqxcode\Stemming\TokenFilterEnRu',
         ],
-
+        
 	// List of pathes to files with stopwords. 
-        'stopwords' => Nqxcode\LuceneSearch\Analyzer\Stopwords\Files::get(),
+	'stopwords' => Nqxcode\LuceneSearch\Analyzer\Stopwords\Files::get(),
     ],
     
 ```
