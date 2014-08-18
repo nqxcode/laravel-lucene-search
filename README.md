@@ -68,12 +68,13 @@ This filters can be deleted or replaced with others.
 ```php
 
     'analyzer' => [
-
         'filters' => [
-            'Nqxcode\Stemming\TokenFilterEnRu',
+        	// Default stemming filter.
+        	'Nqxcode\Stemming\TokenFilterEnRu',
         ],
 
-        'stopwords' => Nqxcode\LuceneSearch\Analyzer\Stopwords\Files::get(), // List of pathes to files with stopwords. 
+	// List of pathes to files with stopwords. 
+        'stopwords' => Nqxcode\LuceneSearch\Analyzer\Stopwords\Files::get(),
     ],
     
 ```
