@@ -7,14 +7,35 @@ Laravel 4 package for full-text search over Eloquent models based on ZF2 Lucene.
 
 ## Installation
 
-Require this package in your composer.json and run composer update (or run `composer require nqxcode/laravel-lucene-search:1.x` directly):
+Require this package in your composer.json and run composer update:
 
-    "nqxcode/laravel-lucene-search": "1.*"
+```json
+{
+	"require": {
+        "nqxcode/laravel-lucene-search": "1.*"
+	}
+}
+```
 
-After updating composer, add the ServiceProvider to the providers array in app/config/app.php
+After updating composer, add the ServiceProvider to the providers array in `app/config/app.php`
 
-    'Nqxcode\LuceneSearch\ServiceProvider',
+```php
+'providers' => array(
 
-If you want to use the facade to search, add this to your facades in app.php:
+	// ...
+
+	'Nqxcode\LuceneSearch\ServiceProvider',
+),
+```
+
+If you want to use the facade to search, add this to your facades in `app/config/app.php`:
+
+```php
+'aliases' => array(
+
+	// ...
 
     'Search' => 'Nqxcode\LuceneSearch\Facade',
+),
+```
+
