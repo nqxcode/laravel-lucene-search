@@ -82,7 +82,7 @@ For clearing of search index run:
 php artisan search:clear
 ```
 
-### Queries
+### Query building
 Build query in several ways:
 
 #### Using constructor:
@@ -107,5 +107,26 @@ $rawQuery = QueryParser::parse('short_description:"analog"');
 $query = Search::rawQuery($rawQuery);
 ```
 
+## Getting of results
+
+For built query are available following actions:
+
+#### Get all results
+
+```php
+$models = $query->get();
+```
+#### Get limit results
+
+```php
+$models = $query->limit(5)->get();
+```
+#### Paginate getting results
+
+```php
+$paginator = $query->paginate(50);
+```
+
+##
 ## License
 Search engine licenced under the MIT license.
