@@ -61,8 +61,8 @@ In published config file add descriptions for models which need to be indexed, f
 	// ...
 ```
 By default the following filters are used by search:
-* Stemming filter for english/russian words,
-* Stopword filters for english/russian words.
+- Stemming filter for english/russian words,
+- Stopword filters for english/russian words.
 
 This filters can be deleted or replaced with others.
 ```php
@@ -73,7 +73,7 @@ This filters can be deleted or replaced with others.
         	'Nqxcode\Stemming\TokenFilterEnRu',
         ],
         
-	// List of pathes to files with stopwords. 
+	// List of paths to files with stopwords. 
 	'stopwords' => Nqxcode\LuceneSearch\Analyzer\Stopwords\Files::get(),
     ],
     
@@ -117,26 +117,43 @@ Build query in several ways:
 
 #### Using constructor:
 
+By default, queries which will execute search in the **phrase entirely** are created.
+
+##### Simple queries
 ```php
-
-$query = Search::find('clock');
+$query = Search::find('clock'); // search by all fields.
 // or 
-$query = Search::where('name', 'clock');
+$query = Search::where('name', 'clock'); // search by 'name' field.
 // or
-$query = Search::find('clock')->where('short_description', 'analog');
+$query = Search::find('clock')->where('short_description', 'analog'); // search by all fields with filter by 'short_description' field. 
+```
+##### Advanced queries
 
+For `find` and `where` methods it is possible to set the following options:
+- **phrase**     - phrase match (boolean, true by default)
+- **proximity**  - value of distance between words (unsigned integer)
+- **fuzzy**      - value of fuzzy (float, 0 ... 1)
+- **required**   - should match (boolean, true by default)
+- **prohibited** - should not match (boolean, false by default)
+
+###### Examples:
+
+Find all models in which any field contains phrase like 'composite one two phrase':
+```php 
+$query = Search::find('composite phrase', '*', ['proximity' => 2]); 
+```
+Search by each word from query:
+```php 
+$query = Search::find('composite phrase', '*', ['phrase' => false]); 
 ```
 
 #### Using Lucene raw queries:
-
 ```php
-
 $query = Search::rawQuery('short_description:"analog"');
 // or
 $rawQuery = QueryParser::parse('short_description:"analog"');
 $query = Search::rawQuery($rawQuery);
 ```
-
 ### Getting of results
 
 For built query are available following actions:
@@ -146,6 +163,12 @@ For built query are available following actions:
 ```php
 $models = $query->get();
 ```
+
+#### Get count of results
+```php
+$count = $query->count();
+```
+
 #### Get limit results with offset
 
 ```php
