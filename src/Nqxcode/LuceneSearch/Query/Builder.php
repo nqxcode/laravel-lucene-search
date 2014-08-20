@@ -148,7 +148,7 @@ class Builder
      * @param $field
      * @param array $options - required   : should match (boolean, true by default)
      *                       - prohibited : should not match (boolean, false by default)
-     *                       - phrase     : phrase match (boolean, false by default)
+     *                       - phrase     : phrase match (boolean, true by default)
      *                       - proximity  : value of distance between words (unsigned integer)
      *                       - fuzzy      : value of fuzzy(float, 0 ... 1)
      * @return $this
