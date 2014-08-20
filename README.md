@@ -125,7 +125,8 @@ $query = Search::find('clock'); // search by all fields.
 // or 
 $query = Search::where('name', 'clock'); // search by 'name' field.
 // or
-$query = Search::find('clock')->where('short_description', 'analog'); // search by all fields with filter by 'short_description' field. 
+$query = Search::find('clock')              // search by all fields with
+	->where('short_description', 'analog'); // filter by 'short_description' field. 
 ```
 ##### Advanced queries
 
