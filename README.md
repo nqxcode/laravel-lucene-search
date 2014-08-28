@@ -94,6 +94,9 @@ For clearing of search index run:
 php artisan search:clear
 ```
 
+By default the index is rebuilt for each model for each class specified in a config.
+For filtering of models in case of index rebuilding each model's class can implements `SearchableInterface`.
+
 ### Register events for models
 
 For register models events (save/update/delete) `use SearchTrait` and call `registerEventsForSearch` method of trait in `boot` method of model:
