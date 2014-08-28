@@ -12,7 +12,7 @@ Require this package in your composer.json and run composer update:
 ```json
 {
 	"require": {
-        "nqxcode/laravel-lucene-search": "1.*"
+        "nqxcode/laravel-lucene-search": "dev-master"
 	}
 }
 ```
