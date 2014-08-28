@@ -1,4 +1,4 @@
-laravel-lucene-search
+Laravel 4 Lucene search
 ==============
 
 [![Latest Stable Version](https://poser.pugx.org/nqxcode/laravel-lucene-search/v/stable.png)](https://packagist.org/packages/nqxcode/laravel-lucene-search)
