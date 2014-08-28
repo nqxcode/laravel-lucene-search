@@ -177,7 +177,7 @@ Find all models in which any field contains phrase like 'composite one two phras
 ```php 
 $query = Search::find('composite phrase', '*', ['proximity' => 2]); 
 ```
-Search by each word from query:
+Search by each word in query:
 ```php 
 $query = Search::find('composite phrase', '*', ['phrase' => false]); 
 ```
