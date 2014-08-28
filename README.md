@@ -130,7 +130,7 @@ class Dummy extends Model implements SearchableInterface
 
 ### Register events for models
 
-For register models events (save/update/delete) `use SearchTrait` and call `registerEventsForSearch` method of trait in `boot` method of model:
+For register models events (save/update/delete) `use SearchTrait` and call `registerSearchIndexUpdateEvents` method of trait in `boot` method of model:
 
 ```php
     
@@ -141,7 +141,7 @@ For register models events (save/update/delete) `use SearchTrait` and call `regi
     public static function boot()
     {
     	parent::boot();
-        self::registerEventsForSearch();
+        self::registerSearchIndexUpdateEvents();
     }
 
 ```
