@@ -96,6 +96,37 @@ php artisan search:clear
 
 By default the index is rebuilt for each model for each class specified in a config.
 For filtering of models in case of index rebuilding each model's class can implements `SearchableInterface`.
+For example:
+
+```php
+
+use Illuminate\Database\Eloquent\Model;
+use Nqxcode\LuceneSearch\Model\SearchableInterface;
+
+class Dummy extends Model implements SearchableInterface
+{
+        // ...
+
+        /**
+         * Is the model available for search indexing?
+         */
+        public function isSearchable()
+        {
+            return $this->publish;
+        }
+
+        /**
+         * Get collection of searchable models.
+         */
+        public function allSearchable()
+        {
+            return $this->wherePublish(1)->get();
+        }
+
+        // ...
+}
+
+```
 
 ### Register events for models
 
