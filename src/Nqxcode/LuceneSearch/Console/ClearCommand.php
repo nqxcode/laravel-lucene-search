@@ -2,6 +2,7 @@
 
 use Illuminate\Console\Command;
 use Config;
+use Symfony\Component\Console\Output\NullOutput;
 
 class ClearCommand extends Command
 {
@@ -10,6 +11,10 @@ class ClearCommand extends Command
 
     public function fire()
     {
+        if (!$this->option('verbose')) {
+            $this->output = new NullOutput;
+        }
+
         if ($result = rmdir_recursive(Config::get('laravel-lucene-search::index.path'))) {
             $this->info('Search index is cleared.');
         } else {

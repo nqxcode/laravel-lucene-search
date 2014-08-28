@@ -46,7 +46,7 @@ class RawQueryBuilder
         if (array_get($options, 'phrase') || array_get($options, 'proximity')) {
             $value = '"' . $value . '"';
         } else {
-            $value = $this->escapeSpecialOperators($value);
+            $value = $this->removeSpecialOperators($value);
         }
 
         if (isset($options['proximity']) && false !== $options['proximity']) {
@@ -88,7 +88,7 @@ class RawQueryBuilder
     }
 
     /**
-     * Escape special characters for RawQueryBuilder query.
+     * Escape special characters for raw query.
      *
      * @param string $str
      *
@@ -109,12 +109,12 @@ class RawQueryBuilder
     }
 
     /**
-     * Escape special operators for RawQueryBuilder query.
+     * Remove special operators for raw query.
      *
      * @param $str
      * @return mixed
      */
-    protected function escapeSpecialOperators($str)
+    protected function removeSpecialOperators($str)
     {
         // List of query operators.
         $query_operators = ['to', 'or', 'and', 'not'];

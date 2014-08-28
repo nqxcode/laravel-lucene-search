@@ -5,19 +5,19 @@ use Nqxcode\LuceneSearch\Search;
 
 use App;
 use Config;
+use Symfony\Component\Console\Output\NullOutput;
 
 class RebuildCommand extends Command
 {
     protected $name = 'search:rebuild';
     protected $description = 'Rebuild the search index';
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function fire()
     {
+        if (!$this->option('verbose')) {
+            $this->output = new NullOutput;
+        }
+
         if (is_dir(Config::get('laravel-lucene-search::index.path'))) {
             $this->call('search:clear');
         }
@@ -29,7 +29,7 @@ class RebuildCommand extends Command
 
         if (count($modelRepositories) > 0) {
             foreach ($modelRepositories as $modelRepository) {
-                $this->info('Creating index for "' . get_class($modelRepository) . '":');
+                $this->info('Creating index for model: "' . get_class($modelRepository) . '"');
 
                 if (method_exists($modelRepository, 'allSearchable')) {
                     $all = $modelRepository->allSearchable();
@@ -40,6 +40,7 @@ class RebuildCommand extends Command
                 $count = count($all);
 
                 if ($count > 0) {
+                    /** @var \Symfony\Component\Console\Helper\ProgressBar $progress */
                     $progress = $this->getHelperSet()->get('progress');
                     $progress->start($this->getOutput(), $count);
 
@@ -48,6 +49,7 @@ class RebuildCommand extends Command
                         $progress->advance();
                     }
                     $progress->finish();
+
                 } else {
                     $this->comment(' No available models found. ');
                 }
