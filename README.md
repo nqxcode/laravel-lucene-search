@@ -218,7 +218,14 @@ $models = $query->limit(5, 10)->get(); // Limit = 5 and offset = 10
 ```php
 $paginator = $query->paginate(50);
 ```
+### Highlighting of matches
 
+Highlighting of matches is available for any html fragment encoded in **utf-8** and is executed only for the last executed request.
+
+```php
+Search::find('nearly all words must be highlighted')->get();
+$highlighted = Search::highlight('all words'); // => '<span class="highlight">all</span> <span class="highlight">words</span>'
+```
 ##
 ## License
 Package licenced under the MIT license.
