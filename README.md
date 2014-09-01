@@ -17,7 +17,10 @@ Require this package in your composer.json and run composer update:
 {
 	"require": {
         "nqxcode/laravel-lucene-search": "dev-master"
-	}
+	},
+	
+    "prefer-stable" : true,
+    "minimum-stability": "dev"
 }
 ```
 
