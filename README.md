@@ -66,6 +66,9 @@ In published config file add descriptions for models which need to be indexed, f
 	],
 	
 	// ...
+	
+],
+
 ```
 By default the following filters are used by search:
 - Stemming filter for english/russian words,
@@ -74,15 +77,15 @@ By default the following filters are used by search:
 This filters can be deleted or replaced with others.
 ```php
 
-    'analyzer' => [
-        'filters' => [
-        	// Default stemming filter.
-        	'Nqxcode\Stemming\TokenFilterEnRu',
-        ],
-        
-	// List of paths to files with stopwords. 
-	'stopwords' => Nqxcode\LuceneSearch\Analyzer\Stopwords\Files::get(),
+'analyzer' => [
+    'filters' => [
+    	// Default stemming filter.
+    	'Nqxcode\Stemming\TokenFilterEnRu',
     ],
+        
+    // List of paths to files with stopwords. 
+    'stopwords' => Nqxcode\LuceneSearch\Analyzer\Stopwords\Files::get(),
+],
     
 ```
 
