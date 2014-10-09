@@ -54,7 +54,7 @@ class BuilderTest extends TestCase
 
     public function testFind()
     {
-        $query = $this->constructor->find('test');
+        $query = $this->constructor->query('test');
 
         $this->assertEquals([1, 2, 3], $query->get());
         $this->assertEquals(3, $query->count());
@@ -71,7 +71,7 @@ class BuilderTest extends TestCase
 
     public function testCountNotCached()
     {
-        $query = $this->constructor->find('test');
+        $query = $this->constructor->query('test');
         $this->assertEquals(3, $query->count());
     }
 
@@ -80,7 +80,7 @@ class BuilderTest extends TestCase
         $this->runner->shouldReceive('getCachedCount')->andReturn(5);
         $this->runner->shouldReceive('run')->with($this->query)->never();
 
-        $query = $this->constructor->find('test');
+        $query = $this->constructor->query('test');
         $this->assertEquals(5, $query->count());
     }
 
@@ -120,7 +120,7 @@ class BuilderTest extends TestCase
 
     public function testPaginate()
     {
-        $query = $this->constructor->find('test');
+        $query = $this->constructor->query('test');
         $this->runner->shouldReceive('models')->with($this->query, ['limit' => 2, 'offset' => 0])->andReturn([1, 2])->byDefault();
 
         $expected = App::make('paginator')->make([1, 2], 3, 2);

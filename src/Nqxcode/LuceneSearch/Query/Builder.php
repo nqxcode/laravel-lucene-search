@@ -153,7 +153,7 @@ class Builder
      *                       - fuzzy      : value of fuzzy(float, 0 ... 1)
      * @return $this
      */
-    public function find($value, $field = '*', array $options = [])
+    public function query($value, $field = '*', array $options = [])
     {
         $options['field'] = $field;
         $options['value'] = $value;

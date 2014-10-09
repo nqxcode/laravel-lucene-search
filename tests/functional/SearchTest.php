@@ -21,19 +21,19 @@ class SearchTest extends BaseTestCase
 
     public function testSearchQueryChain()
     {
-        $query = Search::find('small');
+        $query = Search::query('small');
         $this->assertEquals(3, $query->count());
 
-        $query = Search::find('clock')->where('description', 'not big analog', ['proximity' => 1]);
+        $query = Search::query('clock')->where('description', 'not big analog', ['proximity' => 1]);
         $this->assertEquals(1, $query->count());
 
-        $query = Search::find('clock')->where('description', 'big analog', ['proximity' => 1]);
+        $query = Search::query('clock')->where('description', 'big analog', ['proximity' => 1]);
         $this->assertEquals(2, $query->count());
 
-        $query = Search::find('simple clock');
+        $query = Search::query('simple clock');
         $this->assertEquals(0, $query->count());
 
-        $query = Search::find('simple clock', '*', ['proximity' => 1]);
+        $query = Search::query('simple clock', '*', ['proximity' => 1]);
         $this->assertEquals(1, $query->count());
 
         $query = Search::where('name', 'clock');
@@ -79,11 +79,11 @@ class SearchTest extends BaseTestCase
 
     public function testSearchHighlightResults()
     {
-        Search::find('nearly all words must be highlighted')->get();
+        Search::query('nearly all words must be highlighted')->get();
         $highlighted = Search::highlight('all words');
         $this->assertEquals('<span class="highlight">all</span> <span class="highlight">words</span>', $highlighted);
 
-        Search::find('почти все слова должны быть выделены')->get();
+        Search::query('почти все слова должны быть выделены')->get();
         $highlighted = Search::highlight('все слова');
         $this->assertEquals('<span class="highlight">все</span> <span class="highlight">слова</span>', $highlighted);
     }

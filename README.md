@@ -165,16 +165,16 @@ By default, queries which will execute search in the **phrase entirely** are cre
 
 ##### Simple queries
 ```php
-$query = Search::find('clock'); // search by all fields.
+$query = Search::query('clock'); // search by all fields.
 // or 
 $query = Search::where('name', 'clock'); // search by 'name' field.
 // or
-$query = Search::find('clock')              // search by all fields with
+$query = Search::query('clock')              // search by all fields with
 	->where('short_description', 'analog'); // filter by 'short_description' field. 
 ```
 ##### Advanced queries
 
-For `find` and `where` methods it is possible to set the following options:
+For `query` and `where` methods it is possible to set the following options:
 - **phrase**     - phrase match (boolean, true by default)
 - **proximity**  - value of distance between words (unsigned integer)
 - **fuzzy**      - value of fuzzy (float, 0 ... 1)
@@ -185,11 +185,11 @@ For `find` and `where` methods it is possible to set the following options:
 
 Find all models in which any field contains phrase like 'composite one two phrase':
 ```php 
-$query = Search::find('composite phrase', '*', ['proximity' => 2]); 
+$query = Search::query('composite phrase', '*', ['proximity' => 2]); 
 ```
 Search by each word in query:
 ```php 
-$query = Search::find('composite phrase', '*', ['phrase' => false]); 
+$query = Search::query('composite phrase', '*', ['phrase' => false]); 
 ```
 
 #### Using Lucene raw queries:
