@@ -4,10 +4,10 @@ namespace Nqxcode\LuceneSearch\Model;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
- * Interface SearchableInterface
+ * Interface Searchable
  * @package Nqxcode\LuceneSearch
  */
-interface SearchableInterface
+interface Searchable
 {
     /**
      * Is the model available for search indexing?

@@ -1,24 +1,24 @@
 <?php namespace Nqxcode\LuceneSearch\Model;
 
-use Search;
+use App;
 
 /**
- * Class SearchTrait
+ * Class Search
  * @package Nqxcode\LuceneSearch\Model
  */
-trait SearchTrait
+trait Search
 {
     /**
      * Set event handlers for updating of search index.
      */
-    public static function registerSearchIndexUpdateEvents()
+    public static function registerEventsForSearchIndexUpdate()
     {
         self::saved(function ($model) {
-            Search::update($model);
+            App::offsetGet('search')->update($model);
         });
 
         self::deleting(function ($model) {
-            Search::delete($model);
+            App::offsetGet('search')->delete($model);
         });
     }
 }

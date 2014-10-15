@@ -105,15 +105,15 @@ php artisan search:clear
 ```
 
 By default the index is rebuilt for each model for each class specified in a config.
-For filtering of models in case of index rebuilding each model's class can implements `SearchableInterface`.
+For filtering of models in case of index rebuilding each model's class can implements `Searchable`.
 For example:
 
 ```php
 
 use Illuminate\Database\Eloquent\Model;
-use Nqxcode\LuceneSearch\Model\SearchableInterface;
+use Nqxcode\LuceneSearch\Model\Searchable;
 
-class Dummy extends Model implements SearchableInterface
+class Dummy extends Model implements Searchable
 {
         // ...
 
@@ -140,18 +140,18 @@ class Dummy extends Model implements SearchableInterface
 
 ### Register events for models
 
-For register models events (save/update/delete) `use SearchTrait` and call `registerSearchIndexUpdateEvents` method of trait in `boot` method of model:
+For register models events (save/update/delete) `use Search` and call `registerEventsForSearchIndexUpdate` method of trait in `boot` method of model:
 
 ```php
     
-    use SearchTrait;
+    use Search;
     
     // ...
     
     public static function boot()
     {
     	parent::boot();
-        self::registerSearchIndexUpdateEvents();
+        self::registerEventsForSearchIndexUpdate();
     }
 
 ```
