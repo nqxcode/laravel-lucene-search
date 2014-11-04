@@ -29,15 +29,15 @@ class RunnerTest extends TestCase
     {
         $this->assertEquals([1, 2, 3, 4, 5], $this->runner->run('test'));
         $this->assertEquals([4, 5], $this->runner->run('test', ['limit' => 2, 'offset' => 3]));
-        $this->assertEquals(5, $this->runner->getCachedCount('test'));
-        $this->assertEquals(0, $this->runner->getCachedCount('other test'));
         $this->assertEquals('test', $this->runner->getLastQuery());
     }
 
     public function testModels()
     {
-        $this->search->shouldReceive('config->models')->with([1, 2, 3, 4, 5])->andReturn('models');
-        $this->assertEquals('models', $this->runner->models('test'));
+        $this->search->shouldReceive('config->models')->with([1, 2, 3, 4, 5])->andReturn([1, 2, 3, 4, 5]);
+        $this->assertEquals([1, 2, 3, 4, 5], $this->runner->models('test'));
+        $this->assertEquals(5, $this->runner->getCachedCount('test'));
+        $this->assertEquals(0, $this->runner->getCachedCount('other test'));
     }
 
     public function testModelsWithLimitOprions()

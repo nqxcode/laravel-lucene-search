@@ -43,7 +43,9 @@ class BuilderTest extends TestCase
 
         $this->query->shouldReceive('addSubquery')->with($this->luceneQuery, true);
 
+        $this->runner->shouldReceive('models')->with($this->query)->andReturn([1, 2, 3])->byDefault();
         $this->runner->shouldReceive('models')->with($this->query, [])->andReturn([1, 2, 3])->byDefault();
+
         $this->runner->shouldReceive('run')->with($this->query)->andReturn([1, 2, 3])->byDefault();
         $this->runner->shouldReceive('getCachedCount')->andReturn(null)->byDefault();
 

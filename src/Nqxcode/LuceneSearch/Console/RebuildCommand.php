@@ -31,11 +31,7 @@ class RebuildCommand extends Command
             foreach ($modelRepositories as $modelRepository) {
                 $this->info('Creating index for model: "' . get_class($modelRepository) . '"');
 
-                if (method_exists($modelRepository, 'allSearchable')) {
-                    $all = $modelRepository->allSearchable();
-                } else {
-                    $all = $modelRepository->all();
-                }
+                $all = $modelRepository->all();
 
                 $count = count($all);
 

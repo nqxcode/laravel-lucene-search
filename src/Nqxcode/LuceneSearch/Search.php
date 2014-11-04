@@ -101,13 +101,6 @@ class Search
         // Remove any existing documents for model.
         $this->delete($model);
 
-        if (method_exists($model, 'isSearchable')) {
-            // Is model available for search indexing?
-            if (!$model->{'isSearchable'}()) {
-                return;
-            }
-        }
-
         // Create new document for model.
         $doc = new Document();
 

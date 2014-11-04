@@ -86,7 +86,7 @@ class Builder
         $count = $this->runner->getCachedCount($this->query);
 
         if ($count === null) {
-            $count = count($this->runner->run($this->query));
+            $count = count($this->runner->models($this->query));
         }
         return $count;
     }

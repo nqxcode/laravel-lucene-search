@@ -1,8 +1,6 @@
 <?php
 namespace Nqxcode\LuceneSearch\Model;
 
-use Illuminate\Database\Eloquent\Collection;
-
 /**
  * Interface Searchable
  * @package Nqxcode\LuceneSearch
@@ -15,11 +13,4 @@ interface Searchable
      * @return boolean
      */
     public function isSearchable();
-
-    /**
-     * Get collection of searchable models.
-     *
-     * @return Collection|static[]
-     */
-    public function allSearchable();
 }

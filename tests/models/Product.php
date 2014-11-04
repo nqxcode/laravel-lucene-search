@@ -24,14 +24,6 @@ class Product extends Model implements Searchable
         return $this->publish;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function allSearchable()
-    {
-        return $this->wherePublish(1)->get();
-    }
-
     public static function boot()
     {
         self::registerEventsForSearchIndexUpdate();

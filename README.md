@@ -125,14 +125,6 @@ class Dummy extends Model implements Searchable
             return $this->publish;
         }
 
-        /**
-         * Get collection of searchable models.
-         */
-        public function allSearchable()
-        {
-            return $this->wherePublish(1)->get();
-        }
-
         // ...
 }
 

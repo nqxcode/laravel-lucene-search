@@ -47,9 +47,6 @@ class Runner
     {
         $hits = $this->search->index()->find($query);
 
-        // Remember total number of results.
-        $this->setCachedCount($query, count($hits));
-
         // Remember running query.
         self::$lastQuery = $query;
 
@@ -71,7 +68,12 @@ class Runner
     public function models($query, array $options = [])
     {
         $hits = $this->run($query, $options);
-        return $this->search->config()->models($hits);
+        $models = $this->search->config()->models($hits);
+
+        // Remember total number of results.
+        $this->setCachedCount($query, count($models));
+
+        return $models;
     }
 
     /**

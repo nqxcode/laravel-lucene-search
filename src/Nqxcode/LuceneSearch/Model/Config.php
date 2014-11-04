@@ -173,7 +173,16 @@ class Config
 
         // Skip empty.
         $results = array_filter($results, function ($model) {
-            return !is_null($model);
+
+            if (!is_null($model)) {
+                if (method_exists($model, 'isSearchable')) {
+                    return $model->{'isSearchable'}();
+                } else {
+                    return true;
+                }
+            }
+
+            return false;
         });
 
         return $results;
