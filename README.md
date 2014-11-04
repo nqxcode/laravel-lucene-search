@@ -104,8 +104,7 @@ For clearing of search index run:
 php artisan search:clear
 ```
 
-By default the index is rebuilt for each model for each class specified in a config.
-For filtering of models in case of index rebuilding each model's class can implements `Searchable`.
+For filtering of models in search results each model's class can implements `Searchable`.
 For example:
 
 ```php
@@ -118,7 +117,7 @@ class Dummy extends Model implements Searchable
         // ...
 
         /**
-         * Is the model available for search indexing?
+         * Is the model available for searching?
          */
         public function isSearchable()
         {
