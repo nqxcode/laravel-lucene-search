@@ -13,4 +13,19 @@ interface Searchable
      * @return boolean
      */
     public function isSearchable();
+
+    /**
+     * Set score of the hit.
+     *
+     * @param $score
+     * @return float
+     */
+    public function setScore($score);
+
+    /**
+     * Get score of the hit.
+     *
+     * @return float
+     */
+    public function getScore();
 }

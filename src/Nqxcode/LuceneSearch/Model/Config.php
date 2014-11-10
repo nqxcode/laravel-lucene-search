@@ -154,8 +154,14 @@ class Config
      */
     public function model(QueryHit $hit)
     {
-        $model = $this->createModelByClassUid($hit->class_uid);
-        return $model->find($hit->private_key);
+        $repo = $this->createModelByClassUid($hit->class_uid);
+        $model = $repo->find($hit->private_key);
+
+        if ($model instanceof Searchable) {
+            $model->setScore($hit->score);
+        }
+
+        return $model;
     }
 
     /**
@@ -171,7 +177,7 @@ class Config
             return $this->model($hit);
         }, $hits);
 
-        // Skip empty.
+        // Skip empty or not searchable.
         $results = array_filter($results, function ($model) {
 
             if (!is_null($model)) {
@@ -185,6 +191,6 @@ class Config
             return false;
         });
 
-        return $results;
+        return array_values($results);
     }
 }
