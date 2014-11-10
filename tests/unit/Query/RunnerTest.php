@@ -33,15 +33,17 @@ class RunnerTest extends TestCase
 
     public function testModels()
     {
-        $this->search->shouldReceive('config->models')->with([1, 2, 3, 4, 5], ['limit' => 2, 'offset' => 3])->andReturn([1, 2, 3, 4, 5]);
+        // TODO rewrite this
+        $this->search->shouldReceive('config->models')->with([1, 2, 3, 4, 5], ['limit' => 2, 'offset' => 3], null)->andReturn([1, 2, 3, 4, 5]);
         $this->assertEquals([1, 2, 3, 4, 5], $this->runner->models('test', ['limit' => 2, 'offset' => 3]));
-        $this->assertEquals(5, $this->runner->getCachedCount('test'));
+        $this->assertEquals(null, $this->runner->getCachedCount('test'));
         $this->assertEquals(0, $this->runner->getCachedCount('other test'));
     }
 
     public function testModelsWithLimitOptions()
     {
-        $this->search->shouldReceive('config->models')->with([1, 2, 3, 4, 5], ['limit' => 2, 'offset' => 3])->andReturn('models');
+        // TODO rewrite this
+        $this->search->shouldReceive('config->models')->with([1, 2, 3, 4, 5], ['limit' => 2, 'offset' => 3], null)->andReturn('models');
         $this->assertEquals('models', $this->runner->models('test', ['limit' => 2, 'offset' => 3]));
     }
 

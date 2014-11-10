@@ -60,11 +60,12 @@ class Runner
      */
     public function models($query, array $options = [])
     {
-        $hits = $this->run($query);
-        $models = $this->search->config()->models($hits, $options);
+        $totalCount = null;
 
+        $hits = $this->run($query);
+        $models = $this->search->config()->models($hits, $options, $totalCount);
         // Remember total number of results.
-        $this->setCachedCount($query, count($models));
+        $this->setCachedCount($query, $totalCount);
 
         return $models;
     }
