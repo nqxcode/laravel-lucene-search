@@ -157,10 +157,6 @@ class Config
         $repo = $this->createModelByClassUid($hit->class_uid);
         $model = $repo->find($hit->private_key);
 
-        if ($model instanceof Searchable) {
-            $model->setScore($hit->score);
-        }
-
         return $model;
     }
 
