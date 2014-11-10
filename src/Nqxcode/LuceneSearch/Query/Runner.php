@@ -39,21 +39,14 @@ class Runner
      * Execute the given query and return the query hits.
      *
      * @param string|AbstractQuery $query
-     * @param array $options - limit  : max number of records to return
-     *                       - offset : number of records to skip
      * @return array|QueryHit
      */
-    public function run($query, array $options = [])
+    public function run($query)
     {
         $hits = $this->search->index()->find($query);
 
         // Remember running query.
         self::$lastQuery = $query;
-
-        // Limit results.
-        if (isset($options['limit']) && isset($options['offset'])) {
-            $hits = array_slice($hits, $options['offset'], $options['limit']);
-        }
 
         return $hits;
     }
@@ -67,8 +60,8 @@ class Runner
      */
     public function models($query, array $options = [])
     {
-        $hits = $this->run($query, $options);
-        $models = $this->search->config()->models($hits);
+        $hits = $this->run($query);
+        $models = $this->search->config()->models($hits, $options);
 
         // Remember total number of results.
         $this->setCachedCount($query, count($models));

@@ -164,29 +164,42 @@ class Config
      * Get all models by query hits.
      *
      * @param QueryHit[] $hits
+     * @param array $options - limit  : max number of records to return
+     *                       - offset : number of records to skip
      * @return array
      */
-    public function models($hits)
+    public function models($hits, array $options = [])
     {
         // Get models from hits.
-        $results = array_map(function ($hit) {
-            return $this->model($hit);
-        }, $hits);
+        $results = array_map(
+            function ($hit) {
+                return $this->model($hit);
+            },
+            $hits
+        );
 
         // Skip empty or not searchable.
-        $results = array_filter($results, function ($model) {
-
-            if (!is_null($model)) {
-                if (method_exists($model, 'isSearchable')) {
-                    return $model->{'isSearchable'}();
-                } else {
-                    return true;
+        $results = array_filter(
+            $results,
+            function ($model) {
+                if (!is_null($model)) {
+                    if (method_exists($model, 'isSearchable')) {
+                        return $model->{'isSearchable'}();
+                    } else {
+                        return true;
+                    }
                 }
+                return false;
             }
+        );
 
-            return false;
-        });
+        $results = array_values($results);
 
-        return array_values($results);
+        // Limit results.
+        if (isset($options['limit']) && isset($options['offset'])) {
+            $results = array_slice($results, $options['offset'], $options['limit']);
+        }
+
+        return $results;
     }
 }
