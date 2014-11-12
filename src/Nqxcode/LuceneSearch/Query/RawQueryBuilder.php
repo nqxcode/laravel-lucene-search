@@ -56,6 +56,8 @@ class RawQueryBuilder
             }
         }
 
+        $tmpValue = $value;
+
         if (is_array($field)) {
             $values = array();
             foreach ($field as $f) {
@@ -69,9 +71,11 @@ class RawQueryBuilder
         $sign = null;
         if (!empty($options['required'])) {
             $sign = true;
-        }elseif (!empty($options['prohibited'])) {
+        } elseif (!empty($options['prohibited'])) {
             $sign = false;
         }
+
+        $value = "({$value}) AND NOT private_key:({$tmpValue}) AND NOT class_uid:({$tmpValue})";
 
         return [$value, $sign];
     }
@@ -120,9 +124,12 @@ class RawQueryBuilder
         $query_operators = ['to', 'or', 'and', 'not'];
 
         // Add spaces to operators.
-        $query_operators = array_map(function ($operator) {
-            return " {$operator} ";
-        }, $query_operators);
+        $query_operators = array_map(
+            function ($operator) {
+                return " {$operator} ";
+            },
+            $query_operators
+        );
 
         // Remove other operators.
         $str = str_ireplace($query_operators, ' ', $str);
