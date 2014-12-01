@@ -129,8 +129,7 @@ class Dummy extends Model implements Searchable
 
 ```
 
-### Register events for models
-
+### Partial updating of search index
 For register models events (save/update/delete) `use Nqxcode\LuceneSearch\Model\Search` and call `registerEventsForSearchIndexUpdate` method of trait in `boot` method of model:
 
 ```php
