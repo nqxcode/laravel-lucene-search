@@ -77,6 +77,12 @@ class SearchTest extends BaseTestCase
         $this->assertEquals(3, $query->count());
     }
 
+    public function testSearchByDynamicAttributes()
+    {
+        $query = Search::query('value1', ['dynamic_attribute1']);
+        $this->assertEquals(6, $query->count());
+    }
+
     public function testSearchHighlightResults()
     {
         Search::query('nearly all words must be highlighted')->get();

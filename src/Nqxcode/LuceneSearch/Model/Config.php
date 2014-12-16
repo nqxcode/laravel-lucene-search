@@ -37,10 +37,11 @@ class Config
         foreach ($configuration as $className => $options) {
 
             $fields = array_get($options, 'fields', []);
+            $dynamicAttributes = array_get($options, 'dynamic_attributes', []);
 
-            if (count($fields) == 0) {
+            if (count($fields) == 0 && count($dynamicAttributes) == 0) {
                 throw new \InvalidArgumentException(
-                    "Parameter 'fields' for '{$className}' class must be specified."
+                    "Parameter 'fields' and/or 'dynamic_attributes ' for '{$className}' class must be specified."
                 );
             }
 
@@ -51,6 +52,7 @@ class Config
                 'repository' => $modelRepository,
                 'class_uid' => $classUid,
                 'fields' => $fields,
+                'dynamic_attributes' => $dynamicAttributes,
                 'private_key' => array_get($options, 'private_key', 'id')
             ];
         }
@@ -144,6 +146,26 @@ class Config
     {
         $c = $this->config($model);
         return $c['fields'];
+    }
+
+    /**
+     * Get dynamic attributes for indexing for model.
+     *
+     * @param Model $model
+     * @return array
+     */
+    public function dynamicAttributes(Model $model)
+    {
+        $c = $this->config($model);
+
+        $attributes = [];
+        $field = array_get($c, 'dynamic_attributes.field');
+
+        if (!is_null($field)) {
+            $attributes = array_get($model, $field, []);
+        }
+
+        return $attributes;
     }
 
     /**

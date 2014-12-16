@@ -29,4 +29,9 @@ class Product extends Model implements Searchable
     {
         self::registerEventsForSearchIndexUpdate();
     }
+
+    public function getDynamicSearchAttributesAttribute()
+    {
+        return ['dynamic_attribute1' => "value1"];
+    }
 }

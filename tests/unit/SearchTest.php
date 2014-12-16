@@ -40,6 +40,9 @@ class SearchTest extends TestCase
             ->with($this->model)
             ->andReturn(['name']);
 
+        $this->config->shouldReceive('dynamicAttributes')
+            ->andReturn(['dynamic_attribute' => 'dynamic value']);
+
     }
 
     public function testUpdate()
@@ -50,6 +53,7 @@ class SearchTest extends TestCase
             $doc->addField(Field::keyword('private_key', 1));
             $doc->addField(Field::Keyword('class_uid', '12345'));
             $doc->addField(Field::unStored('name', 'test name'));
+            $doc->addField(Field::unStored('dynamic_attribute', 'dynamic value'));
 
             $this->assertEquals($doc, $arg);
             return true;
