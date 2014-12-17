@@ -27,9 +27,7 @@ abstract class BaseTestCase extends TestCase
                         'name',
                         'description'
                     ],
-                    'dynamic_attributes' => [
-                        'field' => 'dynamic_search_attributes'
-                    ]
+                    'optional_attributes' => true
                 ]
             ]
         );

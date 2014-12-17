@@ -37,11 +37,11 @@ class Config
         foreach ($configuration as $className => $options) {
 
             $fields = array_get($options, 'fields', []);
-            $dynamicAttributes = array_get($options, 'dynamic_attributes', []);
+            $optionalAttributes = array_get($options, 'optional_attributes', []);
 
-            if (count($fields) == 0 && count($dynamicAttributes) == 0) {
+            if (count($fields) == 0 && count($optionalAttributes) == 0) {
                 throw new \InvalidArgumentException(
-                    "Parameter 'fields' and/or 'dynamic_attributes ' for '{$className}' class must be specified."
+                    "Parameter 'fields' and/or 'optional_attributes ' for '{$className}' class must be specified."
                 );
             }
 
@@ -52,7 +52,7 @@ class Config
                 'repository' => $modelRepository,
                 'class_uid' => $classUid,
                 'fields' => $fields,
-                'dynamic_attributes' => $dynamicAttributes,
+                'optional_attributes' => $optionalAttributes,
                 'private_key' => array_get($options, 'private_key', 'id')
             ];
         }
@@ -149,17 +149,24 @@ class Config
     }
 
     /**
-     * Get dynamic attributes for indexing for model.
+     * Get optional attributes for indexing for model.
      *
      * @param Model $model
      * @return array
      */
-    public function dynamicAttributes(Model $model)
+    public function optionalAttributes(Model $model)
     {
         $c = $this->config($model);
 
         $attributes = [];
-        $field = array_get($c, 'dynamic_attributes.field');
+        $optionalAttributes = array_get($c, 'optional_attributes');
+
+        $field = null;
+        if (is_array($optionalAttributes)) {
+            $field = array_get($optionalAttributes, 'field');
+        } elseif ($optionalAttributes == true) {
+            $field = 'optional_attributes';
+        }
 
         if (!is_null($field)) {
             $attributes = array_get($model, $field, []);
@@ -186,7 +193,7 @@ class Config
      * Get all models by query hits.
      *
      * @param QueryHit[] $hits
-     * @param array $options    - limit  : max number of records to return
+     * @param array $options - limit  : max number of records to return
      *                          - offset : number of records to skip
      * @param int|null $totalCount
      * @return array

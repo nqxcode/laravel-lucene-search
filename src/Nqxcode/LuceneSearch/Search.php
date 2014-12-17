@@ -122,10 +122,10 @@ class Search
             $doc->addField(Field::unStored(trim($field), strip_tags(trim($model->{trim($field)}))));
         }
 
-        $dynamicFields = $this->config->dynamicAttributes($model);
+        $optionalAttributes = $this->config->optionalAttributes($model);
 
-        // Add dynamic attributes to document to be indexed (but not stored).
-        foreach ($dynamicFields as $fieldName => $fieldValue) {
+        // Add optional attributes to document to be indexed (but not stored).
+        foreach ($optionalAttributes as $fieldName => $fieldValue) {
             $doc->addField(Field::unStored(trim($fieldName), strip_tags(trim($fieldValue))));
         }
 
