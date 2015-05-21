@@ -23,7 +23,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     public function boot()
     {
-        $this->package('nqxcode/laravel-lucene-search');
+	    $this->mergeConfigFrom(__DIR__.'/../../config/config.php', 'search');
     }
 
     /**
@@ -50,14 +50,14 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
         $this->app->bind('Nqxcode\LuceneSearch\Analyzer\Config', function () {
             return new AnalyzerConfig(
-                Config::get('laravel-lucene-search::analyzer.filters', []),
-                Config::get('laravel-lucene-search::analyzer.stopwords', []),
+                Config::get('search.analyzer.filters', []),
+                Config::get('search.analyzer.stopwords', []),
                 new FilterFactory
             );
         });
 
         $this->app->bindShared('search.index.path', function () {
-            return Config::get('laravel-lucene-search::index.path');
+            return Config::get('search.index.path');
         });
 
         $this->app->bindShared('search.connection', function ($app) {
@@ -69,7 +69,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
         $this->app->bindShared('search.models.config', function ($app) {
             return new ModelsConfig(
-                Config::get('laravel-lucene-search::index.models'),
+                Config::get('search.index.models'),
                 $app->make('Nqxcode\LuceneSearch\Model\Factory')
             );
         });
@@ -81,6 +81,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->app->bindShared('command.search.clear', function () {
             return new Console\ClearCommand;
         });
+
+	    $this->publishes([
+		    __DIR__.'/../../config/config.php' => config_path('search.php'),
+	    ]);
 
         $this->commands(array('command.search.rebuild', 'command.search.clear'));
     }
