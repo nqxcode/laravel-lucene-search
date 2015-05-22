@@ -113,7 +113,7 @@ class Builder
         $models = $this->get();
         $count = $this->count();
 
-        /** @var PaginatorFactory $paginator */
+        /** @var Paginator $paginator */
 	    $paginator = new Paginator($models, $count, $perPage);
 
 	    return $paginator;

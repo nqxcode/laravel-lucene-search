@@ -169,7 +169,7 @@ class Config
         }
 
         if (!is_null($field)) {
-            $attributes = array_get($model, $field, []);
+            $attributes = object_get($model, $field, []);
         }
 
         return $attributes;
@@ -183,8 +183,8 @@ class Config
      */
     public function model(QueryHit $hit)
     {
-        $repo = $this->createModelByClassUid($hit->class_uid);
-        $model = $repo->find($hit->private_key);
+        $repo = $this->createModelByClassUid(object_get($hit, 'class_uid'));
+        $model = $repo->find(object_get($hit, 'private_key'));
 
         return $model;
     }

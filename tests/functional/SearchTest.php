@@ -1,10 +1,9 @@
 <?php namespace tests\functional;
 
-use tests\TestCase;
 use ZendSearch\Lucene\Search\Query\Boolean;
 use ZendSearch\Lucene\Search\QueryParser;
-use Config;
 
+use Config;
 use Search;
 
 class SearchTest extends BaseTestCase
