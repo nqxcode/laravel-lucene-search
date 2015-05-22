@@ -33,12 +33,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     public function register()
     {
-	    if(function_exists('config_path'))
-	    {
-		    $this->publishes([
-			    __DIR__.'/../../config/config.php' => config_path('laravel-lucene-search'),
-		    ]);
-	    }
+	    $this->publishes([
+		    __DIR__.'/../../config/config.php' => config_path('laravel-lucene-search.php'),
+	    ]);
 
         $this->app->bind('Nqxcode\LuceneSearch\Search', function ($app) {
             return $app['search'];
