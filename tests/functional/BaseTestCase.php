@@ -18,9 +18,9 @@ abstract class BaseTestCase extends TestCase
 
     protected function configure()
     {
-        Config::set('laravel-lucene-search::index.path', storage_path() . '/lucene-search/index_' . uniqid());
+        Config::set('laravel-lucene-search.index.path', storage_path() . '/lucene-search/index_' . uniqid());
         Config::set(
-            'laravel-lucene-search::index.models',
+            'laravel-lucene-search.index.models',
             [
                 'tests\models\Product' => [
                     'fields' => [
