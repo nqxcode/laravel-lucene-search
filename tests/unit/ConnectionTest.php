@@ -18,7 +18,7 @@ class ConnectionTest extends TestCase
         $this->analyzerConfig->shouldReceive('setDefaultAnalyzer');
     }
 
-    protected function tearDown()
+    public function tearDown()
     {
         parent::tearDown();
 

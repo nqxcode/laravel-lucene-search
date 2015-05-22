@@ -10,7 +10,7 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
         $this->resetModelEvents();
     }
 
-    protected function tearDown()
+    public function tearDown()
     {
         m::close();
     }
@@ -34,12 +34,12 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
         ));
     }
 
-    protected function getPackageProviders()
+    protected function getPackageProviders($app)
     {
         return array('Nqxcode\LuceneSearch\ServiceProvider');
     }
 
-    protected function getPackageAliases()
+    protected function getPackageAliases($app)
     {
         return array(
             'Search' => 'Nqxcode\LuceneSearch\Facade',
