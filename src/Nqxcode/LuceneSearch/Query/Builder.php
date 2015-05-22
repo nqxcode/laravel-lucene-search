@@ -1,6 +1,6 @@
 <?php namespace Nqxcode\LuceneSearch\Query;
 
-use Illuminate\Pagination\Factory as PaginatorFactory;
+use Illuminate\Pagination\Paginator;
 use ZendSearch\Lucene\Search\Query\AbstractQuery;
 use ZendSearch\Lucene\Search\Query\Boolean as QueryBoolean;
 use Input;
@@ -114,9 +114,9 @@ class Builder
         $count = $this->count();
 
         /** @var PaginatorFactory $paginator */
-        $paginator = App::make('paginator');
+	    $paginator = new Paginator($models, $count, $perPage);
 
-        return $paginator->make($models, $count, $perPage);
+	    return $paginator;
     }
 
     /**
