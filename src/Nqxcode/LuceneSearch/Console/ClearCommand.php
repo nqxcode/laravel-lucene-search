@@ -15,7 +15,7 @@ class ClearCommand extends Command
             $this->output = new NullOutput;
         }
 
-        if ($result = rmdir_recursive(Config::get('laravel-lucene-search::index.path'))) {
+        if ($result = rmdir_recursive(Config::get('laravel-lucene-search.index.path'))) {
             $this->info('Search index is cleared.');
         } else {
             $this->comment('There is nothing to clear..');
