@@ -33,6 +33,13 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     public function register()
     {
+	    if(function_exists('config_path'))
+	    {
+		    $this->publishes([
+			    __DIR__.'/../../config/config.php' => config_path('laravel-lucene-search'),
+		    ]);
+	    }
+
         $this->app->bind('Nqxcode\LuceneSearch\Search', function ($app) {
             return $app['search'];
         });
@@ -81,11 +88,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->app->bindShared('command.search.clear', function () {
             return new Console\ClearCommand;
         });
-
-//	    $path = 'laravel-lucene-search';
-//	    $this->publishes([
-//		    __DIR__.'/../../config/config.php' => $this->app->make('path.config').($path ? '/'.$path : $path),
-//	    ]);
 
         $this->commands(array('command.search.rebuild', 'command.search.clear'));
     }
