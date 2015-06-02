@@ -127,8 +127,17 @@ class BuilderTest extends TestCase
         $this->runner->shouldReceive('models')->with($this->query, ['limit' => 2, 'offset' => 0])->andReturn([1, 2])->byDefault();
 
         $expected = new Paginator([1, 2], 3, 2);
-	    
         $actual = $query->paginate(2);
+
+        $this->assertEquals($expected, $actual);
+
+        $this->runner->shouldReceive('models')->with($this->query, ['limit' => 2, 'offset' => 2])->andReturn([1, 2])->byDefault();
+        $actual = $query->paginate(2, 2);
+
+        $this->assertEquals($expected, $actual);
+
+        $this->runner->shouldReceive('models')->with($this->query, ['limit' => 2, 'offset' => 2])->andReturn([1, 2])->byDefault();
+        $actual = $query->paginate(2, function () { return 2; });
 
         $this->assertEquals($expected, $actual);
     }

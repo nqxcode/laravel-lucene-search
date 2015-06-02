@@ -194,11 +194,11 @@ class Config
      *
      * @param QueryHit[] $hits
      * @param array $options - limit  : max number of records to return
-     *                          - offset : number of records to skip
-     * @param int|null $totalCount
-     * @return array
+     *                       - offset : number of records to skip
+     * @return array - 0 : array with models
+     *                 1 : total count
      */
-    public function models($hits, array $options = [], &$totalCount = null)
+    public function models($hits, array $options = [])
     {
         // Get models from hits.
         $results = array_map(
@@ -224,13 +224,12 @@ class Config
         );
 
         $results = array_values($results);
-        $totalCount = count($results);
 
         // Limit results.
         if (isset($options['limit']) && isset($options['offset'])) {
             $results = array_slice($results, $options['offset'], $options['limit']);
         }
 
-        return $results;
+        return [$results, count($results)];
     }
 }

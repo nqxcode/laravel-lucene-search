@@ -95,18 +95,18 @@ class Builder
      * Execute the current query and return a paginator for the results.
      *
      * @param int $perPage
-     * @param \Closure $getCurrentPage
+     * @param callable|mixed $currentPage
      *
      * @return \Illuminate\Pagination\Paginator
      */
-    public function paginate($perPage = 25, \Closure $getCurrentPage = null)
+    public function paginate($perPage = 25, $currentPage = null)
     {
-        if (is_null($getCurrentPage)) {
-            $getCurrentPage = function () {
+        if (is_null($currentPage)) {
+            $currentPage = function () {
                 return Input::get('page', 1);
             };
         }
-        $page = intval($getCurrentPage());
+        $page = intval(is_callable($currentPage) ? $currentPage() : $currentPage);
 
         $this->limit($perPage, ($page - 1) * $perPage);
 
