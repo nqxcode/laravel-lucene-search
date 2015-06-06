@@ -72,7 +72,7 @@ In published config file add descriptions for models which need to be indexed, f
 ```
 You can also index values of **optional fields** (dynamic fields). For enable indexing for optional fields:
 
-1. In config for each necessary model add following option:
+- In config for each necessary model add following option:
 ```php
         'optional_attributes' => true
         
@@ -82,7 +82,7 @@ You can also index values of **optional fields** (dynamic fields). For enable in
                 'field' => 'custom_name' // with specifying of accessor name
         ]
 ```
-2. In model add **special accessor**, that returns list of `field-name => field-value`.
+- In model add **special accessor**, that returns list of `field-name => field-value`.
 By default `getOptionalAttributesAttribute` accessor will be used.
 In case accessor name specified in config `getCustomNameAttribute` accessor will be used.
 
