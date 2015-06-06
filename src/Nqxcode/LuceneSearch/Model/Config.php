@@ -159,17 +159,26 @@ class Config
         $c = $this->config($model);
 
         $attributes = [];
-        $optionalAttributes = array_get($c, 'optional_attributes');
 
-        $field = null;
-        if (is_array($optionalAttributes)) {
-            $field = array_get($optionalAttributes, 'field');
-        } elseif ($optionalAttributes == true) {
-            $field = 'optional_attributes';
-        }
+        $default = 'optional_attributes';
+        $field = array_get($c, $default) === true ? $default : array_get($c, "{$default}.field");
 
         if (!is_null($field)) {
             $attributes = object_get($model, $field, []);
+
+            if (array_values($attributes) === $attributes) {
+
+                // Transform to the associative
+                $attributes = array_combine(
+                    array_map(
+                        function ($i) use ($field) {
+                            return "{$field}_{$i}";
+                        },
+                        array_keys($attributes)
+                    ),
+                    $attributes
+                );
+            }
         }
 
         return $attributes;
