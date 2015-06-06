@@ -233,12 +233,13 @@ class Config
         );
 
         $results = array_values($results);
+        $totalCount = count($results);
 
         // Limit results.
         if (isset($options['limit']) && isset($options['offset'])) {
             $results = array_slice($results, $options['offset'], $options['limit']);
         }
 
-        return [$results, count($results)];
+        return [$results, $totalCount];
     }
 }
