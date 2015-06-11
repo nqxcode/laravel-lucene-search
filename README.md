@@ -172,25 +172,19 @@ class Dummy extends Model implements Searchable
 ```
 
 ### Partial updating of search index
-For register models events (save/update/delete) `use Nqxcode\LuceneSearch\Model\Search` and call `registerEventsForSearchIndexUpdate` method of trait in `boot` method of model:
+For register of necessary events (save/update/delete) `use Nqxcode\LuceneSearch\Model\SearchTrait` in target model:
 
 ```php
 
     use Illuminate\Database\Eloquent\Model;
     use Nqxcode\LuceneSearch\Model\Searchable;
-    use Nqxcode\LuceneSearch\Model\Search as SearchTrait;
+    use Nqxcode\LuceneSearch\Model\SearchTrait;
 
     class Dummy extends Model implements Searchable
     {
         use SearchTrait;
     
         // ...
-        
-        public static function boot()
-        {
-    	    parent::boot();
-            self::registerEventsForSearchIndexUpdate();
-        }
     }
 
 ```

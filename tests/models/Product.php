@@ -3,7 +3,7 @@
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Nqxcode\LuceneSearch\Model\Searchable;
-use Nqxcode\LuceneSearch\Model\Search;
+use Nqxcode\LuceneSearch\Model\SearchTrait;
 
 /**
  * Class Product
@@ -15,7 +15,7 @@ use Nqxcode\LuceneSearch\Model\Search;
  */
 class Product extends Model implements Searchable
 {
-    use Search;
+    use SearchTrait;
 
     /**
      * @inheritdoc
@@ -23,11 +23,6 @@ class Product extends Model implements Searchable
     public function isSearchable()
     {
         return $this->publish;
-    }
-
-    public static function boot()
-    {
-        self::registerEventsForSearchIndexUpdate();
     }
 
     public function getOptionalAttributesAttribute()
