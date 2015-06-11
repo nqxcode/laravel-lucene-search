@@ -10,15 +10,15 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0",
-        "illuminate/support": "5.0.*",
+        "php": ">=5.5.9",
+        "illuminate/support": "5.1.*",
         "nqxcode/zendsearch": "dev-master",
         "nqxcode/lucene-stemmer-en-ru": "1.*"
     },
     "require-dev": {
         "phpunit/phpunit": "4.6.*",
         "mockery/mockery": "0.9.*",
-        "orchestra/testbench": "3.0.*"
+        "orchestra/testbench": "3.1.*"
     },
     "autoload": {
         "files": [
