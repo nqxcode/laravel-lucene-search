@@ -5,6 +5,7 @@ use Nqxcode\LuceneSearch\Search;
 
 use App;
 use Config;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\NullOutput;
 
 class RebuildCommand extends Command
@@ -36,9 +37,8 @@ class RebuildCommand extends Command
                 $count = count($all);
 
                 if ($count > 0) {
-                    /** @var \Symfony\Component\Console\Helper\ProgressBar $progress */
-                    $progress = $this->getHelperSet()->get('progress');
-                    $progress->start($this->getOutput(), $count);
+                    /** @var ProgressBar $progress */
+                    $progress = new ProgressBar($this->getOutput(), $count);
 
                     foreach ($all as $model) {
                         $search->update($model);
