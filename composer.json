@@ -12,7 +12,7 @@
     "require": {
         "php": ">=5.5.9",
         "illuminate/support": "5.1.*",
-        "nqxcode/zendsearch": "dev-master",
+        "nqxcode/zendsearch": "2.*",
         "nqxcode/lucene-stemmer-en-ru": "1.*"
     },
     "require-dev": {
@@ -30,6 +30,5 @@
         }
     },
 
-    "prefer-stable" : true,
-    "minimum-stability": "dev"
+    "minimum-stability": "stable"
 }
