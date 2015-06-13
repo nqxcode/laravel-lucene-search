@@ -1,6 +1,6 @@
 {
     "name": "nqxcode/laravel-lucene-search",
-    "description": "Laravel 5 package for full-text search over Eloquent models based on ZendSearch Lucene.",
+    "description": "Laravel 5.1 package for full-text search over Eloquent models based on ZendSearch Lucene.",
     "keywords": ["laravel", "lucene", "zendsearch", "eloquent", "search", "fulltext"],
     "license": "MIT",
     "authors": [
