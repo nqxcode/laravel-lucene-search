@@ -192,8 +192,8 @@ class Config
      */
     public function model(QueryHit $hit)
     {
-        $repo = $this->createModelByClassUid(object_get($hit, 'class_uid'));
-        $model = $repo->find(object_get($hit, 'private_key'));
+        $repository = $this->createModelByClassUid(object_get($hit, 'class_uid'));
+        $model = $repository->find(object_get($hit, 'private_key'));
 
         return $model;
     }

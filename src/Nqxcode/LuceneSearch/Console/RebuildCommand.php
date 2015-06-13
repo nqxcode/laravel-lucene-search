@@ -45,14 +45,13 @@ class RebuildCommand extends Command
                         $progress->advance();
                     }
                     $progress->finish();
-
                 } else {
                     $this->comment(' No available models found. ');
                 }
             }
-            $this->info('Operation is fully complete!');
+            $this->info(PHP_EOL . 'Operation is fully complete!');
         } else {
-            $this->error('No models found in config.php file..');
+            $this->error('No models found in config file..');
         }
     }
 }

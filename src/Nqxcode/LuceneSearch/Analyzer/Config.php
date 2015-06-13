@@ -35,7 +35,7 @@ class Config
     public function setDefaultAnalyzer()
     {
         /** @var AbstractCommon $analyzer */
-        $analyzer = App::make('ZendSearch\Lucene\Analysis\Analyzer\Common\AbstractCommon');
+        $analyzer = App::make(AbstractCommon::class);
 
         foreach ($this->stopWordFiles as $file) {
             $analyzer->addFilter($this->stopwordsFilterFactory->newInstance($file));
@@ -54,7 +54,7 @@ class Config
     public function setHighlighterAnalyzer()
     {
         /** @var AbstractCommon $analyzer */
-        $analyzer = App::make('ZendSearch\Lucene\Analysis\Analyzer\Common\AbstractCommon');
+        $analyzer = App::make(AbstractCommon::class);
 
         foreach ($this->filterClasses as $filterClass) {
             $analyzer->addFilter(App::make($filterClass));

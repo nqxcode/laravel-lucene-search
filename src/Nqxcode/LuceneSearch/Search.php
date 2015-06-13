@@ -3,6 +3,8 @@
 use Illuminate\Database\Eloquent\Model;
 use Nqxcode\LuceneSearch\Highlighting\Html;
 use Nqxcode\LuceneSearch\Model\Config;
+use Nqxcode\LuceneSearch\Query\Builder as QueryBuilder;
+use Nqxcode\LuceneSearch\Highlighting\Html as Highlighter;
 use ZendSearch\Lucene\Document;
 use ZendSearch\Lucene\Index\Term;
 use ZendSearch\Lucene\Search\Query\MultiTerm;
@@ -156,7 +158,7 @@ class Search
      */
     public function __call($name, $arguments)
     {
-        $queryBuilder = App::make('Nqxcode\LuceneSearch\Query\Builder');
+        $queryBuilder = App::make(QueryBuilder::class);
         return call_user_func_array([$queryBuilder, $name], $arguments);
     }
 
@@ -169,7 +171,7 @@ class Search
     public function highlight($html)
     {
         /** @var Html $highlighter */
-        $highlighter = App::make('Nqxcode\LuceneSearch\Highlighting\Html');
+        $highlighter = App::make(Highlighter::class);
         return $highlighter->highlight($html);
     }
 }
