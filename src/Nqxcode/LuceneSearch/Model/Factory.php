@@ -1,6 +1,7 @@
 <?php namespace Nqxcode\LuceneSearch\Model;
 
 use App;
+use Illuminate\Database\Eloquent\Model;
 
 class Factory
 {
@@ -11,7 +12,7 @@ class Factory
      */
     public function newInstance($className)
     {
-        $baseClass = 'Illuminate\Database\Eloquent\Model';
+        $baseClass = Model::class;
 
         if (!is_subclass_of($className, $baseClass)) {
             throw new \InvalidArgumentException(

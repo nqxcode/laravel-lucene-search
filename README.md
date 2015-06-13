@@ -16,7 +16,7 @@ Require this package in your composer.json and run composer update:
 ```json
 {
 	"require": {
-        "nqxcode/laravel-lucene-search": "2.1.*-dev"
+        "nqxcode/laravel-lucene-search": "2.1.*"
 	}
 }
 ```
@@ -25,7 +25,7 @@ After updating composer, add the ServiceProvider to the providers array in `app/
 
 ```php
 'providers' => [
-	'Nqxcode\LuceneSearch\ServiceProvider',
+	Nqxcode\LuceneSearch\ServiceProvider::class,
 ],
 ```
 
@@ -33,7 +33,7 @@ If you want to use the facade to search, add this to your facades in `app/config
 
 ```php
 'aliases' => [
-	'Search' => 'Nqxcode\LuceneSearch\Facade',
+	'Search' => Nqxcode\LuceneSearch\Facade::class,
 ],
 ```
 ## Configuration 
@@ -50,13 +50,13 @@ In published config file add descriptions for models which need to be indexed, f
 	
 	// ...
 
-	'namespace\FirstModel' => [
+	namespace\FirstModel::class => [
 		'fields' => [
 			'name', 'full_description', // Fields for indexing.
 		]
 	],
 	
-	'namespace\SecondModel' => [
+	namespace\SecondModel::class => [
 		'fields' => [
 			'name', 'short_description', // Fields for indexing.
 		]
@@ -88,7 +88,7 @@ Example:
 In config file:
 
 ```php
-        'namespace\FirstModel' => [
+        namespace\FirstModel::class => [
                 'fields' => [
                     'name', 'full_description', // Fixed fields for indexing.
                 ],
@@ -100,7 +100,7 @@ In config file:
 In model add following accessor:
 
 ```php
-        publc function getOptionalAttributesAttribute()
+        public function getOptionalAttributesAttribute()
         {
                 return [
                         'optional_attribute1' => "value1",
@@ -119,7 +119,7 @@ This filters can be deleted or replaced with others.
 'analyzer' => [
     'filters' => [
     	// Default stemming filter.
-    	'Nqxcode\Stemming\TokenFilterEnRu',
+    	Nqxcode\Stemming\TokenFilterEnRu::class,
     ],
         
     // List of paths to files with stopwords. 
@@ -262,8 +262,9 @@ Highlighting of matches is available for any html fragment encoded in **utf-8** 
 Search::find('nearly all words must be highlighted')->get();
 $highlighted = Search::highlight('all words');
 
-// highlighted html: 
-// '<span class="highlight">all</span> <span class="highlight">words</span>'
+echo $highlighted;
+ 
+// Echo: <span class="highlight">all</span> <span class="highlight">words</span>
 ```
 ##
 ## License

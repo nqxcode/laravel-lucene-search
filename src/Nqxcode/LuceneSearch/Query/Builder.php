@@ -233,8 +233,8 @@ class Builder
             $this->query = $query;
         } else {
             throw new \InvalidArgumentException(
-                "Argument 'query' must be a string or ZendSearch\\Lucene\\Search\\Query\\AbstractQuery instance " .
-                "or callable returning a string or ZendSearch\\Lucene\\Search\\Query\\AbstractQuery instance."
+                "Argument 'query' must be a string or " . AbstractQuery::class . " instance " .
+                "or callable returning a string or " . AbstractQuery::class . " instance."
             );
         }
 
