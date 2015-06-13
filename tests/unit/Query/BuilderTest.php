@@ -126,7 +126,7 @@ class BuilderTest extends TestCase
         $query = $this->constructor->query('test');
         $this->runner->shouldReceive('models')->with($this->query, ['limit' => 2, 'offset' => 0])->andReturn([1, 2])->byDefault();
 
-        $expected = new Paginator([1, 2], 3, 2);
+        $expected = App::make('paginator')->make([1, 2], 3, 2);
         $actual = $query->paginate(2);
 
         $this->assertEquals($expected, $actual);
