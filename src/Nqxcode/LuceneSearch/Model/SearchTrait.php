@@ -6,19 +6,23 @@ use App;
  * Class Search
  * @package Nqxcode\LuceneSearch\Model
  */
-trait Search
+trait SearchTrait
 {
     /**
      * Set event handlers for updating of search index.
      */
-    public static function registerEventsForSearchIndexUpdate()
+    public static function bootSearchTrait()
     {
-        self::saved(function ($model) {
-            App::offsetGet('search')->update($model);
-        });
+        self::saved(
+            function ($model) {
+                App::offsetGet('search')->update($model);
+            }
+        );
 
-        self::deleting(function ($model) {
-            App::offsetGet('search')->delete($model);
-        });
+        self::deleting(
+            function ($model) {
+                App::offsetGet('search')->delete($model);
+            }
+        );
     }
 }

@@ -1,4 +1,4 @@
-<?php  namespace Nqxcode\LuceneSearch\Console;
+<?php namespace Nqxcode\LuceneSearch\Console;
 
 use Illuminate\Console\Command;
 use Nqxcode\LuceneSearch\Search;
@@ -18,7 +18,7 @@ class RebuildCommand extends Command
             $this->output = new NullOutput;
         }
 
-        if (is_dir(Config::get('laravel-lucene-search::index.path'))) {
+        if (is_dir(Config::get('laravel-lucene-search.index.path'))) {
             $this->call('search:clear');
         }
 
