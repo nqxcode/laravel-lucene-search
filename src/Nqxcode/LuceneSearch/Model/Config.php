@@ -159,17 +159,26 @@ class Config
         $c = $this->config($model);
 
         $attributes = [];
-        $optionalAttributes = array_get($c, 'optional_attributes');
 
-        $field = null;
-        if (is_array($optionalAttributes)) {
-            $field = array_get($optionalAttributes, 'field');
-        } elseif ($optionalAttributes == true) {
-            $field = 'optional_attributes';
-        }
+        $default = 'optional_attributes';
+        $field = array_get($c, $default) === true ? $default : array_get($c, "{$default}.field");
 
         if (!is_null($field)) {
-            $attributes = array_get($model, $field, []);
+            $attributes = object_get($model, $field, []);
+
+            if (array_values($attributes) === $attributes) {
+
+                // Transform to the associative
+                $attributes = array_combine(
+                    array_map(
+                        function ($i) use ($field) {
+                            return "{$field}_{$i}";
+                        },
+                        array_keys($attributes)
+                    ),
+                    $attributes
+                );
+            }
         }
 
         return $attributes;
@@ -183,8 +192,8 @@ class Config
      */
     public function model(QueryHit $hit)
     {
-        $repo = $this->createModelByClassUid($hit->class_uid);
-        $model = $repo->find($hit->private_key);
+        $repo = $this->createModelByClassUid(object_get($hit, 'class_uid'));
+        $model = $repo->find(object_get($hit, 'private_key'));
 
         return $model;
     }
@@ -194,11 +203,11 @@ class Config
      *
      * @param QueryHit[] $hits
      * @param array $options - limit  : max number of records to return
-     *                          - offset : number of records to skip
-     * @param int|null $totalCount
-     * @return array
+     *                       - offset : number of records to skip
+     * @return array - 0 : array with models
+     *                 1 : total count
      */
-    public function models($hits, array $options = [], &$totalCount = null)
+    public function models($hits, array $options = [])
     {
         // Get models from hits.
         $results = array_map(
@@ -231,6 +240,6 @@ class Config
             $results = array_slice($results, $options['offset'], $options['limit']);
         }
 
-        return $results;
+        return [$results, $totalCount];
     }
 }

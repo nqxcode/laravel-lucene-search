@@ -2,6 +2,7 @@
 
 use tests\TestCase;
 
+use Illuminate\Pagination\Paginator;
 use Mockery as m;
 use ZendSearch\Lucene\Search\Query\Boolean;
 
@@ -117,7 +118,7 @@ class BuilderTest extends TestCase
         $closure = function(){return 'test';};
         $this->filter->shouldReceive('add')->with($closure)->once();
 
-       $this->assertEquals($this->constructor, $this->constructor->addFilter($closure));;
+        $this->assertEquals($this->constructor, $this->constructor->addFilter($closure));;
     }
 
     public function testPaginate()
@@ -125,8 +126,18 @@ class BuilderTest extends TestCase
         $query = $this->constructor->query('test');
         $this->runner->shouldReceive('models')->with($this->query, ['limit' => 2, 'offset' => 0])->andReturn([1, 2])->byDefault();
 
-        $expected = App::make('paginator')->make([1, 2], 3, 2);
+        $expected = new Paginator([1, 2], 3, 2);
         $actual = $query->paginate(2);
+
+        $this->assertEquals($expected, $actual);
+
+        $this->runner->shouldReceive('models')->with($this->query, ['limit' => 2, 'offset' => 2])->andReturn([1, 2])->byDefault();
+        $actual = $query->paginate(2, 2);
+
+        $this->assertEquals($expected, $actual);
+
+        $this->runner->shouldReceive('models')->with($this->query, ['limit' => 2, 'offset' => 2])->andReturn([1, 2])->byDefault();
+        $actual = $query->paginate(2, function () { return 2; });
 
         $this->assertEquals($expected, $actual);
     }

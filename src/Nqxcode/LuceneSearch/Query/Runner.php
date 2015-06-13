@@ -1,5 +1,6 @@
 <?php namespace Nqxcode\LuceneSearch\Query;
 
+use Illuminate\Support\Collection;
 use Nqxcode\LuceneSearch\Search;
 use ZendSearch\Lucene\Search\Query\AbstractQuery;
 use ZendSearch\Lucene\Search\QueryHit;
@@ -60,14 +61,12 @@ class Runner
      */
     public function models($query, array $options = [])
     {
-        $totalCount = null;
-
         $hits = $this->run($query);
-        $models = $this->search->config()->models($hits, $options, $totalCount);
+        list($models, $totalCount) = $this->search->config()->models($hits, $options);
         // Remember total number of results.
         $this->setCachedCount($query, $totalCount);
 
-        return $models;
+        return Collection::make($models);
     }
 
     /**
