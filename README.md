@@ -1,4 +1,4 @@
-Laravel 5 Lucene search
+Laravel 5.0 Lucene search
 ==============
 
 [![Latest Stable Version](https://poser.pugx.org/nqxcode/laravel-lucene-search/v/stable.png)](https://packagist.org/packages/nqxcode/laravel-lucene-search)
@@ -7,7 +7,7 @@ Laravel 5 Lucene search
 [![Build Status](https://travis-ci.org/nqxcode/laravel-lucene-search.svg?branch=master)](https://travis-ci.org/nqxcode/laravel-lucene-search)
 
 
-Laravel 5 package for full-text search over Eloquent models based on ZendSearch Lucene.
+Laravel 5.0 package for full-text search over Eloquent models based on ZendSearch Lucene.
 
 ## Installation
 
@@ -16,11 +16,8 @@ Require this package in your composer.json and run composer update:
 ```json
 {
 	"require": {
-        "nqxcode/laravel-lucene-search": "dev-master"
-	},
-	
-    "prefer-stable" : true,
-    "minimum-stability": "dev"
+        "nqxcode/laravel-lucene-search": "2.0.*"
+	}
 }
 ```
 
@@ -172,7 +169,7 @@ class Dummy extends Model implements Searchable
 ```
 
 ### Partial updating of search index
-For register models events (save/update/delete) `use Nqxcode\LuceneSearch\Model\Search` and call `registerEventsForSearchIndexUpdate` method of trait in `boot` method of model:
+For register of necessary events (save/update/delete) `use Nqxcode\LuceneSearch\Model\SearchTrait` in target model:
 
 ```php
 
@@ -185,12 +182,6 @@ For register models events (save/update/delete) `use Nqxcode\LuceneSearch\Model\
         use SearchTrait;
     
         // ...
-        
-        public static function boot()
-        {
-    	    parent::boot();
-            self::registerEventsForSearchIndexUpdate();
-        }
     }
 
 ```
