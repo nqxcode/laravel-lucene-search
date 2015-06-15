@@ -67,6 +67,47 @@ In published config file add descriptions for models which need to be indexed, f
 ],
 
 ```
+You can also index values of **optional fields** (dynamic fields). For enable indexing for optional fields:
+
+- In config for each necessary model add following option:
+```php
+        'optional_attributes' => true
+        
+        // or
+        
+        'optional_attributes' => [
+                'field' => 'custom_name' // with specifying of accessor name
+        ]
+```
+- In model add **special accessor**, that returns list of `field-name => field-value`.
+By default `getOptionalAttributesAttribute` accessor will be used.
+In case accessor name specified in config `getCustomNameAttribute` accessor will be used.
+
+Example:
+
+In config file:
+
+```php
+        'namespace\FirstModel' => [
+                'fields' => [
+                    'name', 'full_description', // Fixed fields for indexing.
+                ],
+
+                'optional_attributes' => true //  Enable indexing for dynamic fields
+        ],
+```
+
+In model add following accessor:
+
+```php
+        publc function getOptionalAttributesAttribute()
+        {
+                return [
+                        'optional_attribute1' => "value1",
+                        'optional_attribute2' => "value2",
+                ];
+        }
+```
 By default the following filters are used by search:
 - Stemming filter for english/russian words,
 - Stopword filters for english/russian words.
