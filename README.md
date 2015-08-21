@@ -44,7 +44,6 @@ Publish the config file into your project by running:
 ```bash
 php artisan vendor:publish --provider="Nqxcode\LuceneSearch\ServiceProvider"
 ```
-
 ###Basic
 In published config file add descriptions for models which need to be indexed, for example:
 
