@@ -93,4 +93,12 @@ class SearchTest extends BaseTestCase
         $highlighted = Search::highlight('все слова');
         $this->assertEquals('<span class="highlight">все</span> <span class="highlight">слова</span>', $highlighted);
     }
+
+    public function testSearchWithPaginate()
+    {
+        $query = Search::query('laser pointer', ['name', 'description']);
+        $founded = $query->paginate(2, 2);
+
+        $this->assertEquals('broken pointer', $founded[0]->name);
+    }
 }

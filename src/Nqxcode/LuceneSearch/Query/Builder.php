@@ -113,7 +113,7 @@ class Builder
         $models = $this->get();
         $count = $this->count();
 
-        $paginator = App::make('paginator')->make($models, $count, $perPage);
+        $paginator = App::make('paginator')->make($models->all(), $count, $perPage);
 
         return $paginator;
     }
