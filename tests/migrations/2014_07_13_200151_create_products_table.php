@@ -92,5 +92,29 @@ class CreateProductsTable extends Migration
             'updated_at' => $now,
             'publish' => 1,
         ));
+
+        DB::table('products')->insert(array(
+            'name' => 'noname pointer',
+            'description' => 'laser pointer',
+            'created_at' => $now,
+            'updated_at' => $now,
+            'publish' => 1,
+        ));
+
+        DB::table('products')->insert(array(
+            'name' => 'broken pointer',
+            'description' => 'high power laser pointer',
+            'created_at' => $now,
+            'updated_at' => $now,
+            'publish' => 1,
+        ));
+
+        DB::table('products')->insert(array(
+            'name' => 'laser pointer',
+            'description' => 'high power led pointer',
+            'created_at' => $now,
+            'updated_at' => $now,
+            'publish' => 1,
+        ));
     }
 }

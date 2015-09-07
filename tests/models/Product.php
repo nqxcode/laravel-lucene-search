@@ -27,6 +27,9 @@ class Product extends Model implements Searchable
 
     public function getOptionalAttributesAttribute()
     {
-        return ['optional_attribute1' => "optional_value1"];
+        return [
+            'custom_text' => 'some custom text',
+            'boosted_name' => ['boost' => 0.9, 'value' => $this->name],
+        ];
     }
 }

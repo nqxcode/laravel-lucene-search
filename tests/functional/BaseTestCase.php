@@ -14,6 +14,14 @@ abstract class BaseTestCase extends TestCase
     {
         parent::setUp();
         $this->configure();
+
+        $artisan = $this->app->make('artisan');
+
+        // Call migrations specific to our tests, e.g. to seed the db.
+        $artisan->call('migrate', ['--database' => 'testbench', '--path' => '../tests/migrations']);
+
+        // Call rebuild search index.
+        $artisan->call('search:rebuild');
     }
 
     protected function configure()
@@ -24,20 +32,12 @@ abstract class BaseTestCase extends TestCase
             [
                 'tests\models\Product' => [
                     'fields' => [
-                        'name' => ['boost' => 1],
-                        'description' => ['boost' => 0.2],
+                        'name',
+                        'description',
                     ],
                     'optional_attributes' => true
                 ]
             ]
         );
-
-        $artisan = $this->app->make('artisan');
-
-        // Call migrations specific to our tests, e.g. to seed the db.
-        $artisan->call('migrate', ['--database' => 'testbench', '--path' => '../tests/migrations']);
-
-        // Call rebuild search index.
-        $artisan->call('search:rebuild');
     }
 }

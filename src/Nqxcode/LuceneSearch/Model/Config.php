@@ -152,7 +152,7 @@ class Config
             $field = $value;
 
             if (is_array($value)) {
-                $boost = array_get($value, "boost");
+                $boost = array_get($value, 'boost', 1);
                 $field = $key;
             }
 
@@ -199,8 +199,8 @@ class Config
             $boost = 1;
 
             if (is_array($value)) {
-                $boost = array_get($value, "boost");
-                $value = array_get($value, "value");
+                $boost = array_get($value, 'boost', 1);
+                $value = array_get($value, 'value');
             }
 
             return ['boost' => $boost, 'value' => $value];
