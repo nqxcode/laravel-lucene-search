@@ -78,10 +78,10 @@ class ConfigTest extends TestCase
     public function testFields()
     {
         $fields = $this->config->fields($this->productRepoMock);
-        $this->assertEquals(['name', 'description'], $fields);
+        $this->assertEquals(['name' => ['boost' => 1], 'description' => ['boost' => 1]], $fields);
 
         $fields = $this->config->fields($this->dummyRepoMock);
-        $this->assertEquals(['first_field', 'second_field'], $fields);
+        $this->assertEquals(['first_field' => ['boost' => 1], 'second_field' => ['boost' => 1]], $fields);
     }
 
     public function testClassUid()

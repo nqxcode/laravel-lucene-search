@@ -24,8 +24,8 @@ abstract class BaseTestCase extends TestCase
             [
                 'tests\models\Product' => [
                     'fields' => [
-                        'name',
-                        'description'
+                        'name' => ['boost' => 1],
+                        'description' => ['boost' => 0.2],
                     ],
                     'optional_attributes' => true
                 ]

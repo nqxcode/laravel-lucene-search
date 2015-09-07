@@ -144,8 +144,22 @@ class Config
      */
     public function fields(Model $model)
     {
+        $fields = [];
         $c = $this->config($model);
-        return $c['fields'];
+
+        foreach ($c['fields'] as $key => $value) {
+            $boost = 1;
+            $field = $value;
+
+            if (is_array($value)) {
+                $boost = array_get($value, "boost");
+                $field = $key;
+            }
+
+            $fields[$field] = ['boost' => $boost];
+        }
+
+        return $fields;
     }
 
     /**
@@ -180,6 +194,17 @@ class Config
                 );
             }
         }
+
+        $attributes = array_map(function ($value) {
+            $boost = 1;
+
+            if (is_array($value)) {
+                $boost = array_get($value, "boost");
+                $value = array_get($value, "value");
+            }
+
+            return ['boost' => $boost, 'value' => $value];
+        }, $attributes);
 
         return $attributes;
     }

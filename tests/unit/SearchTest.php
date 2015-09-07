@@ -38,10 +38,10 @@ class SearchTest extends TestCase
             ->andReturn(['class_uid', '12345']);
         $this->config->shouldReceive('fields')
             ->with($this->model)
-            ->andReturn(['name']);
+            ->andReturn(['name' => ['boost' => 1]]);
 
         $this->config->shouldReceive('optionalAttributes')
-            ->andReturn(['optional_attribute1' => 'optional value']);
+            ->andReturn(['optional_attribute1' => ['boost' => 1, 'value' => 'optional value']]);
 
     }
 
@@ -52,8 +52,14 @@ class SearchTest extends TestCase
             $doc = new Document();
             $doc->addField(Field::keyword('private_key', 1));
             $doc->addField(Field::Keyword('class_uid', '12345'));
-            $doc->addField(Field::unStored('name', 'test name'));
-            $doc->addField(Field::unStored('optional_attribute1', 'optional value'));
+
+            $field = Field::unStored('name', 'test name');
+            $field->boost = 1;
+            $doc->addField($field);
+
+            $field = Field::unStored('optional_attribute1', 'optional value');
+            $field->boost = 1;
+            $doc->addField($field);
 
             $this->assertEquals($doc, $arg);
             return true;
@@ -67,10 +73,10 @@ class SearchTest extends TestCase
             $this->assertEquals($term, $arg);
             return true;
         }))->andReturnUsing(function () {
-                $hitMock = m::mock();
-                $hitMock->id = 10;
-                return [$hitMock];
-            })->once();
+            $hitMock = m::mock();
+            $hitMock->id = 10;
+            return [$hitMock];
+        })->once();
 
         $luceneIndex->shouldReceive('delete')->with(10)->once();
 
@@ -91,10 +97,10 @@ class SearchTest extends TestCase
             $this->assertEquals($term, $arg);
             return true;
         }))->andReturnUsing(function () {
-                $hitMock = m::mock();
-                $hitMock->id = 10;
-                return [$hitMock];
-            });
+            $hitMock = m::mock();
+            $hitMock->id = 10;
+            return [$hitMock];
+        });
 
         $luceneIndex->shouldReceive('delete')->with(10)->once();
 

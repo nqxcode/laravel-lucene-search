@@ -118,15 +118,25 @@ class Search
         $fields = $this->config->fields($model);
 
         // Add fields to document to be indexed (but not stored).
-        foreach ($fields as $field) {
-            $doc->addField(Field::unStored(trim($field), strip_tags(trim($model->{trim($field)}))));
+        foreach ($fields as $fieldName => $options) {
+            $fieldValue = $model->{trim($fieldName)};
+
+            $field = Field::unStored(trim($fieldName), strip_tags(trim($fieldValue)));
+            $field->boost = array_get($options, 'boost');
+
+            $doc->addField($field);
         }
 
         $optionalAttributes = $this->config->optionalAttributes($model);
 
         // Add optional attributes to document to be indexed (but not stored).
-        foreach ($optionalAttributes as $fieldName => $fieldValue) {
-            $doc->addField(Field::unStored(trim($fieldName), strip_tags(trim($fieldValue))));
+        foreach ($optionalAttributes as $fieldName => $options) {
+            $fieldValue = array_get($options, "value");
+
+            $field = Field::unStored(trim($fieldName), strip_tags(trim($fieldValue)));
+            $field->boost = array_get($options, "boost");
+
+            $doc->addField($field);
         }
 
         // Add document to index.
