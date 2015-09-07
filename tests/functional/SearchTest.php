@@ -99,6 +99,6 @@ class SearchTest extends BaseTestCase
         $query = Search::query('laser pointer', ['name', 'description']);
         $founded = $query->paginate(2, 2);
 
-        $this->assertEquals('broken pointer', $founded[0]->name);
+        $this->assertCount(1, $founded);
     }
 }
