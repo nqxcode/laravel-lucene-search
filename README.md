@@ -37,12 +37,13 @@ If you want to use the facade to search, add this to your facades in `app/config
 ],
 ```
 ## Configuration 
+
 Publish the config file into your project by running:
 
 ```bash
 php artisan config:publish nqxcode/laravel-lucene-search
 ```
-
+###Basic
 In published config file add descriptions for models which need to be indexed, for example:
 
 ```php
@@ -67,6 +68,7 @@ In published config file add descriptions for models which need to be indexed, f
 ],
 
 ```
+###Indexing of dynamic fields
 You can also index values of **optional fields** (dynamic fields). For enable indexing for optional fields:
 
 - In config for each necessary model add following option:
@@ -100,7 +102,7 @@ In config file:
 In model add following accessor:
 
 ```php
-        publc function getOptionalAttributesAttribute()
+        public function getOptionalAttributesAttribute()
         {
                 return [
                         'optional_attribute1' => "value1",
@@ -108,9 +110,10 @@ In model add following accessor:
                 ];
         }
 ```
-By default the following filters are used by search:
-- Stemming filter for english/russian words,
-- Stopword filters for english/russian words.
+###Stemming and stopwords
+For reducing words to their root form by default the following filters are used in search:
+- Stemming filter for **english/russian** words (for reducing words to their root form),
+- Stopword filters for **english/russian** words (for exclude some words from search index).
 
 This filters can be deleted or replaced with others.
 ```php
