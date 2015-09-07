@@ -144,7 +144,7 @@ For clearing of search index run:
 ```bash
 php artisan search:clear
 ```
-
+#### Filtering of models in search results 
 For filtering of models in search results each model's class can implements `Searchable`.
 For example:
 
