@@ -105,11 +105,36 @@ In model add following accessor:
         public function getOptionalAttributesAttribute()
         {
                 return [
-                        'optional_attribute1' => "value1",
-                        'optional_attribute2' => "value2",
+                        'optional_attribute1' => 'value1',
+                        'optional_attribute2' => 'value2',
                 ];
         }
 ```
+###Field level boosting
+By default **boost** is set in **1** for each field. For change of this behavior set boost for necessary fields as in the following examples.
+
+In config file:
+
+```php
+        'namespace\FirstModel' => [
+                'fields' => [
+                    'name', // field with default boost
+                    'full_description' => ['boost' => 0.2], // customize boost value
+                ],
+        ],
+```
+
+Or/and in model accessor:
+```php
+        public function getOptionalAttributesAttribute()
+        {
+                return [
+                        'optional_attribute1' => 'value1', // field with default boost
+                        'optional_attribute2' => ['boost' => 0.5, 'value' => 'value2'], // customize boost value
+                ];
+        }
+```
+
 ###Stemming and stopwords
 For reducing words to their root form by default the following filters are used in search:
 - Stemming filter for **english/russian** words (for reducing words to their root form),
