@@ -32,6 +32,10 @@ class Config
      */
     public function __construct(array $configuration, Factory $modelFactory)
     {
+        if (empty($configuration)) {
+            throw new \InvalidArgumentException('Configurations of models are empty.');
+        }
+
         $this->modelFactory = $modelFactory;
 
         foreach ($configuration as $className => $options) {

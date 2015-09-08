@@ -10,7 +10,7 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
         $this->resetModelEvents();
     }
 
-    protected function tearDown()
+    public function tearDown()
     {
         m::close();
     }
