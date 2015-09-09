@@ -157,11 +157,11 @@ This filters can be deleted or replaced with others.
 
 ## Usage
 ### Artisan commands
-#### Build/Rebuild search index
+#### Initialize or rebuild search index
 For building of search index run:
 
 ```bash
-php artisan search:rebuild
+php artisan search:rebuild --verbose
 ```
 #### Clear search index
 For clearing of search index run:
