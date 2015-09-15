@@ -236,10 +236,10 @@ class Config
      * @return array - 0 : array with models
      *                 1 : total count
      */
-    public function models($hits, array $options = [])
+    public function parse($hits, array $options = [])
     {
         // Get models from hits.
-        $results = array_map(
+        $models = array_map(
             function ($hit) {
                 return $this->model($hit);
             },
@@ -247,8 +247,8 @@ class Config
         );
 
         // Skip empty or not searchable.
-        $results = array_filter(
-            $results,
+        $models = array_filter(
+            $models,
             function ($model) {
                 if (!is_null($model)) {
                     if (method_exists($model, 'isSearchable')) {
@@ -261,14 +261,14 @@ class Config
             }
         );
 
-        $results = array_values($results);
-        $totalCount = count($results);
+        $models = array_values($models);
+        $total = count($models);
 
         // Limit results.
         if (isset($options['limit']) && isset($options['offset'])) {
-            $results = array_slice($results, $options['offset'], $options['limit']);
+            $models = array_slice($models, $options['offset'], $options['limit']);
         }
 
-        return [$results, $totalCount];
+        return compact('models', 'total');
     }
 }

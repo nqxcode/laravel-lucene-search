@@ -45,10 +45,14 @@ class BuilderTest extends TestCase
         $this->query->shouldReceive('addSubquery')->with($this->luceneQuery, true);
 
         $this->runner->shouldReceive('models')->with($this->query)->andReturn([1, 2, 3])->byDefault();
-        $this->runner->shouldReceive('models')->with($this->query, [])->andReturn([1, 2, 3])->byDefault();
+        $this->runner->shouldReceive('total')->with($this->query)->andReturn(3)->byDefault();
 
-        $this->runner->shouldReceive('run')->with($this->query)->andReturn([1, 2, 3])->byDefault();
-        $this->runner->shouldReceive('getCachedCount')->andReturn(null)->byDefault();
+        $this->runner->shouldReceive('models')->with($this->query, [])->andReturn([1, 2, 3])->byDefault();
+        $this->runner->shouldReceive('total')->with($this->query, [])->andReturn(3)->byDefault();
+
+        $this->runner->shouldReceive('run')->with($this->query)->andReturn([1, 2, 3, 4])->byDefault();
+        $this->runner->shouldReceive('getCachedTotal')->andReturn(null)->byDefault();
+        $this->runner->shouldReceive('getCachedModels')->andReturn(null)->byDefault();
 
         $this->filter->shouldReceive('applyFilters')->with($this->query);
 
@@ -59,7 +63,7 @@ class BuilderTest extends TestCase
     {
         $query = $this->constructor->query('test');
 
-        $this->assertEquals([1, 2, 3], $query->get());
+        $this->assertEquals(Collection::make([1, 2, 3]), $query->get());
         $this->assertEquals(3, $query->count());
     }
 
@@ -68,7 +72,7 @@ class BuilderTest extends TestCase
         $this->rawQueryBuilder->shouldReceive('build')->with($this->defaultWhereOptions())->andReturn(['test', true]);
         $query = $this->constructor->where('field', 'test');
 
-        $this->assertEquals([1, 2, 3], $query->get());
+        $this->assertEquals(Collection::make([1, 2, 3]), $query->get());
         $this->assertEquals(3, $query->count());
     }
 
@@ -78,10 +82,19 @@ class BuilderTest extends TestCase
         $this->assertEquals(3, $query->count());
     }
 
-    public function testCountCached()
+    public function testCachedModels()
     {
-        $this->runner->shouldReceive('getCachedCount')->andReturn(5);
-        $this->runner->shouldReceive('run')->with($this->query)->never();
+        $this->runner->shouldReceive('getCachedModels')->andReturn([1, 2, 3, 4, 5]);
+        $this->runner->shouldReceive('models')->with($this->query, [])->never();
+
+        $query = $this->constructor->query('test');
+        $this->assertEquals(Collection::make([1, 2, 3, 4, 5]), $query->get());
+    }
+
+    public function testCachedTotal()
+    {
+        $this->runner->shouldReceive('getCachedTotal')->andReturn(5);
+        $this->runner->shouldReceive('total')->with($this->query)->never();
 
         $query = $this->constructor->query('test');
         $this->assertEquals(5, $query->count());

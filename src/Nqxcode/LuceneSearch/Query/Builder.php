@@ -1,6 +1,6 @@
 <?php namespace Nqxcode\LuceneSearch\Query;
 
-use Illuminate\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Collection;
 use ZendSearch\Lucene\Search\Query\AbstractQuery;
 use ZendSearch\Lucene\Search\Query\Boolean as QueryBoolean;
 use Input;
@@ -58,7 +58,7 @@ class Builder
     /**
      * Execute current query and return list of models.
      *
-     * @return array
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function get()
     {
@@ -71,7 +71,11 @@ class Builder
 
         $this->filter->applyFilters($this->query); // Modify query if filters were added.
 
-        return $this->runner->models($this->query, $options);
+        $models = $this->runner->getCachedModels($this->query, $options);
+        if (null === $models) {
+            $models = $this->runner->models($this->query, $options);
+        }
+        return Collection::make($models);
     }
 
     /**
@@ -83,12 +87,12 @@ class Builder
     {
         $this->filter->applyFilters($this->query);
 
-        $count = $this->runner->getCachedCount($this->query);
-
-        if ($count === null) {
-            $count = count($this->runner->models($this->query));
+        $total = $this->runner->getCachedTotal($this->query);
+        if (null === $total) {
+            $total = $this->runner->total($this->query);
         }
-        return $count;
+
+        return $total;
     }
 
     /**
@@ -110,10 +114,10 @@ class Builder
 
         $this->limit($perPage, ($page - 1) * $perPage);
 
-        $models = $this->get();
+        $models = $this->get()->all();
         $count = $this->count();
 
-        $paginator = App::make('paginator')->make($models->all(), $count, $perPage);
+        $paginator = App::make('paginator')->make($models, $count, $perPage);
 
         return $paginator;
     }

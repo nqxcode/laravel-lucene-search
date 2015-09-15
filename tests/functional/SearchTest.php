@@ -1,5 +1,6 @@
 <?php namespace tests\functional;
 
+use Nqxcode\LuceneSearch\Query\Builder;
 use tests\TestCase;
 use ZendSearch\Lucene\Search\Query\Boolean;
 use ZendSearch\Lucene\Search\QueryParser;
@@ -21,6 +22,7 @@ class SearchTest extends BaseTestCase
 
     public function testSearchQueryChain()
     {
+        /** @var Builder $query */
         $query = Search::query('small');
         $this->assertEquals(3, $query->count());
 

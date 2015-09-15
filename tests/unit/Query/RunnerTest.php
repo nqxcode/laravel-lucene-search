@@ -1,6 +1,5 @@
 <?php namespace tests\unit\Query;
 
-use Illuminate\Support\Collection;
 use tests\TestCase;
 use Mockery as m;
 
@@ -34,11 +33,14 @@ class RunnerTest extends TestCase
 
     public function testModels()
     {
-        $this->search->shouldReceive('config->models')->with([1, 2, 3, 4, 5], ['limit' => 2, 'offset' => 3])->andReturn([[1, 2, 3, 4, 5], 5]);
-        $this->assertEquals(Collection::make([1, 2, 3, 4, 5]), $this->runner->models('test', ['limit' => 2, 'offset' => 3]));
+        $this->search->shouldReceive('config->parse')->with([1, 2, 3, 4, 5], ['limit' => 2, 'offset' => 3])->andReturn(['models' => [1, 2, 3, 4, 5], 'total' => 5]);
+        $this->assertEquals([1, 2, 3, 4, 5], $this->runner->models('test', ['limit' => 2, 'offset' => 3]));
 
-        $this->assertEquals(5, $this->runner->getCachedCount('test'));
-        $this->assertEquals(0, $this->runner->getCachedCount('other test'));
+        $this->assertEquals([1, 2, 3, 4, 5], $this->runner->getCachedModels('test', ['limit' => 2, 'offset' => 3]));
+        $this->assertEquals(null, $this->runner->getCachedModels('other test', ['limit' => 2, 'offset' => 3]));
+
+        $this->assertEquals(5, $this->runner->getCachedTotal('test'));
+        $this->assertEquals(0, $this->runner->getCachedTotal('other test'));
     }
 
     public function testDelete()
