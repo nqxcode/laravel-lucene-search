@@ -126,14 +126,6 @@ class BuilderTest extends TestCase
         ];
     }
 
-    public function testAddFilter()
-    {
-        $closure = function(){return 'test';};
-        $this->filter->shouldReceive('add')->with($closure)->once();
-
-        $this->assertEquals($this->constructor, $this->constructor->addFilter($closure));;
-    }
-
     public function testPaginate()
     {
         $query = $this->constructor->query('test');

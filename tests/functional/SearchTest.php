@@ -49,18 +49,6 @@ class SearchTest extends BaseTestCase
 
     }
 
-    public function testSearchQueryChainWithQueryFilter()
-    {
-        $q = new Boolean;
-        $q->addSubquery(QueryParser::parse('name:("clock")'), true);
-
-        $query = Search::rawQuery($q)
-            ->addFilter(function (Boolean $query) {
-                $query->addSubquery(QueryParser::parse('description:("not very big")'), true);
-            });
-        $this->assertEquals(1, $query->count());
-    }
-
     public function testSearchRawQuery()
     {
         $query = Search::rawQuery('description:big');

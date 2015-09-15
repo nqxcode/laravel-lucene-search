@@ -31,10 +31,9 @@ class Builder
      */
     protected $query;
 
-    public function __construct(Runner $runner, Filter $filter, RawQueryBuilder $queryBuilder, QueryBoolean $query)
+    public function __construct(Runner $runner, RawQueryBuilder $queryBuilder, QueryBoolean $query)
     {
         $this->runner = $runner;
-        $this->filter = $filter;
         $this->queryBuilder = $queryBuilder;
         $this->query = $query;
     }
@@ -69,8 +68,6 @@ class Builder
             $options['offset'] = $this->offset;
         }
 
-        $this->filter->applyFilters($this->query); // Modify query if filters were added.
-
         $models = $this->runner->getCachedModels($this->query, $options);
         if (null === $models) {
             $models = $this->runner->models($this->query, $options);
@@ -85,8 +82,6 @@ class Builder
      */
     public function count()
     {
-        $this->filter->applyFilters($this->query);
-
         $total = $this->runner->getCachedTotal($this->query);
         if (null === $total) {
             $total = $this->runner->total($this->query);
@@ -120,19 +115,6 @@ class Builder
         $paginator = App::make('paginator')->make($models, $count, $perPage);
 
         return $paginator;
-    }
-
-    /**
-     * Add filter for constructing query.
-     *
-     * @param callable $closure
-     * @return $this
-     */
-    public function addFilter(callable $closure)
-    {
-        $this->filter->add($closure);
-
-        return $this;
     }
 
     /**
