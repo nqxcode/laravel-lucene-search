@@ -59,7 +59,7 @@ class Runner
     }
 
     /**
-     * Run query and get all finding models.
+     * Get all finding models.
      *
      * @param $query
      * @param $options
@@ -76,14 +76,20 @@ class Runner
         return $models;
     }
 
-    public function total($query, array $options = [])
+    /**
+     * Get total count of finding models.
+     *
+     * @param $query
+     * @return mixed
+     */
+    public function total($query)
     {
         /**
          * Extract total.
          *
          * @var $total
          */
-        extract($this->parsed($query, $options));
+        extract($this->parsed($query));
         return $total;
     }
 
