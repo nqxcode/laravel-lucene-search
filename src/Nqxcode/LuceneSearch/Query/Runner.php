@@ -1,6 +1,7 @@
 <?php namespace Nqxcode\LuceneSearch\Query;
 
 use Nqxcode\LuceneSearch\Search;
+use Nqxcode\LuceneSearch\Support\Collection;
 use ZendSearch\Lucene\Search\Query\AbstractQuery;
 use ZendSearch\Lucene\Search\QueryHit;
 
@@ -61,18 +62,20 @@ class Runner
     /**
      * Get all finding models.
      *
-     * @param $query
-     * @param $options
-     * @return array
+     * @param mixed $query
+     * @param bool $lazy
+     * @return Collection
      */
-    public function models($query, array $options = [])
+    public function models($query, $lazy = false)
     {
-        /**
-         * Extract models.
-         *
-         * @var $models
-         */
-        extract($this->parsed($query, $options));
+        $hits = $this->run($query);
+        $models = $this->search->config()->models($hits, $lazy);
+        $total = $models->count();
+
+        // Save parsed results in cache.
+        $this->setCachedModels($query, $models);
+        $this->setCachedTotal($query, $total);
+
         return $models;
     }
 
@@ -84,40 +87,12 @@ class Runner
      */
     public function total($query)
     {
-        /**
-         * Extract total.
-         *
-         * @var $total
-         */
-        extract($this->parsed($query));
-        return $total;
-    }
-
-    /**
-     * Get parsed results for hits.
-     *
-     * @param $query
-     * @param array $options
-     * @return array
-     */
-    private function parsed($query, array $options = [])
-    {
         $hits = $this->run($query);
-        $parsed = $this->search->config()->parse($hits, $options);
+        $models = $this->search->config()->models($hits, true);
+        $total = $models->count();
 
-        /**
-         * Extract models.
-         *
-         * @var $models
-         * @var $total
-         */
-        extract($parsed);
-
-        // Save parsed results in cache.
-        $this->setCachedModels($query, $models, $options);
         $this->setCachedTotal($query, $total);
-
-        return $parsed;
+        return $total;
     }
 
     /**
@@ -134,12 +109,11 @@ class Runner
      * Get cached models for query.
      *
      * @param $query
-     * @param $options
      * @return null|int
      */
-    public function getCachedModels($query, array $options = [])
+    public function getCachedModels($query)
     {
-        $hash = $this->hash($query, $options);
+        $hash = $this->hash($query);
         return isset($this->cachedModels[$hash]) ? $this->cachedModels[$hash] : null;
     }
 
@@ -148,11 +122,10 @@ class Runner
      *
      * @param $query
      * @param $models
-     * @param $options
      */
-    public function setCachedModels($query, $models, $options)
+    public function setCachedModels($query, $models)
     {
-        $hash = $this->hash($query, $options);
+        $hash = $this->hash($query);
         $this->cachedModels[$hash] = $models;
     }
 

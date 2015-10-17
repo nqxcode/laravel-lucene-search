@@ -1,6 +1,7 @@
 <?php namespace Nqxcode\LuceneSearch\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Nqxcode\LuceneSearch\Support\Collection;
 use ZendSearch\Lucene\Search\QueryHit;
 
 /**
@@ -95,7 +96,10 @@ class Config
     {
         foreach ($this->configuration as $config) {
             if ($config['class_uid'] == $classUid) {
-                return $config['repository'];
+                /** @var Model $repository */
+                $repository = $config['repository'];
+
+                return $repository->newInstance();
             }
         }
 
@@ -221,54 +225,92 @@ class Config
      */
     public function model(QueryHit $hit)
     {
-        $repo = $this->createModelByClassUid(object_get($hit, 'class_uid'));
-        $model = $repo->find(object_get($hit, 'private_key'));
+        $model = $this->createModelByClassUid(object_get($hit, 'class_uid'));
+
+        // Set private key value
+        $model->setAttribute($model->getKeyName(), object_get($hit, 'private_key'));
+
+        // Set score
+        // $model->setAttribute('score', $hit->score);
 
         return $model;
     }
 
     /**
-     * Get all models by query hits.
+     * Get models by query hits.
      *
      * @param QueryHit[] $hits
-     * @param array $options - limit  : max number of records to return
-     *                       - offset : number of records to skip
-     * @return array - 0 : array with models
-     *                 1 : total count
+     * @param bool $lazy
+     * @return Collection
      */
-    public function parse($hits, array $options = [])
+    public function models($hits, $lazy = false)
     {
-        // Get models from hits.
-        $models = array_map(
-            function ($hit) {
-                return $this->model($hit);
-            },
-            $hits
-        );
+        list($collection, $searchableIdsGroups) = $this->parse($hits);
+        $searchable = $this->getSearchableBy($collection, $searchableIdsGroups);
 
-        // Skip empty or not searchable.
-        $models = array_filter(
-            $models,
-            function ($model) {
-                if (!is_null($model)) {
-                    if (method_exists($model, 'isSearchable')) {
-                        return $model->{'isSearchable'}();
-                    } else {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        );
+        return $lazy ? $searchable : $searchable->unlazy();
+    }
 
-        $models = array_values($models);
-        $total = count($models);
+    /**
+     * Parse found hits.
+     *
+     * @param QueryHit[] $hits
+     * @return array
+     */
+    private function parse($hits)
+    {
+        $collection = Collection::make([]);
 
-        // Limit results.
-        if (isset($options['limit']) && isset($options['offset'])) {
-            $models = array_slice($models, $options['offset'], $options['limit']);
+        $modelsGroups = [];
+        foreach ($hits as $hit) {
+            $model = $this->model($hit);
+            $class = get_class($model);
+
+            // Grouping models by class
+            $modelsGroups[$class][] = $model;
         }
 
-        return compact('models', 'total');
+        $searchableIdsGroups = [];
+        foreach ($modelsGroups as $class => $models) {
+            /** @var Model $modelInstance */
+            $modelInstance = new $class;
+
+            if (method_exists($modelInstance, 'searchableIds')) {
+                $searchableIds = $modelInstance->{'searchableIds'}();
+            } else {
+                $searchableIds = $modelInstance->query()->lists($modelInstance->getKeyName());
+            }
+
+            // Set searchable id list for model's class
+            $searchableIdsGroups[$class] = $searchableIds ?: [null];
+
+            foreach ($models as $model) {
+                $collection[] = $model;
+            }
+        }
+        return [$collection, $searchableIdsGroups];
+    }
+
+    /**
+     * Get collection with only searchable models.
+     *
+     * @param Collection $collection
+     * @param array $searchableIdsGroups
+     * @return Collection
+     */
+    private function getSearchableBy(Collection $collection, array $searchableIdsGroups)
+    {
+        $searchable = [];
+
+        foreach ($collection as $model) {
+            $primaryValue = $model->{$model->getKeyName()};
+            $searchableIds = array_get($searchableIdsGroups, get_class($model), []);
+
+            if (in_array($primaryValue, $searchableIds)) {
+                $searchable[] = $model;
+            }
+        }
+
+        return Collection::make($searchable);
     }
 }

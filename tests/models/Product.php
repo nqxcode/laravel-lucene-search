@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Nqxcode\LuceneSearch\Model\Searchable;
+use Nqxcode\LuceneSearch\Model\SearchableInterface;
 use Nqxcode\LuceneSearch\Model\SearchTrait;
 
 /**
@@ -10,19 +10,24 @@ use Nqxcode\LuceneSearch\Model\SearchTrait;
  * @property string $name
  * @property string $description
  * @property boolean $publish
- * @method Builder wherePublish
+ * @method Builder wherePublish(boolean $publish)
  * @package tests\models
  */
-class Product extends Model implements Searchable
+class Product extends Model implements SearchableInterface
 {
     use SearchTrait;
 
     /**
      * @inheritdoc
      */
-    public function isSearchable()
+    public static function searchableIds()
     {
-        return $this->publish;
+        static $ids;
+        if (is_null($ids)) {
+            $ids = self::wherePublish(true)->lists('id');
+        }
+
+        return $ids;
     }
 
     public function getOptionalAttributesAttribute()

@@ -1,6 +1,5 @@
 <?php namespace Nqxcode\LuceneSearch\Query;
 
-use Illuminate\Database\Eloquent\Collection;
 use ZendSearch\Lucene\Search\Query\AbstractQuery;
 use ZendSearch\Lucene\Search\Query\Boolean as QueryBoolean;
 use Input;
@@ -57,22 +56,21 @@ class Builder
     /**
      * Execute current query and return list of models.
      *
+     * @param bool $lazy
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function get()
+    public function get($lazy = false)
     {
-        $options = [];
+        $models = $this->runner->getCachedModels($this->query);
+        if (null === $models) {
+            $models = $this->runner->models($this->query, $lazy);
+        }
 
         if ($this->limit) {
-            $options['limit'] = $this->limit;
-            $options['offset'] = $this->offset;
+            $models = $models->slice($this->offset, $this->limit);
         }
 
-        $models = $this->runner->getCachedModels($this->query, $options);
-        if (null === $models) {
-            $models = $this->runner->models($this->query, $options);
-        }
-        return Collection::make($models);
+        return $models;
     }
 
     /**
@@ -109,7 +107,7 @@ class Builder
 
         $this->limit($perPage, ($page - 1) * $perPage);
 
-        $models = $this->get()->all();
+        $models = $this->get(true)->all();
         $count = $this->count();
 
         $paginator = App::make('paginator')->make($models, $count, $perPage);

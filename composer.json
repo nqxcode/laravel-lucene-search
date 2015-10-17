@@ -22,7 +22,7 @@
     },
     "autoload": {
         "files": [
-            "src/Nqxcode/LuceneSearch/helpers.php"
+            "src/Nqxcode/LuceneSearch/Support/helpers.php"
         ],
         "psr-4": {
             "Nqxcode\\LuceneSearch\\": "src/Nqxcode/LuceneSearch",

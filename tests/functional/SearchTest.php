@@ -53,6 +53,8 @@ class SearchTest extends BaseTestCase
     {
         $query = Search::rawQuery('description:big');
         $this->assertEquals(2, $query->count());
+        $res = $query->get();
+        $res[0]->save();
 
         $query = Search::rawQuery(function () {
             return 'description:big';
