@@ -13,8 +13,6 @@ class Builder
 {
     /** @var \Nqxcode\LuceneSearch\Query\Runner */
     protected $runner;
-    /** @var \Nqxcode\LuceneSearch\Query\Filter */
-    protected $filter;
     /** @var \Nqxcode\LuceneSearch\Query\RawQueryBuilder */
     protected $queryBuilder;
 
@@ -64,6 +62,9 @@ class Builder
         $models = $this->runner->getCachedModels($this->query);
         if (null === $models) {
             $models = $this->runner->models($this->query, $lazy);
+
+            $this->runner->setCachedModels($this->query, $models);
+            $this->runner->setCachedTotal($this->query, $models->count());
         }
 
         if ($this->limit) {
@@ -83,6 +84,7 @@ class Builder
         $total = $this->runner->getCachedTotal($this->query);
         if (null === $total) {
             $total = $this->runner->total($this->query);
+            $this->runner->setCachedTotal($this->query, $total);
         }
 
         return $total;
@@ -108,9 +110,9 @@ class Builder
         $this->limit($perPage, ($page - 1) * $perPage);
 
         $models = $this->get(true)->all();
-        $count = $this->count();
+        $total = $this->count();
 
-        $paginator = App::make('paginator')->make($models, $count, $perPage);
+        $paginator = App::make('search.paginator')->make($models, $total, $perPage);
 
         return $paginator;
     }

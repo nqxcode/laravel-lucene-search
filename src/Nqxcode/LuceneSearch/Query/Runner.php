@@ -70,11 +70,6 @@ class Runner
     {
         $hits = $this->run($query);
         $models = $this->search->config()->models($hits, $lazy);
-        $total = $models->count();
-
-        // Save parsed results in cache.
-        $this->setCachedModels($query, $models);
-        $this->setCachedTotal($query, $total);
 
         return $models;
     }
@@ -91,7 +86,6 @@ class Runner
         $models = $this->search->config()->models($hits, true);
         $total = $models->count();
 
-        $this->setCachedTotal($query, $total);
         return $total;
     }
 
@@ -157,12 +151,11 @@ class Runner
      * Get hash for query.
      *
      * @param $query
-     * @param array $options
      * @return string
      */
-    private function hash($query, array $options = [])
+    private function hash($query)
     {
-        return md5(serialize($query) . serialize($options));
+        return md5(serialize($query));
     }
 
     /**

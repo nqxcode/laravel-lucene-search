@@ -50,6 +50,6 @@ class Html
             $this->analyzerConfig->setDefaultAnalyzer();
         }
 
-        return !empty($highlighted) ? $highlighted : $html;
+        return $highlighted ? : $html;
     }
 }

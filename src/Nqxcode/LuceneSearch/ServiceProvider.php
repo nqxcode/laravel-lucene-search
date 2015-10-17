@@ -4,6 +4,7 @@ use Config;
 use Nqxcode\LuceneSearch\Analyzer\Config as AnalyzerConfig;
 use Nqxcode\LuceneSearch\Analyzer\Stopwords\FilterFactory;
 use Nqxcode\LuceneSearch\Model\Config as ModelsConfig;
+use Nqxcode\LuceneSearch\Pagination\Factory;
 use ZendSearch\Lucene\Analysis\Analyzer\Common\Utf8Num\CaseInsensitive;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
@@ -72,6 +73,17 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                 Config::get('laravel-lucene-search::index.models'),
                 $app->make('Nqxcode\LuceneSearch\Model\Factory')
             );
+        });
+
+        $this->app->bindShared('search.paginator', function($app)
+        {
+            $paginator = new Factory($app['request'], $app['view'], $app['translator']);
+
+            $paginator->setViewName($app['config']['view.pagination']);
+
+            $app->refresh('request', $paginator, 'setRequest');
+
+            return $paginator;
         });
 
         $this->app->bindShared('command.search.rebuild', function () {
