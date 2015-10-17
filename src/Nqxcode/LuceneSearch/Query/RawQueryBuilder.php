@@ -75,7 +75,7 @@ class RawQueryBuilder
             $sign = false;
         }
 
-        $value = "({$value}) AND NOT private_key:({$tmpValue}) AND NOT class_uid:({$tmpValue})";
+        $value = "({$value}) AND NOT primary_key:({$tmpValue}) AND NOT class_uid:({$tmpValue})";
 
         return [$value, $sign];
     }

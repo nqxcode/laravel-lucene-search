@@ -81,7 +81,7 @@ class Search
         $query = new MultiTerm();
 
         // Add model's class UID.
-        list($name, $value) = $this->config->privateKeyPair($model);
+        list($name, $value) = $this->config->primaryKeyPair($model);
         $query->addTerm(new Term($value, $name), true);
 
         // Add class uid for identification of model's class.
@@ -104,7 +104,7 @@ class Search
         // Create new document for model.
         $doc = new Document();
 
-        list($name, $value) = $this->config->privateKeyPair($model);
+        list($name, $value) = $this->config->primaryKeyPair($model);
 
         // Add private key.
         $doc->addField(Field::keyword($name, $value));

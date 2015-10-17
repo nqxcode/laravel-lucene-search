@@ -103,12 +103,13 @@ class Runner
      * Get cached models for query.
      *
      * @param $query
+     * @param $lazy
      * @return null|int
      */
-    public function getCachedModels($query)
+    public function getCachedModels($query, $lazy)
     {
         $hash = $this->hash($query);
-        return isset($this->cachedModels[$hash]) ? $this->cachedModels[$hash] : null;
+        return isset($this->cachedModels[$hash]) && !$lazy ? $this->cachedModels[$hash] : null;
     }
 
     /**
@@ -117,10 +118,12 @@ class Runner
      * @param $query
      * @param $models
      */
-    public function setCachedModels($query, $models)
+    public function setCachedModels($query, $models, $lazy)
     {
-        $hash = $this->hash($query);
-        $this->cachedModels[$hash] = $models;
+        if (!$lazy) {
+            $hash = $this->hash($query);
+            $this->cachedModels[$hash] = $models;
+        }
     }
 
     /**

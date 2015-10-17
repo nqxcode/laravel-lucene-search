@@ -58,7 +58,7 @@ class ConfigTest extends TestCase
     {
         $hit = m::mock('ZendSearch\Lucene\Search\QueryHit');
         $hit->class_uid = '1';
-        $hit->private_key = 1;
+        $hit->primary_key = 1;
         $this->productRepoMock->shouldReceive('find')->with(1)->once();
 
         $this->config->model($hit);
@@ -95,11 +95,11 @@ class ConfigTest extends TestCase
 
     public function testPrivateKey()
     {
-        $pair = $this->config->privateKeyPair($this->productRepoMock);
-        $this->assertEquals(['private_key', 1], $pair);
+        $pair = $this->config->primaryKeyPair($this->productRepoMock);
+        $this->assertEquals(['primary_key', 1], $pair);
 
-        $pair = $this->config->privateKeyPair($this->dummyRepoMock);
-        $this->assertEquals(['private_key', 2], $pair);
+        $pair = $this->config->primaryKeyPair($this->dummyRepoMock);
+        $this->assertEquals(['primary_key', 2], $pair);
     }
 
     public function testPrivateKeyForIncorrectModel()
@@ -107,7 +107,7 @@ class ConfigTest extends TestCase
         $message = "Configuration doesn't exist for model of class '" . get_class($this->unknownRepoMock) . "'.";
         $this->setExpectedException('\InvalidArgumentException', $message);
 
-        $this->config->privateKeyPair($this->unknownRepoMock);
+        $this->config->primaryKeyPair($this->unknownRepoMock);
     }
 
     private function getValidConfigs()
@@ -121,7 +121,7 @@ class ConfigTest extends TestCase
             ]
             ,
             'tests\models\DummyModel' => [
-                'private_key' => 'pk',
+                'primary_key' => 'pk',
                 'fields' => [
                     'first_field',
                     'second_field',

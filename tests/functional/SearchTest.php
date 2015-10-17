@@ -87,8 +87,22 @@ class SearchTest extends BaseTestCase
     public function testSearchWithPaginate()
     {
         $query = Search::query('laser pointer', ['name', 'description']);
-        $founded = $query->paginate(2, 2);
+        $found = $query->paginate(2, 2);
 
-        $this->assertCount(1, $founded);
+        $this->assertCount(1, $found);
+    }
+
+    public function testGetLazy()
+    {
+        $query = Search::query('clock,pointer', '*', ['phrase' => false]);
+        $found = $query->get();
+
+        $this->assertCount(6, $found);
+        $this->assertCount(6, $found->filter(function($v){ return $v->exists;}));
+
+        $lazy = $query->get(true);
+
+        $this->assertCount(6, $lazy);
+        $this->assertCount(0, $lazy->filter(function($v){ return $v->exists;}));
     }
 }

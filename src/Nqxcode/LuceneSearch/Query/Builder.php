@@ -59,11 +59,11 @@ class Builder
      */
     public function get($lazy = false)
     {
-        $models = $this->runner->getCachedModels($this->query);
+        $models = $this->runner->getCachedModels($this->query, $lazy);
         if (null === $models) {
             $models = $this->runner->models($this->query, $lazy);
 
-            $this->runner->setCachedModels($this->query, $models);
+            $this->runner->setCachedModels($this->query, $models, $lazy);
             $this->runner->setCachedTotal($this->query, $models->count());
         }
 

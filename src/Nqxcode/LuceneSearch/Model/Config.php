@@ -58,7 +58,7 @@ class Config
                 'class_uid' => $classUid,
                 'fields' => $fields,
                 'optional_attributes' => $optionalAttributes,
-                'private_key' => array_get($options, 'private_key', 'id')
+                'primary_key' => array_get($options, 'primary_key', 'id')
             ];
         }
     }
@@ -126,10 +126,10 @@ class Config
      * @param Model $model
      * @return array
      */
-    public function privateKeyPair(Model $model)
+    public function primaryKeyPair(Model $model)
     {
         $c = $this->config($model);
-        return ['private_key', $model->{$c['private_key']}];
+        return ['primary_key', $model->{$c['primary_key']}];
     }
 
     /**
@@ -228,7 +228,7 @@ class Config
         $model = $this->createModelByClassUid(object_get($hit, 'class_uid'));
 
         // Set private key value
-        $model->setAttribute($model->getKeyName(), object_get($hit, 'private_key'));
+        $model->setAttribute($model->getKeyName(), object_get($hit, 'primary_key'));
 
         // Set score
         // $model->setAttribute('score', $hit->score);
@@ -246,7 +246,7 @@ class Config
     public function models($hits, $lazy = false)
     {
         list($collection, $searchableIdsGroups) = $this->parse($hits);
-        $searchable = $this->getSearchableBy($collection, $searchableIdsGroups);
+        $searchable = $this->actualize($collection, $searchableIdsGroups);
 
         return $lazy ? $searchable : $searchable->unlazy();
     }
@@ -298,7 +298,7 @@ class Config
      * @param array $searchableIdsGroups
      * @return Collection
      */
-    private function getSearchableBy(Collection $collection, array $searchableIdsGroups)
+    private function actualize(Collection $collection, array $searchableIdsGroups)
     {
         $searchable = [];
 

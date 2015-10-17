@@ -32,7 +32,7 @@ class SearchTest extends TestCase
         $this->config = m::mock('Nqxcode\LuceneSearch\Model\Config');
         $this->config->shouldReceive('privateKeyPair')
             ->with($this->model)
-            ->andReturn(['private_key', 1]);
+            ->andReturn(['primary_key', 1]);
         $this->config->shouldReceive('classUidPair')
             ->with($this->model)
             ->andReturn(['class_uid', '12345']);
@@ -50,7 +50,7 @@ class SearchTest extends TestCase
         $this->connection->shouldReceive('getIndex')->andReturn($luceneIndex = m::mock());
         $luceneIndex->shouldReceive('addDocument')->with(m::on(function ($arg) {
             $doc = new Document();
-            $doc->addField(Field::keyword('private_key', 1));
+            $doc->addField(Field::keyword('primary_key', 1));
             $doc->addField(Field::Keyword('class_uid', '12345'));
 
             $field = Field::unStored('name', 'test name');
@@ -67,7 +67,7 @@ class SearchTest extends TestCase
 
         $luceneIndex->shouldReceive('find')->with(m::on(function ($arg) {
             $term = new MultiTerm();
-            $term->addTerm(new Term(1, 'private_key'), true);
+            $term->addTerm(new Term(1, 'primary_key'), true);
             $term->addTerm(new Term('12345', 'class_uid'), true);
 
             $this->assertEquals($term, $arg);
@@ -91,7 +91,7 @@ class SearchTest extends TestCase
 
         $luceneIndex->shouldReceive('find')->with(m::on(function ($arg) {
             $term = new MultiTerm();
-            $term->addTerm(new Term(1, 'private_key'), true);
+            $term->addTerm(new Term(1, 'primary_key'), true);
             $term->addTerm(new Term('12345', 'class_uid'), true);
 
             $this->assertEquals($term, $arg);
