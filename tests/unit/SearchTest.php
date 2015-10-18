@@ -30,7 +30,7 @@ class SearchTest extends TestCase
         $this->connection->shouldReceive('getIndexPath');
 
         $this->config = m::mock('Nqxcode\LuceneSearch\Model\Config');
-        $this->config->shouldReceive('privateKeyPair')
+        $this->config->shouldReceive('primaryKeyPair')
             ->with($this->model)
             ->andReturn(['primary_key', 1]);
         $this->config->shouldReceive('classUidPair')

@@ -33,14 +33,8 @@ class RunnerTest extends TestCase
 
     public function testModels()
     {
-        $this->search->shouldReceive('config->parse')->with([1, 2, 3, 4, 5], ['limit' => 2, 'offset' => 3])->andReturn(['models' => [1, 2, 3, 4, 5], 'total' => 5]);
-        $this->assertEquals([1, 2, 3, 4, 5], $this->runner->models('test', ['limit' => 2, 'offset' => 3]));
-
-        $this->assertEquals([1, 2, 3, 4, 5], $this->runner->getCachedModels('test', ['limit' => 2, 'offset' => 3]));
-        $this->assertEquals(null, $this->runner->getCachedModels('other test', ['limit' => 2, 'offset' => 3]));
-
-        $this->assertEquals(5, $this->runner->getCachedTotal('test'));
-        $this->assertEquals(0, $this->runner->getCachedTotal('other test'));
+        $this->search->shouldReceive('config->models')->with([1, 2, 3, 4, 5], false)->andReturn([10, 20, 30, 40, 50]);
+        $this->assertEquals([10, 20, 30, 40, 50], $this->runner->models('test'));
     }
 
     public function testDelete()

@@ -18,6 +18,9 @@ class ConfigTest extends TestCase
     /** @var \Mockery\MockInterface */
     private $unknownRepoMock;
 
+    /** @var \Mockery\MockInterface */
+    private $productMock;
+
     public function setUp()
     {
         parent::setUp();
@@ -31,6 +34,8 @@ class ConfigTest extends TestCase
             ->andReturn($this->productRepoMock = m::mock(new Product));
 
         $this->productRepoMock->id = 1;
+        $this->productRepoMock->shouldReceive('newInstance')->andReturn($this->productMock = m::mock(new Product));
+
 
         $modelFactory->shouldReceive('newInstance')
             ->with('tests\models\DummyModel')
@@ -59,7 +64,9 @@ class ConfigTest extends TestCase
         $hit = m::mock('ZendSearch\Lucene\Search\QueryHit');
         $hit->class_uid = '1';
         $hit->primary_key = 1;
-        $this->productRepoMock->shouldReceive('find')->with(1)->once();
+
+        $this->productMock->shouldReceive('getKeyName')->andReturn('id');
+        $this->productMock->shouldReceive('setAttribute')->with('id', 1)->once();
 
         $this->config->model($hit);
     }

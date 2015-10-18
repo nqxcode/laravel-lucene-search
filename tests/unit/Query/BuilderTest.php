@@ -44,15 +44,20 @@ class BuilderTest extends TestCase
 
         $this->query->shouldReceive('addSubquery')->with($this->luceneQuery, true);
 
-        $this->runner->shouldReceive('models')->with($this->query)->andReturn([1, 2, 3])->byDefault();
+        $this->runner->shouldReceive('models')->with($this->query)->andReturn(Collection::make([1, 2, 3]))->byDefault();
         $this->runner->shouldReceive('total')->with($this->query)->andReturn(3)->byDefault();
 
-        $this->runner->shouldReceive('models')->with($this->query, [])->andReturn([1, 2, 3])->byDefault();
+        $this->runner->shouldReceive('models')->with($this->query, [])->andReturn(Collection::make([1, 2, 3]))->byDefault();
         $this->runner->shouldReceive('total')->with($this->query, [])->andReturn(3)->byDefault();
 
         $this->runner->shouldReceive('run')->with($this->query)->andReturn([1, 2, 3, 4])->byDefault();
+
+        $this->runner->shouldReceive('setCachedTotal')->byDefault();;
+        $this->runner->shouldReceive('setCachedModels')->byDefault();;
+
         $this->runner->shouldReceive('getCachedTotal')->andReturn(null)->byDefault();
         $this->runner->shouldReceive('getCachedModels')->andReturn(null)->byDefault();
+
 
         $this->filter->shouldReceive('applyFilters')->with($this->query);
 
@@ -88,7 +93,7 @@ class BuilderTest extends TestCase
         $this->runner->shouldReceive('models')->with($this->query, [])->never();
 
         $query = $this->constructor->query('test');
-        $this->assertEquals(Collection::make([1, 2, 3, 4, 5]), $query->get());
+        $this->assertEquals([1, 2, 3, 4, 5], $query->get());
     }
 
     public function testCachedTotal()
@@ -130,17 +135,17 @@ class BuilderTest extends TestCase
     {
         $query = $this->constructor->query('test');
         $this->runner->shouldReceive('models')
-            ->with($this->query, ['limit' => 2, 'offset' => 0])
-            ->andReturn(Collection::make([1, 2]))->byDefault();
+            ->with($this->query, ['limit' => 3, 'offset' => 0])
+            ->andReturn(Collection::make([1, 2, 3]))->byDefault();
 
-        $expected = App::make('paginator')->make([1, 2], 3, 2);
+        $expected = App::make('search.paginator')->make([1, 2], 3, 2);
         $actual = $query->paginate(2);
 
         $this->assertEquals($expected, $actual);
 
         $this->runner->shouldReceive('models')
             ->with($this->query, ['limit' => 2, 'offset' => 2])
-            ->andReturn(Collection::make([1, 2]))->byDefault();
+            ->andReturn(Collection::make([3, 4, 1, 2]))->byDefault();
 
         $actual = $query->paginate(2, 2);
 
@@ -148,7 +153,7 @@ class BuilderTest extends TestCase
 
         $this->runner->shouldReceive('models')
             ->with($this->query, ['limit' => 2, 'offset' => 2])
-            ->andReturn(Collection::make([1, 2]))->byDefault();
+            ->andReturn(Collection::make([3, 4, 1, 2]))->byDefault();
 
         $actual = $query->paginate(2, function () { return 2; });
 

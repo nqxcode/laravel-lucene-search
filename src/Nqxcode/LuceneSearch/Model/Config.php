@@ -92,7 +92,7 @@ class Config
      * @return Model
      * @throws \InvalidArgumentException
      */
-    private function createModelByClassUid($classUid)
+    private function newInstanceBy($classUid)
     {
         foreach ($this->configuration as $config) {
             if ($config['class_uid'] == $classUid) {
@@ -225,7 +225,7 @@ class Config
      */
     public function model(QueryHit $hit)
     {
-        $model = $this->createModelByClassUid(object_get($hit, 'class_uid'));
+        $model = $this->newInstanceBy(object_get($hit, 'class_uid'));
 
         // Set private key value
         $model->setAttribute($model->getKeyName(), object_get($hit, 'primary_key'));
