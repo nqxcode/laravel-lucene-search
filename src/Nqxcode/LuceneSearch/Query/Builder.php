@@ -74,7 +74,7 @@ class Builder
             $models = $models->slice($this->offset, $this->limit);
         }
 
-        return Collection::make($models->unlazy());
+        return Collection::make($models->unlazy()->all());
     }
 
     /**
