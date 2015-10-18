@@ -176,18 +176,18 @@ For example:
 ```php
 
 use Illuminate\Database\Eloquent\Model;
-use Nqxcode\LuceneSearch\Model\Searchable;
+use Nqxcode\LuceneSearch\Model\SearchableInterface;
 
-class Dummy extends Model implements Searchable
+class Dummy extends Model implements SearchableInterface
 {
         // ...
 
         /**
-         * Is the model available for searching?
+         * Get id list for all searchable models.
          */
-        public function isSearchable()
+        public static function searchableIds()
         {
-            return $this->publish;
+            return self::wherePublish(true)->lists('id');
         }
 
         // ...
@@ -201,10 +201,10 @@ For register of necessary events (save/update/delete) `use Nqxcode\LuceneSearch\
 ```php
 
     use Illuminate\Database\Eloquent\Model;
-    use Nqxcode\LuceneSearch\Model\Searchable;
+    use Nqxcode\LuceneSearch\Model\SearchableInterface;
     use Nqxcode\LuceneSearch\Model\SearchTrait;
 
-    class Dummy extends Model implements Searchable
+    class Dummy extends Model implements SearchableInterface
     {
         use SearchTrait;
     
