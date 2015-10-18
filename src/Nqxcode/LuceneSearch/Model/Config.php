@@ -240,22 +240,19 @@ class Config
      * Get models by query hits.
      *
      * @param QueryHit[] $hits
-     * @param bool $lazy
      * @return Collection
      */
-    public function models($hits, $lazy = false)
+    public function models($hits)
     {
         list($collection, $searchableIdsGroups) = $this->parse($hits);
-        $searchable = $this->actualize($collection, $searchableIdsGroups);
-
-        return $lazy ? $searchable : $searchable->unlazy();
+        return $this->actualize($collection, $searchableIdsGroups);
     }
 
     /**
      * Parse found hits.
      *
      * @param QueryHit[] $hits
-     * @return array
+     * @return Collection
      */
     private function parse($hits)
     {

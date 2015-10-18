@@ -1,5 +1,6 @@
 <?php namespace Nqxcode\LuceneSearch\Query;
 
+use Illuminate\Database\Eloquent\Collection;
 use ZendSearch\Lucene\Search\Query\AbstractQuery;
 use ZendSearch\Lucene\Search\Query\Boolean as QueryBoolean;
 use Input;
@@ -20,6 +21,8 @@ class Builder
     protected $limit;
     /** @var int */
     protected $offset;
+    /** @var bool */
+    protected $lazy = false;
 
     /**
      * Main query.
@@ -47,6 +50,7 @@ class Builder
     {
         $this->limit = $limit;
         $this->offset = $offset;
+        $this->lazy = true;
 
         return $this;
     }
@@ -54,16 +58,15 @@ class Builder
     /**
      * Execute current query and return list of models.
      *
-     * @param bool $lazy
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function get($lazy = false)
+    public function get()
     {
-        $models = $this->runner->getCachedModels($this->query, $lazy);
+        $models = $this->runner->getCachedModels($this->query, $this->lazy);
         if (null === $models) {
-            $models = $this->runner->models($this->query, $lazy);
+            $models = $this->runner->models($this->query);
 
-            $this->runner->setCachedModels($this->query, $models, $lazy);
+            $this->runner->setCachedModels($this->query, $models, $this->lazy);
             $this->runner->setCachedTotal($this->query, $models->count());
         }
 
@@ -71,7 +74,7 @@ class Builder
             $models = $models->slice($this->offset, $this->limit);
         }
 
-        return $models;
+        return Collection::make($models->unlazy());
     }
 
     /**
@@ -109,7 +112,7 @@ class Builder
 
         $this->limit($perPage, ($page - 1) * $perPage);
 
-        $models = $this->get(true)->all();
+        $models = $this->get()->all();
         $total = $this->count();
 
         $paginator = App::make('search.paginator')->make($models, $total, $perPage);

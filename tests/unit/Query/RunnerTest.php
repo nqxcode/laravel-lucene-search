@@ -33,7 +33,7 @@ class RunnerTest extends TestCase
 
     public function testModels()
     {
-        $this->search->shouldReceive('config->models')->with([1, 2, 3, 4, 5], false)->andReturn([10, 20, 30, 40, 50]);
+        $this->search->shouldReceive('config->models')->with([1, 2, 3, 4, 5])->andReturn([10, 20, 30, 40, 50]);
         $this->assertEquals([10, 20, 30, 40, 50], $this->runner->models('test'));
     }
 
