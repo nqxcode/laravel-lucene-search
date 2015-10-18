@@ -68,9 +68,7 @@ class Runner
     public function models($query)
     {
         $hits = $this->run($query);
-        $models = $this->search->config()->models($hits);
-
-        return $models;
+        return $this->search->config()->models($hits);
     }
 
     /**
@@ -81,11 +79,7 @@ class Runner
      */
     public function total($query)
     {
-        $hits = $this->run($query);
-        $models = $this->search->config()->models($hits, true);
-        $total = $models->count();
-
-        return $total;
+        return $this->models($query)->count();
     }
 
     /**
