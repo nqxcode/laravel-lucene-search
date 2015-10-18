@@ -63,13 +63,12 @@ class Runner
      * Get all finding models.
      *
      * @param mixed $query
-     * @param bool $lazy
      * @return Collection
      */
-    public function models($query, $lazy = false)
+    public function models($query)
     {
         $hits = $this->run($query);
-        $models = $this->search->config()->models($hits, $lazy);
+        $models = $this->search->config()->models($hits);
 
         return $models;
     }
@@ -109,7 +108,7 @@ class Runner
     public function getCachedModels($query, $lazy)
     {
         $hash = $this->hash($query);
-        return isset($this->cachedModels[$hash]) && !$lazy ? $this->cachedModels[$hash] : null;
+        return !$lazy && isset($this->cachedModels[$hash]) ? $this->cachedModels[$hash] : null;
     }
 
     /**

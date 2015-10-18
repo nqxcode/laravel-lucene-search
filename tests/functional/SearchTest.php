@@ -92,7 +92,7 @@ class SearchTest extends BaseTestCase
         $this->assertCount(1, $found);
     }
 
-    public function testGetLazy()
+    public function testGetWithLimit()
     {
         $query = Search::query('clock,pointer', '*', ['phrase' => false]);
         $found = $query->get();
@@ -100,9 +100,10 @@ class SearchTest extends BaseTestCase
         $this->assertCount(6, $found);
         $this->assertCount(6, $found->filter(function($v){ return $v->exists;}));
 
-        $lazy = $query->get(true);
+        $query->limit(3, 3);
+        $found = $query->get();
 
-        $this->assertCount(6, $lazy);
-        $this->assertCount(0, $lazy->filter(function($v){ return $v->exists;}));
+        $this->assertCount(3, $found);
+        $this->assertCount(3, $found->filter(function($v){ return $v->exists;}));
     }
 }
