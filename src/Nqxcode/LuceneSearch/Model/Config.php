@@ -227,7 +227,7 @@ class Config
     {
         $model = $this->newInstanceBy(object_get($hit, 'class_uid'));
 
-        // Set private key value
+        // Set primary key value
         $model->setAttribute($model->getKeyName(), object_get($hit, 'primary_key'));
 
         // Set score
@@ -244,70 +244,68 @@ class Config
      */
     public function models($hits)
     {
-        list($collection, $searchableIdsGroups) = $this->parse($hits);
-        return $this->actualize($collection, $searchableIdsGroups);
+        $models = [];
+        $groupedIds = $this->groupedSearchableIds($hits);
+
+        foreach ($hits as $hit) {
+            $model = $this->model($hit);
+
+            $id = $model->{$model->getKeyName()};
+            $searchableIds = array_get($groupedIds, get_class($model), []);
+
+            if (in_array($id, $searchableIds)) {
+                $models[] = $model;
+            }
+        }
+
+        return Collection::make($models);
     }
 
     /**
-     * Parse found hits.
+     * Get models classes for hits.
      *
      * @param QueryHit[] $hits
-     * @return Collection
+     * @return array
      */
-    private function parse($hits)
+    private function classesFor($hits)
     {
-        $collection = Collection::make([]);
-
-        $modelsGroups = [];
+        $classes = [];
         foreach ($hits as $hit) {
-            $model = $this->model($hit);
-            $class = get_class($model);
+            $class = get_class($this->model($hit));
 
-            // Grouping models by class
-            $modelsGroups[$class][] = $model;
+            if (!in_array($class, $classes)) {
+                $classes[] = $class;
+            }
         }
 
-        $searchableIdsGroups = [];
-        foreach ($modelsGroups as $class => $models) {
+        return $classes;
+    }
+
+    /**
+     * Get searchable id list grouped by classes.
+     *
+     * @param QueryHit[] $hits
+     * @return array
+     */
+    private function groupedSearchableIds(array $hits)
+    {
+        $groupedIds = [];
+
+        foreach ($this->classesFor($hits) as $class) {
             /** @var Model $modelInstance */
             $modelInstance = new $class;
+            $primaryKey = $modelInstance->getKeyName();
 
-            if (method_exists($modelInstance, 'searchableIds')) {
-                $searchableIds = $modelInstance->{'searchableIds'}();
+            if (!method_exists($modelInstance, 'searchableIds')) { // If not exists get full id list
+                $searchableIds = $modelInstance->query()->lists($primaryKey);
             } else {
-                $searchableIds = $modelInstance->query()->lists($modelInstance->getKeyName());
+                $searchableIds = $modelInstance->{'searchableIds'}();
             }
 
             // Set searchable id list for model's class
-            $searchableIdsGroups[$class] = $searchableIds ?: [null];
-
-            foreach ($models as $model) {
-                $collection[] = $model;
-            }
-        }
-        return [$collection, $searchableIdsGroups];
-    }
-
-    /**
-     * Get collection with only searchable models.
-     *
-     * @param Collection $collection
-     * @param array $searchableIdsGroups
-     * @return Collection
-     */
-    private function actualize(Collection $collection, array $searchableIdsGroups)
-    {
-        $searchable = [];
-
-        foreach ($collection as $model) {
-            $primaryValue = $model->{$model->getKeyName()};
-            $searchableIds = array_get($searchableIdsGroups, get_class($model), []);
-
-            if (in_array($primaryValue, $searchableIds)) {
-                $searchable[] = $model;
-            }
+            $groupedIds[$class] = $searchableIds ?: [];
         }
 
-        return Collection::make($searchable);
+        return $groupedIds;
     }
 }

@@ -21,8 +21,6 @@ class Builder
     protected $limit;
     /** @var int */
     protected $offset;
-    /** @var bool */
-    protected $lazy = false;
 
     /**
      * Main query.
@@ -62,11 +60,11 @@ class Builder
      */
     public function get()
     {
-        $models = $this->runner->getCachedModels($this->query, $this->lazy);
+        $models = $this->runner->getCachedModels($this->query, $this->limit);
         if (null === $models) {
             $models = $this->runner->models($this->query);
 
-            $this->runner->setCachedModels($this->query, $models, $this->lazy);
+            $this->runner->setCachedModels($this->query, $models, $this->limit);
             $this->runner->setCachedTotal($this->query, $models->count());
         }
 
