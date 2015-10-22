@@ -5,6 +5,7 @@ use Nqxcode\LuceneSearch\Support\Collection;
 use ZendSearch\Lucene\Search\QueryHit;
 
 /**
+ * TODO add unit tests
  * Class Config
  * @package Nqxcode\LuceneSearch
  */
@@ -43,6 +44,7 @@ class Config
 
             $fields = array_get($options, 'fields', []);
             $optionalAttributes = array_get($options, 'optional_attributes', []);
+            $boost = array_get($options, 'boost', true);
 
             if (count($fields) == 0 && count($optionalAttributes) == 0) {
                 throw new \InvalidArgumentException(
@@ -58,6 +60,7 @@ class Config
                 'class_uid' => $classUid,
                 'fields' => $fields,
                 'optional_attributes' => $optionalAttributes,
+                'boost' => $boost,
                 'primary_key' => array_get($options, 'primary_key', 'id')
             ];
         }
@@ -182,24 +185,27 @@ class Config
 
         $attributes = [];
 
-        $default = 'optional_attributes';
-        $field = array_get($c, $default) === true ? $default : array_get($c, "{$default}.field");
+        $option = snake_case(__FUNCTION__);
 
-        if (!is_null($field)) {
-            $attributes = object_get($model, $field, []);
+        if (!is_null(array_get($c, $option))) {
+            $accessor = array_get($c, $option) === true ? $option : array_get($c, "{$option}.accessor");
 
-            if (array_values($attributes) === $attributes) {
+            if (!is_null($accessor)) {
+                $attributes = object_get($model, $accessor, []);
 
-                // Transform to the associative
-                $attributes = array_combine(
-                    array_map(
-                        function ($i) use ($field) {
-                            return "{$field}_{$i}";
-                        },
-                        array_keys($attributes)
-                    ),
-                    $attributes
-                );
+                if (array_values($attributes) === $attributes) {
+
+                    // Transform to the associative
+                    $attributes = array_combine(
+                        array_map(
+                            function ($i) use ($accessor) {
+                                return "{$accessor}_{$i}";
+                            },
+                            array_keys($attributes)
+                        ),
+                        $attributes
+                    );
+                }
             }
         }
 
@@ -215,6 +221,30 @@ class Config
         }, $attributes);
 
         return $attributes;
+    }
+
+
+    /**
+     * Get boost for model.
+     *
+     * @param Model $model
+     * @return int
+     */
+    public function boost(Model $model)
+    {
+        $boost = 1;
+
+        $c = $this->config($model);
+        $option = snake_case(__FUNCTION__);
+
+        if (!is_null(array_get($c, $option))) {
+            $accessor = array_get($c, $option) === true ? $option : array_get($c, "{$option}.accessor");
+            if (!is_null($accessor)) {
+                $boost = object_get($model, $accessor, 1);
+            }
+        }
+
+        return $boost;
     }
 
     /**

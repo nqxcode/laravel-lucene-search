@@ -70,7 +70,7 @@ class SearchTest extends BaseTestCase
     public function testSearchByOptionalAttributes()
     {
         $query = Search::query('some custom text', ['custom_text']);
-        $this->assertEquals(9, $query->count());
+        $this->assertEquals(12, $query->count());
     }
 
     public function testSearchHighlightResults()

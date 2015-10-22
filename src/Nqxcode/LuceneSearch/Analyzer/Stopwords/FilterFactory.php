@@ -11,7 +11,7 @@ class FilterFactory
     public function newInstance($path)
     {
         if (!is_file($path)) {
-            throw new \InvalidArgumentException("File '{$path}' with stop words doesn't exit.");
+            throw new \InvalidArgumentException("File '{$path}' with stop words doesn't exist.");
         }
 
         $stopWordsFilter = new StopWordsFilter;

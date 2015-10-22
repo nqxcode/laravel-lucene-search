@@ -4,10 +4,10 @@ use Search;
 use Config;
 
 /**
- * Class SearchTestWithFilters
+ * Class FiltersTest
  * @package tests\functional
  */
-class SearchTestWithFilters extends BaseTestCase
+class FiltersTest extends BaseTestCase
 {
     public function testSearchByStopWord()
     {

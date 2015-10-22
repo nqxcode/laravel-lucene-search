@@ -18,6 +18,7 @@ class CreateProductsTable extends Migration
             $table->string('name')->nullable();
             $table->string('description')->nullable();
             $table->boolean('publish')->default(1);
+            $table->boolean('availability')->default(1);
 
             $table->timestamps();
         });
@@ -115,6 +116,28 @@ class CreateProductsTable extends Migration
             'created_at' => $now,
             'updated_at' => $now,
             'publish' => 1,
+        ));
+
+        DB::table('products')->insert(array(
+            'name' => 'dim lamp',
+            'description' => 'nothing',
+            'created_at' => $now,
+            'updated_at' => $now,
+        ));
+
+        DB::table('products')->insert(array(
+            'name' => 'led lamp',
+            'description' => 'lamp',
+            'created_at' => $now,
+            'updated_at' => $now,
+        ));
+
+        DB::table('products')->insert(array(
+            'name' => 'bright lamp',
+            'description' => 'lamp lamp',
+            'created_at' => $now,
+            'updated_at' => $now,
+            'availability' => false,
         ));
     }
 }

@@ -5,10 +5,10 @@ use tests\models\Product;
 use Search;
 
 /**
- * Class SearchEventsTest
+ * Class EventsTest
  * @package tests\functional
  */
-class SearchEventsTest extends BaseTestCase
+class EventsTest extends BaseTestCase
 {
     public function testCreate()
     {

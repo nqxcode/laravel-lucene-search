@@ -115,6 +115,7 @@ class Search
         // Add class uid for identification of model's class.
         $doc->addField(Field::Keyword($name, $value));
 
+        // Get base fields.
         $fields = $this->config->fields($model);
 
         // Add fields to document to be indexed (but not stored).
@@ -127,6 +128,7 @@ class Search
             $doc->addField($field);
         }
 
+        // Get dynamic fields.
         $optionalAttributes = $this->config->optionalAttributes($model);
 
         // Add optional attributes to document to be indexed (but not stored).
@@ -138,6 +140,9 @@ class Search
 
             $doc->addField($field);
         }
+
+        // Set boost for model.
+        $doc->boost = $this->config->boost($model);
 
         // Add document to index.
         $this->index()->addDocument($doc);

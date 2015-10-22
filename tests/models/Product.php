@@ -30,11 +30,16 @@ class Product extends Model implements SearchableInterface
         return $ids;
     }
 
-    public function getOptionalAttributesAttribute()
+    public function getCustomOptionalAttributesAttribute()
     {
         return [
             'custom_text' => 'some custom text',
             'boosted_name' => ['boost' => 0.9, 'value' => $this->name],
         ];
+    }
+
+    public function getCustomBoostAttribute()
+    {
+        return $this->attributes['availability'] ? 1 : 0.1;
     }
 }

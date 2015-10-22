@@ -35,7 +35,9 @@ abstract class BaseTestCase extends TestCase
                         'name',
                         'description',
                     ],
-                    'optional_attributes' => true
+                    'optional_attributes' => [
+                        'accessor' => 'custom_optional_attributes'
+                    ],
                 ]
             ]
         );

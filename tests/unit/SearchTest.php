@@ -43,6 +43,9 @@ class SearchTest extends TestCase
         $this->config->shouldReceive('optionalAttributes')
             ->andReturn(['optional_attribute1' => ['boost' => 1, 'value' => 'optional value']]);
 
+        $this->config->shouldReceive('boost')
+            ->andReturn(1);
+
     }
 
     public function testUpdate()
