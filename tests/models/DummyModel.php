@@ -4,5 +4,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class DummyModel extends Model
 {
-    /** DummyModel */
+    protected $primaryKey = 'pk';
 }

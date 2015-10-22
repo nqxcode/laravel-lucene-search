@@ -96,27 +96,28 @@ class Runner
      * Get cached models for query.
      *
      * @param $query
-     * @param $lazy
+     * @param $limit
+     * @param $offset
      * @return null|int
      */
-    public function getCachedModels($query, $lazy)
+    public function getCachedModels($query, $limit = null, $offset = null)
     {
-        $hash = $this->hash($query);
-        return !$lazy && isset($this->cachedModels[$hash]) ? $this->cachedModels[$hash] : null;
+        $hash = $this->hash($query, compact('limit', 'offset'));
+        return isset($this->cachedModels[$hash]) ? $this->cachedModels[$hash] : null;
     }
 
     /**
      * Set cached models for query.
      *
      * @param $query
+     * @param $limit
+     * @param $offset
      * @param $models
      */
-    public function setCachedModels($query, $models, $lazy)
+    public function setCachedModels($query, $models, $limit = null, $offset = null)
     {
-        if (!$lazy) {
-            $hash = $this->hash($query);
-            $this->cachedModels[$hash] = $models;
-        }
+        $hash = $this->hash($query, compact('limit', 'offset'));
+        $this->cachedModels[$hash] = $models;
     }
 
     /**
@@ -147,11 +148,12 @@ class Runner
      * Get hash for query.
      *
      * @param $query
+     * @param $options
      * @return string
      */
-    private function hash($query)
+    private function hash($query, array $options = [])
     {
-        return md5(serialize($query));
+        return md5(serialize($query) . serialize($options));
     }
 
     /**

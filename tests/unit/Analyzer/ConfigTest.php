@@ -1,5 +1,4 @@
-<?php
-namespace tests\unit\Analyzer;
+<?php namespace tests\unit\Analyzer;
 
 use Nqxcode\LuceneSearch\Analyzer\Config;
 use tests\TestCase;

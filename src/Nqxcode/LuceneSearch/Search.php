@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Nqxcode\LuceneSearch\Highlighting\Html;
+use Nqxcode\LuceneSearch\Index\Connection;
 use Nqxcode\LuceneSearch\Model\Config;
 use ZendSearch\Lucene\Document;
 use ZendSearch\Lucene\Index\Term;

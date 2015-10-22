@@ -1,8 +1,8 @@
-<?php namespace tests\unit;
+<?php namespace tests\unit\Index;
 
 use \Mockery as m;
 
-use Nqxcode\LuceneSearch\Connection;
+use Nqxcode\LuceneSearch\Index\Connection;
 use tests\TestCase;
 
 class ConnectionTest extends TestCase

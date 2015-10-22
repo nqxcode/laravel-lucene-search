@@ -26,7 +26,7 @@ class SearchTest extends TestCase
         $this->model->id = 1;
         $this->model->name = 'test name';
 
-        $this->connection = m::mock('Nqxcode\LuceneSearch\Connection');
+        $this->connection = m::mock('Nqxcode\LuceneSearch\Index\Connection');
         $this->connection->shouldReceive('getIndexPath');
 
         $this->config = m::mock('Nqxcode\LuceneSearch\Model\Config');

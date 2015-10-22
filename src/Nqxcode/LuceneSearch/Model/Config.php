@@ -1,6 +1,7 @@
 <?php namespace Nqxcode\LuceneSearch\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 use Nqxcode\LuceneSearch\Support\Collection;
 use ZendSearch\Lucene\Search\QueryHit;
 
@@ -110,11 +111,71 @@ class Config
     }
 
     /**
-     * Get list of models instances.
+     * Get the model by query hit.
+     *
+     * @param QueryHit $hit
+     * @return \Illuminate\Database\Eloquent\Collection|Model|static
+     */
+    private function model(QueryHit $hit)
+    {
+        $model = $this->newInstanceBy($hit->{'class_uid'});
+
+        // Set primary key value
+        $model->setAttribute($model->getKeyName(), $hit->{'primary_key'});
+
+        // Set score
+        // $model->setAttribute('score', $hit->score);
+
+        return $model;
+    }
+
+    /**
+     * Get classes uid list for hits.
+     *
+     * @param QueryHit[] $hits
+     * @return array
+     */
+    private function classUidList($hits)
+    {
+        return array_unique(array_map(function ($hit) {
+            return $hit->{'class_uid'};
+        }, $hits));
+    }
+
+    /**
+     * Get searchable id list grouped by classes.
+     *
+     * @param QueryHit[] $hits
+     * @return array
+     */
+    private function groupedSearchableIds(array $hits)
+    {
+        $groupedIds = [];
+
+        foreach ($this->classUidList($hits) as $classUid) {
+            /** @var Model|Builder $model */
+            $model = $this->newInstanceBy($classUid);
+            $primaryKey = $model->getKeyName();
+
+            if (!method_exists($model, 'searchableIds')) { // If not exists get full id list
+                $searchableIds = $model->lists($primaryKey);
+            } else {
+                $searchableIds = $model->{'searchableIds'}();
+            }
+
+            // Set searchable id list for model's class
+            $groupedIds[get_class($model)] = $searchableIds ?: [];
+        }
+
+        return $groupedIds;
+    }
+
+    /**
+     * Get full list of models instances.
      *
      * @return Model[]
      */
-    public function modelRepositories()
+    public function repositories()
     {
         $repositories = [];
         foreach ($this->configuration as $config) {
@@ -148,7 +209,7 @@ class Config
     }
 
     /**
-     * Get fields for indexing for model.
+     * Get model fields for indexing.
      *
      * @param Model $model
      * @return array
@@ -181,17 +242,16 @@ class Config
      */
     public function optionalAttributes(Model $model)
     {
-        $c = $this->config($model);
-
         $attributes = [];
 
+        $c = $this->config($model);
         $option = snake_case(__FUNCTION__);
 
         if (!is_null(array_get($c, $option))) {
             $accessor = array_get($c, $option) === true ? $option : array_get($c, "{$option}.accessor");
 
             if (!is_null($accessor)) {
-                $attributes = object_get($model, $accessor, []);
+                $attributes = $model->{$accessor} ?: [];
 
                 if (array_values($attributes) === $attributes) {
 
@@ -223,7 +283,6 @@ class Config
         return $attributes;
     }
 
-
     /**
      * Get boost for model.
      *
@@ -240,30 +299,11 @@ class Config
         if (!is_null(array_get($c, $option))) {
             $accessor = array_get($c, $option) === true ? $option : array_get($c, "{$option}.accessor");
             if (!is_null($accessor)) {
-                $boost = object_get($model, $accessor, 1);
+                $boost = $model->{$accessor} ?: 1;
             }
         }
 
         return $boost;
-    }
-
-    /**
-     * Get the model by query hit.
-     *
-     * @param QueryHit $hit
-     * @return \Illuminate\Database\Eloquent\Collection|Model|static
-     */
-    public function model(QueryHit $hit)
-    {
-        $model = $this->newInstanceBy(object_get($hit, 'class_uid'));
-
-        // Set primary key value
-        $model->setAttribute($model->getKeyName(), object_get($hit, 'primary_key'));
-
-        // Set score
-        // $model->setAttribute('score', $hit->score);
-
-        return $model;
     }
 
     /**
@@ -289,53 +329,5 @@ class Config
         }
 
         return Collection::make($models);
-    }
-
-    /**
-     * Get models classes for hits.
-     *
-     * @param QueryHit[] $hits
-     * @return array
-     */
-    private function classesFor($hits)
-    {
-        $classes = [];
-        foreach ($hits as $hit) {
-            $class = get_class($this->model($hit));
-
-            if (!in_array($class, $classes)) {
-                $classes[] = $class;
-            }
-        }
-
-        return $classes;
-    }
-
-    /**
-     * Get searchable id list grouped by classes.
-     *
-     * @param QueryHit[] $hits
-     * @return array
-     */
-    private function groupedSearchableIds(array $hits)
-    {
-        $groupedIds = [];
-
-        foreach ($this->classesFor($hits) as $class) {
-            /** @var Model $modelInstance */
-            $modelInstance = new $class;
-            $primaryKey = $modelInstance->getKeyName();
-
-            if (!method_exists($modelInstance, 'searchableIds')) { // If not exists get full id list
-                $searchableIds = $modelInstance->query()->lists($primaryKey);
-            } else {
-                $searchableIds = $modelInstance->{'searchableIds'}();
-            }
-
-            // Set searchable id list for model's class
-            $groupedIds[$class] = $searchableIds ?: [];
-        }
-
-        return $groupedIds;
     }
 }

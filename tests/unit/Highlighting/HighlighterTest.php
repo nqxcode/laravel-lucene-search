@@ -1,5 +1,4 @@
-<?php
-namespace tests\unit\Highlighting;
+<?php namespace tests\unit\Highlighting;
 
 use Nqxcode\LuceneSearch\Highlighting\Highlighter;
 use tests\TestCase;

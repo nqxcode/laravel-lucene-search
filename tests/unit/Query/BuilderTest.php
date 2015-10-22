@@ -163,15 +163,6 @@ class BuilderTest extends TestCase
         $actual = $query->paginate(2, 2);
 
         $this->assertEquals($expected, $actual);
-
-        $models->shouldReceive('slice')->with(2, 2)->andReturn($sliced);
-        $this->runner->shouldReceive('models')
-            ->with($this->query)
-            ->andReturn($models);
-
-        $actual = $query->paginate(2, function () { return 2; });
-
-        $this->assertEquals($expected, $actual);
     }
 
     public function testRawQuery()

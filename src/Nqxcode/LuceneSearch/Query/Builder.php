@@ -48,7 +48,6 @@ class Builder
     {
         $this->limit = $limit;
         $this->offset = $offset;
-        $this->lazy = true;
 
         return $this;
     }
@@ -60,11 +59,11 @@ class Builder
      */
     public function get()
     {
-        $models = $this->runner->getCachedModels($this->query, $this->limit);
+        $models = $this->runner->getCachedModels($this->query, $this->limit, $this->offset);
         if (null === $models) {
             $models = $this->runner->models($this->query);
 
-            $this->runner->setCachedModels($this->query, $models, $this->limit);
+            $this->runner->setCachedModels($this->query, $models, $this->limit, $this->offset);
             $this->runner->setCachedTotal($this->query, $models->count());
         }
 
@@ -95,19 +94,13 @@ class Builder
      * Execute the current query and return a paginator for the results.
      *
      * @param int $perPage
-     * @param callable|mixed $currentPage
+     * @param int|null $page
      *
      * @return \Illuminate\Pagination\Paginator
      */
-    public function paginate($perPage = 25, $currentPage = null)
+    public function paginate($perPage = 25, $page = null)
     {
-        if (is_null($currentPage)) {
-            $currentPage = function () {
-                return Input::get('page', 1);
-            };
-        }
-        $page = intval(is_callable($currentPage) ? $currentPage() : $currentPage);
-
+        $page = $page ?: Input::get('page', 1);
         $this->limit($perPage, ($page - 1) * $perPage);
 
         $models = $this->get()->all();

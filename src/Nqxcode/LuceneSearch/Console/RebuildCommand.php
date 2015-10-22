@@ -25,7 +25,7 @@ class RebuildCommand extends Command
         /** @var Search $search */
         $search = App::make('search');
 
-        $modelRepositories = $search->config()->modelRepositories();
+        $modelRepositories = $search->config()->repositories();
 
         if (count($modelRepositories) > 0) {
             foreach ($modelRepositories as $modelRepository) {

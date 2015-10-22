@@ -1,4 +1,4 @@
-<?php namespace Nqxcode\LuceneSearch;
+<?php namespace Nqxcode\LuceneSearch\Index;
 
 use Nqxcode\LuceneSearch\Analyzer\Config as AnalyzerConfig;
 use ZendSearch\Lucene\Lucene;
