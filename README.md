@@ -78,7 +78,7 @@ You can also index values of **optional fields** (dynamic fields). For enable in
         // or
         
         'optional_attributes' => [
-                'field' => 'custom_name' // with specifying of accessor name
+                'accessor' => 'custom_name' // with specifying of accessor name
         ]
 ```
 - In model add **special accessor**, that returns list of `field-name => field-value`.
