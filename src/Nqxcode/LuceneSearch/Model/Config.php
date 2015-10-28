@@ -148,9 +148,9 @@ class Config
      * @param QueryHit[] $hits
      * @return array
      */
-    private function groupedSearchableIds(array $hits)
+    private function groupedSearchableIdsAsKeys(array $hits)
     {
-        $groupedIds = [];
+        $groupedIdsAsKeys = [];
 
         foreach ($this->classUidList($hits) as $classUid) {
             /** @var Model|Builder $model */
@@ -164,10 +164,10 @@ class Config
             }
 
             // Set searchable id list for model's class
-            $groupedIds[get_class($model)] = $searchableIds ?: [];
+            $groupedIdsAsKeys[get_class($model)] = $searchableIds ? array_flip($searchableIds): [];
         }
 
-        return $groupedIds;
+        return $groupedIdsAsKeys;
     }
 
     /**
@@ -315,7 +315,7 @@ class Config
     public function models($hits)
     {
         $models = [];
-        $groupedIds = $this->groupedSearchableIds($hits);
+        $groupedIds = $this->groupedSearchableIdsAsKeys($hits);
 
         foreach ($hits as $hit) {
             $model = $this->model($hit);
@@ -323,7 +323,7 @@ class Config
             $id = $model->{$model->getKeyName()};
             $searchableIds = array_get($groupedIds, get_class($model), []);
 
-            if (in_array($id, $searchableIds)) {
+            if (isset($searchableIds[$id])) {
                 $models[] = $model;
             }
         }
