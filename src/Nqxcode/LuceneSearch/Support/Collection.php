@@ -4,39 +4,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Collection extends \Illuminate\Database\Eloquent\Collection
 {
-    /* @var bool can it be unlazy? */
-    protected $lazy = false;
+    protected $reloaded = false;
 
     /**
-     * @inheritdoc
-     */
-    public function __construct(array $items = array())
-    {
-        parent::__construct($items);
-        $this->lazy = true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function make($items)
-    {
-        /** @var self $collection */
-        $collection = parent::make($items);
-        $collection->lazy = true;
-
-        return $collection;
-    }
-
-    /**
-     * Make collection not lazy.
+     * Reload each item in collection.
      *
      * @return $this|static
      */
-    public function unlazy()
+    public function reload()
     {
-        if ($this->lazy) {
-            $this->lazy = false; // it may be unlazy only once
+        if (!$this->reloaded) {
+            $this->reloaded = true;
 
             $items = array_map(
                 function (Model $sourceModel) {

@@ -71,7 +71,7 @@ class Builder
             $models = $models->slice($this->offset, $this->limit);
         }
 
-        return Collection::make($models->unlazy()->all());
+        return Collection::make($models->reload()->all());
     }
 
     /**
@@ -101,12 +101,13 @@ class Builder
     public function paginate($perPage = 25, $page = null)
     {
         $page = $page ?: Input::get('page', 1);
-        $this->limit($perPage, ($page - 1) * $perPage);
 
+        $this->limit($perPage, ($page - 1) * $perPage);
         $models = $this->get()->all();
+
         $total = $this->count();
 
-        $paginator = App::make('search.paginator')->make($models, $total, $perPage);
+        $paginator = App::make('paginator')->make($models, $total, $perPage);
 
         return $paginator;
     }

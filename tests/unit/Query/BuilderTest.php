@@ -46,7 +46,7 @@ class BuilderTest extends TestCase
         $this->query->shouldReceive('addSubquery')->with($this->luceneQuery, true);
 
         $lazyCollectionMock = m::mock(LazyCollection::make([1, 2, 3]));
-        $lazyCollectionMock->shouldReceive('unlazy')->andReturn(Collection::make([1, 2, 3]))->byDefault();
+        $lazyCollectionMock->shouldReceive('reload')->andReturn(Collection::make([1, 2, 3]))->byDefault();
 
         $this->runner->shouldReceive('models')->with($this->query)->andReturn($lazyCollectionMock)->byDefault();
         $this->runner->shouldReceive('total')->with($this->query)->andReturn(3)->byDefault();
@@ -95,7 +95,7 @@ class BuilderTest extends TestCase
     public function testCachedModels()
     {
         $lazyCollectionMock = m::mock(LazyCollection::make([1, 2, 3, 4, 5]));
-        $lazyCollectionMock->shouldReceive('unlazy')->andReturn(Collection::make([1, 2, 3, 4, 5]))->byDefault();
+        $lazyCollectionMock->shouldReceive('reload')->andReturn(Collection::make([1, 2, 3, 4, 5]))->byDefault();
 
         $this->runner->shouldReceive('getCachedModels')->andReturn($lazyCollectionMock);
         $this->runner->shouldReceive('models')->with($this->query, [])->never();
@@ -143,14 +143,14 @@ class BuilderTest extends TestCase
     {
         $models = m::mock(LazyCollection::make([]));
         $models->shouldReceive('slice')->with(0, 2)->andReturn($sliced = m::mock(LazyCollection::make([])));
-        $sliced->shouldReceive('unlazy')->andReturn(Collection::make([1, 2]));
+        $sliced->shouldReceive('reload')->andReturn(Collection::make([1, 2]));
 
         $query = $this->constructor->query('test');
         $this->runner->shouldReceive('models')
             ->with($this->query)
             ->andReturn($models);
 
-        $expected = App::make('search.paginator')->make([1, 2], 3, 2);
+        $expected = App::make('paginator')->make([1, 2], 3, 2);
         $actual = $query->paginate(2);
 
         $this->assertEquals($expected, $actual);

@@ -76,17 +76,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             );
         });
 
-        $this->app->bindShared('search.paginator', function($app)
-        {
-            $paginator = new Factory($app['request'], $app['view'], $app['translator']);
-
-            $paginator->setViewName($app['config']['view.pagination']);
-
-            $app->refresh('request', $paginator, 'setRequest');
-
-            return $paginator;
-        });
-
         $this->app->bindShared('command.search.rebuild', function () {
             return new Console\RebuildCommand;
         });

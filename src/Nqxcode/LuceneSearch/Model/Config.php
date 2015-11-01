@@ -315,13 +315,13 @@ class Config
     public function models($hits)
     {
         $models = [];
-        $groupedIds = $this->groupedSearchableIdsAsKeys($hits);
+        $groupedIdsAsKeys = $this->groupedSearchableIdsAsKeys($hits);
 
         foreach ($hits as $hit) {
             $model = $this->model($hit);
 
             $id = $model->{$model->getKeyName()};
-            $searchableIds = array_get($groupedIds, get_class($model), []);
+            $searchableIds = array_get($groupedIdsAsKeys, get_class($model), []);
 
             if (isset($searchableIds[$id])) {
                 $models[] = $model;
