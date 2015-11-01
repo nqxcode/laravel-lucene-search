@@ -136,7 +136,7 @@ Or/and in model accessor:
 ```
 
 ###Stemming and stopwords
-For reducing words to their root form by default the following filters are used in search:
+By default the following filters are used in search:
 - Stemming filter for **english/russian** words (for reducing words to their root form),
 - Stopword filters for **english/russian** words (for exclude some words from search index).
 
