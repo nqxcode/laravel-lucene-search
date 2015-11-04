@@ -161,7 +161,7 @@ In model add following accessor:
         }
 ```
 
-####Model field level boosting
+####Model's field level boosting
 This is **Document's Field level boosting** in terminology of Apache Lucene.
 By default **boost** is set in **1** for each field. For change of this behavior set boost for necessary fields as in the following examples.
 
