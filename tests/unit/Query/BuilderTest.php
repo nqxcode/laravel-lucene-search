@@ -1,5 +1,6 @@
 <?php namespace tests\unit\Query;
 
+use Illuminate\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Collection;
 use Nqxcode\LuceneSearch\Support\Collection as LazyCollection;
 use tests\TestCase;
@@ -150,7 +151,7 @@ class BuilderTest extends TestCase
             ->with($this->query)
             ->andReturn($models);
 
-        $expected = App::make('paginator')->make([1, 2], 3, 2);
+        $expected = new Paginator([1, 2], 3, 2);
         $actual = $query->paginate(2);
 
         $this->assertEquals($expected, $actual);

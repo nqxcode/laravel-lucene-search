@@ -34,12 +34,12 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
         ));
     }
 
-    protected function getPackageProviders()
+    protected function getPackageProviders($app)
     {
         return array('Nqxcode\LuceneSearch\ServiceProvider');
     }
 
-    protected function getPackageAliases()
+    protected function getPackageAliases($app)
     {
         return array(
             'Search' => 'Nqxcode\LuceneSearch\Facade',

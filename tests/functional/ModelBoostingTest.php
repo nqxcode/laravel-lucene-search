@@ -15,7 +15,7 @@ class ModelBoostingTest extends BaseTestCase
         parent::configure();
 
         Config::set(
-            'laravel-lucene-search::index.models',
+            'laravel-lucene-search.index.models',
             [
                 'tests\models\Product' => [
                     'fields' => [

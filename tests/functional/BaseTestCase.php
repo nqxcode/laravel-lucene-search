@@ -1,6 +1,7 @@
 <?php
 namespace tests\functional;
 
+use Illuminate\Support\Facades\Artisan;
 use tests\TestCase;
 use Config;
 
@@ -15,20 +16,18 @@ abstract class BaseTestCase extends TestCase
         parent::setUp();
         $this->configure();
 
-        $artisan = $this->app->make('artisan');
-
         // Call migrations specific to our tests, e.g. to seed the db.
-        $artisan->call('migrate', ['--database' => 'testbench', '--path' => '../tests/migrations']);
+        Artisan::call('migrate', ['--database' => 'testbench', '--path' => '../tests/migrations']);
 
         // Call rebuild search index.
-        $artisan->call('search:rebuild');
+        Artisan::call('search:rebuild');
     }
 
     protected function configure()
     {
-        Config::set('laravel-lucene-search::index.path', storage_path() . '/lucene-search/index_' . uniqid());
+        Config::set('laravel-lucene-search.index.path', storage_path('app') . '/lucene-search/index_' . uniqid());
         Config::set(
-            'laravel-lucene-search::index.models',
+            'laravel-lucene-search.index.models',
             [
                 'tests\models\Product' => [
                     'fields' => [

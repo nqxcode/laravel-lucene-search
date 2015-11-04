@@ -1,4 +1,4 @@
-Laravel 4.2 Lucene search
+Laravel 5 Lucene search
 ==============
 
 [![Latest Stable Version](https://poser.pugx.org/nqxcode/laravel-lucene-search/v/stable.png)](https://packagist.org/packages/nqxcode/laravel-lucene-search)
@@ -7,7 +7,7 @@ Laravel 4.2 Lucene search
 [![Build Status](https://travis-ci.org/nqxcode/laravel-lucene-search.svg?branch=master)](https://travis-ci.org/nqxcode/laravel-lucene-search)
 
 
-Laravel 4.2 package for full-text search over Eloquent models based on ZendSearch Lucene.
+Laravel 5.0 package for full-text search over Eloquent models based on ZendSearch Lucene.
 
 ## Installation
 
@@ -16,7 +16,7 @@ Require this package in your composer.json and run composer update:
 ```json
 {
 	"require": {
-        "nqxcode/laravel-lucene-search": "1.*"
+        "nqxcode/laravel-lucene-search": "2.*"
 	}
 }
 ```
@@ -41,7 +41,7 @@ If you want to use the facade to search, add this to your facades in `app/config
 Publish the config file into your project by running:
 
 ```bash
-php artisan config:publish nqxcode/laravel-lucene-search
+php artisan vendor:publish --provider="Nqxcode\LuceneSearch\ServiceProvider"
 ```
 ###Basic
 In published config file add descriptions for models which need to be indexed, for example:
