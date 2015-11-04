@@ -16,7 +16,7 @@ Require this package in your composer.json and run composer update:
 ```json
 {
 	"require": {
-        "nqxcode/laravel-lucene-search": "2.*"
+        "nqxcode/laravel-lucene-search": "2.0.*"
 	}
 }
 ```
