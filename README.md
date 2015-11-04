@@ -25,7 +25,7 @@ After updating composer, add the ServiceProvider to the providers array in `app/
 
 ```php
 'providers' => [
-	'Nqxcode\LuceneSearch\ServiceProvider',
+	Nqxcode\LuceneSearch\ServiceProvider::class,
 ],
 ```
 
@@ -33,7 +33,7 @@ If you want to use the facade to search, add this to your facades in `app/config
 
 ```php
 'aliases' => [
-	'Search' => 'Nqxcode\LuceneSearch\Facade',
+	'Search' => Nqxcode\LuceneSearch\Facade::class,
 ],
 ```
 ## Configuration 
@@ -51,13 +51,13 @@ In published config file add descriptions for models which need to be indexed, f
 	
 	// ...
 
-	'namespace\FirstModel' => [
+	namespace\FirstModel::class => [
 		'fields' => [
 			'name', 'full_description', // fields for indexing
 		]
 	],
 	
-	'namespace\SecondModel' => [
+	namespace\SecondModel::class => [
 		'fields' => [
 			'name', 'short_description', // fields for indexing
 		]
@@ -90,7 +90,7 @@ Example:
 In config file:
 
 ```php
-        'namespace\FirstModel' => [
+        namespace\FirstModel::class => [
                 'fields' => [
                     'name', 'full_description', // fixed fields for indexing
                 ],
@@ -143,7 +143,7 @@ Example:
 In config file:
 
 ```php
-        'namespace\FirstModel' => [
+        namespace\FirstModel::class => [
                 'fields' => [
                     'name', 'full_description',
                 ],
@@ -168,7 +168,7 @@ By default **boost** is set in **1** for each field. For change of this behavior
 In config file:
 
 ```php
-        'namespace\FirstModel' => [
+        namespace\FirstModel::class => [
                 'fields' => [
                     'name', // field with default boost
                     'full_description' => ['boost' => 0.2], // customize boost value
@@ -198,7 +198,7 @@ This filters can be deleted or replaced with others.
 'analyzer' => [
     'filters' => [
     	// Default stemming filter.
-    	'Nqxcode\Stemming\TokenFilterEnRu',
+    	Nqxcode\Stemming\TokenFilterEnRu::class,
     ],
         
     // List of paths to files with stopwords. 
