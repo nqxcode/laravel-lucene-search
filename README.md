@@ -53,13 +53,13 @@ In published config file add descriptions for models which need to be indexed, f
 
 	'namespace\FirstModel' => [
 		'fields' => [
-			'name', 'full_description', // Fields for indexing.
+			'name', 'full_description', // fields for indexing
 		]
 	],
 	
 	'namespace\SecondModel' => [
 		'fields' => [
-			'name', 'short_description', // Fields for indexing.
+			'name', 'short_description', // fields for indexing
 		]
 	],
 	
@@ -92,10 +92,10 @@ In config file:
 ```php
         'namespace\FirstModel' => [
                 'fields' => [
-                    'name', 'full_description', // Fixed fields for indexing.
+                    'name', 'full_description', // fixed fields for indexing
                 ],
 
-                'optional_attributes' => true //  Enable indexing for dynamic fields
+                'optional_attributes' => true //  enable indexing for dynamic fields
         ],
 ```
 
@@ -110,7 +110,59 @@ In model add following accessor:
                 ];
         }
 ```
-###Field level boosting
+### Score Boosting
+See details on [Apache Lucene - Scoring](https://lucene.apache.org/core/3_5_0/scoring.html#Score%20Boosting).
+
+####Model level boosting
+This is **Document level boosting** in terminology of Apache Lucene. By default all models have **boost** value equal to **1**. For change of this behavior customize boost for necessary models as in the following examples.
+
+- In config for each necessary model add following option:
+```php
+        'boost' => true
+        
+        // or
+        
+        'boost' => [
+                'accessor' => 'custom_name' // with specifying of accessor name
+        ]
+```
+In model add following accessor:
+
+```php
+        public function getBoostAttribute()
+        {
+                return 0.5; // customize boost value for model
+        }
+```
+- In model add **special accessor**, that returns boost value.
+By default `getBoostAttribute` accessor will be used.
+In case accessor name specified in config `getCustomNameAttribute` accessor will be used.
+
+Example:
+
+In config file:
+
+```php
+        'namespace\FirstModel' => [
+                'fields' => [
+                    'name', 'full_description',
+                ],
+                
+                'boost' => true // enable boosting for model
+        ],
+```
+
+In model add following accessor:
+
+```php
+        public function getBoostAttribute()
+        {
+                return 0.5; // customize boost value for model
+        }
+```
+
+####Model field level boosting
+This is **Document's Field level boosting** in terminology of Apache Lucene.
 By default **boost** is set in **1** for each field. For change of this behavior set boost for necessary fields as in the following examples.
 
 In config file:
