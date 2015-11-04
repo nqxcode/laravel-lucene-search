@@ -95,7 +95,7 @@ class ConfigTest extends TestCase
         $this->assertEquals(['name' => ['boost' => 1], 'description' => ['boost' => 1]], $fields);
 
         $fields = $this->config->fields($this->dummyRepoMock);
-        $this->assertEquals(['first_field' => ['boost' => 1], 'second_field' => ['boost' => 1]], $fields);
+        $this->assertEquals(['first_field' => ['boost' => 0.1], 'second_field' => ['boost' => 0.2]], $fields);
     }
 
     public function testOptionalAttributes()
@@ -222,8 +222,8 @@ class ConfigTest extends TestCase
             'tests\models\DummyModel' => [
                 'primary_key' => 'pk',
                 'fields' => [
-                    'first_field',
-                    'second_field',
+                    'first_field' => ['boost' => 0.1],
+                    'second_field' => ['boost' => 0.2],
                 ],
                 'optional_attributes' => [
                     'accessor' => 'custom_optional_attributes'

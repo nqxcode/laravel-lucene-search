@@ -33,23 +33,30 @@ class FieldsBoostingTest extends BaseTestCase
     public function testSearchWithFieldsBoosting()
     {
         $query = Search::query('laser pointer', ['name', 'description']);
-        $founded = $query->get();
+        $names = $query->get()->lists('name');
 
-        $this->assertCount(3, $founded);
-        $this->assertEquals('noname pointer', $founded[0]->name);
-        $this->assertEquals('broken pointer', $founded[1]->name);
-        $this->assertEquals('laser pointer', $founded[2]->name);
+        $this->assertCount(3, $names);
+
+        $this->assertEquals([
+            'noname pointer',
+            'broken pointer',
+            'laser pointer'
+
+        ], $names);
     }
 
     public function testSearchWithDynamicFieldsBoosting()
     {
         $query = Search::query('laser pointer', ['boosted_name', 'description']);
-        $founded = $query->get();
+        $names = $query->get()->lists('name');
 
-        $this->assertCount(3, $founded);
+        $this->assertCount(3, $names);
 
-        $this->assertEquals('laser pointer', $founded[0]->name);
-        $this->assertEquals('noname pointer', $founded[1]->name);
-        $this->assertEquals('broken pointer', $founded[2]->name);
+        $this->assertEquals([
+            'laser pointer',
+            'noname pointer',
+            'broken pointer'
+
+        ], $names);
     }
 }
