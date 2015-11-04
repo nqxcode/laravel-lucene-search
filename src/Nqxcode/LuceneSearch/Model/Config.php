@@ -163,6 +163,8 @@ class Config
                 $searchableIds = $model->{'searchableIds'}();
             }
 
+            $searchableIds = \Illuminate\Support\Collection::make($searchableIds)->all();
+
             // Set searchable id list for model's class
             $groupedIdsAsKeys[get_class($model)] = $searchableIds ? array_flip($searchableIds): [];
         }

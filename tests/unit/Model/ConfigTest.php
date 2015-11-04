@@ -185,10 +185,10 @@ class ConfigTest extends TestCase
         $hitMock->{$cKey} = $cValue;
 
         $hitMock->{$pKey} = 1;
-        $this->assertEquals([1], $this->config->models([$hitMock])->lists('id'));
+        $this->assertEquals([1], $this->config->models([$hitMock])->lists('id')->all());
 
         $hitMock->{$pKey} = 5;
-        $this->assertEquals([], $this->config->models([$hitMock])->lists('id'));
+        $this->assertEquals([], $this->config->models([$hitMock])->lists('id')->all());
 
         // Asserts for dummy model
         list($cKey, $cValue) = $this->config->classUidPair(new DummyModel);
@@ -200,10 +200,10 @@ class ConfigTest extends TestCase
         $hitMock->{$cKey} = $cValue;
 
         $hitMock->{$pKey} = 3;
-        $this->assertEquals([3], $this->config->models([$hitMock])->lists('pk'));
+        $this->assertEquals([3], $this->config->models([$hitMock])->lists('pk')->all());
 
         $hitMock->{$pKey} = 10;
-        $this->assertEquals([], $this->config->models([$hitMock])->lists('pk'));
+        $this->assertEquals([], $this->config->models([$hitMock])->lists('pk')->all());
 
     }
 

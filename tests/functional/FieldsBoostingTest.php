@@ -33,7 +33,7 @@ class FieldsBoostingTest extends BaseTestCase
     public function testSearchWithFieldsBoosting()
     {
         $query = Search::query('laser pointer', ['name', 'description']);
-        $names = $query->get()->lists('name');
+        $names = $query->get()->lists('name')->all();
 
         $this->assertCount(3, $names);
 
@@ -48,7 +48,7 @@ class FieldsBoostingTest extends BaseTestCase
     public function testSearchWithDynamicFieldsBoosting()
     {
         $query = Search::query('laser pointer', ['boosted_name', 'description']);
-        $names = $query->get()->lists('name');
+        $names = $query->get()->lists('name')->all();
 
         $this->assertCount(3, $names);
 
