@@ -5,7 +5,7 @@ Laravel 5 Lucene search
 [![Latest Unstable Version](https://poser.pugx.org/nqxcode/laravel-lucene-search/v/unstable.png)](https://packagist.org/packages/nqxcode/laravel-lucene-search)
 [![License](https://poser.pugx.org/nqxcode/laravel-lucene-search/license.png)](https://packagist.org/packages/nqxcode/laravel-lucene-search)
 [![Build Status](https://travis-ci.org/nqxcode/laravel-lucene-search.svg?branch=master)](https://travis-ci.org/nqxcode/laravel-lucene-search)
-
+[![Coverage Status](https://img.shields.io/coveralls/nqxcode/laravel-lucene-search/master.svg?style=flat)](https://coveralls.io/r/nqxcode/laravel-lucene-search?branch=2.0.x)
 
 Laravel 5.0 package for full-text search over Eloquent models based on ZendSearch Lucene.
 
