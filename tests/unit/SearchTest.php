@@ -30,21 +30,36 @@ class SearchTest extends TestCase
         $this->connection->shouldReceive('getIndexPath');
 
         $this->config = m::mock('Nqxcode\LuceneSearch\Model\Config');
+
         $this->config->shouldReceive('primaryKeyPair')
             ->with($this->model)
             ->andReturn(['primary_key', 1]);
+
         $this->config->shouldReceive('classUidPair')
             ->with($this->model)
             ->andReturn(['class_uid', '12345']);
+
         $this->config->shouldReceive('fields')
             ->with($this->model)
-            ->andReturn(['name' => ['boost' => 1]]);
+            ->andReturn(['name' => ['boost' => 1, 'type' => 'unStored']]);
 
         $this->config->shouldReceive('optionalAttributes')
-            ->andReturn(['optional_attribute1' => ['boost' => 1, 'value' => 'optional value']]);
+            ->andReturn(['optional_attribute1' => ['boost' => 1, 'type' => 'unStored', 'value' => 'optional value']]);
 
         $this->config->shouldReceive('boost')
             ->andReturn(1);
+
+        $field = Field::unStored('name', 'test name');
+        $field->boost = 1;
+        $this->config->shouldReceive('field')
+            ->with('name', 'test name', ['boost' => 1, 'type' => 'unStored'])
+            ->andReturn($field);
+
+        $field = Field::unStored('optional_attribute1', 'optional value');
+        $field->boost = 1;
+        $this->config->shouldReceive('field')
+            ->with('optional_attribute1', 'optional value', ['boost' => 1, 'type' => 'unStored'])
+            ->andReturn($field);
 
     }
 

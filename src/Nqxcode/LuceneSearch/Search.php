@@ -4,6 +4,7 @@ use Illuminate\Database\Eloquent\Model;
 use Nqxcode\LuceneSearch\Highlighting\Html;
 use Nqxcode\LuceneSearch\Index\Connection;
 use Nqxcode\LuceneSearch\Model\Config;
+use Nqxcode\LuceneSearch\Model\FieldType;
 use ZendSearch\Lucene\Document;
 use ZendSearch\Lucene\Index\Term;
 use ZendSearch\Lucene\Search\Query\MultiTerm;
@@ -120,12 +121,8 @@ class Search
         $fields = $this->config->fields($model);
 
         // Add fields to document to be indexed (but not stored).
-        foreach ($fields as $fieldName => $options) {
-            $fieldValue = $model->{trim($fieldName)};
-
-            $field = Field::unStored(trim($fieldName), strip_tags(trim($fieldValue)));
-            $field->boost = array_get($options, 'boost');
-
+        foreach ($fields as $name => $options) {
+            $field = $this->config->field($name, $model->{trim($name)}, $options);
             $doc->addField($field);
         }
 
@@ -133,12 +130,8 @@ class Search
         $optionalAttributes = $this->config->optionalAttributes($model);
 
         // Add optional attributes to document to be indexed (but not stored).
-        foreach ($optionalAttributes as $fieldName => $options) {
-            $fieldValue = array_get($options, "value");
-
-            $field = Field::unStored(trim($fieldName), strip_tags(trim($fieldValue)));
-            $field->boost = array_get($options, "boost");
-
+        foreach ($optionalAttributes as $name => $options) {
+            $field = $this->config->field($name, array_get($options, 'value'), array_except($options, 'value'));
             $doc->addField($field);
         }
 

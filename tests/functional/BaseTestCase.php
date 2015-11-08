@@ -1,6 +1,7 @@
 <?php
 namespace tests\functional;
 
+use Nqxcode\LuceneSearch\Model\FieldType;
 use tests\TestCase;
 use Config;
 
@@ -34,6 +35,7 @@ abstract class BaseTestCase extends TestCase
                     'fields' => [
                         'name',
                         'description',
+                        'region' => ['type' => FieldType::UNINDEXED]
                     ],
                     'optional_attributes' => [
                         'accessor' => 'custom_optional_attributes'

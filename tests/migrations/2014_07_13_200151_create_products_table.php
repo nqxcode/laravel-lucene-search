@@ -17,6 +17,7 @@ class CreateProductsTable extends Migration
             $table->increments('id');
             $table->string('name')->nullable();
             $table->string('description')->nullable();
+            $table->string('region')->default('europe');
             $table->boolean('publish')->default(1);
             $table->boolean('availability')->default(1);
 
@@ -46,6 +47,7 @@ class CreateProductsTable extends Migration
         DB::table('products')->insert(array(
             'name' => 'big analog clock',
             'description' => 'very big, analog',
+            'region' => 'asia',
             'created_at' => $now,
             'updated_at' => $now,
         ));

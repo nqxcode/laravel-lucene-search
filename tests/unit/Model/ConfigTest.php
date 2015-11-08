@@ -92,10 +92,19 @@ class ConfigTest extends TestCase
     public function testFields()
     {
         $fields = $this->config->fields($this->productRepoMock);
-        $this->assertEquals(['name' => ['boost' => 1], 'description' => ['boost' => 1]], $fields);
+        $this->assertEquals(
+            ['name' => ['boost' => 1, 'type' => 'unStored'], 'description' => ['boost' => 1, 'type' => 'unStored']],
+            $fields
+        );
 
         $fields = $this->config->fields($this->dummyRepoMock);
-        $this->assertEquals(['first_field' => ['boost' => 0.1], 'second_field' => ['boost' => 0.2]], $fields);
+        $this->assertEquals(
+            [
+                'first_field' => ['boost' => 0.1, 'type' => 'unStored'],
+                'second_field' => ['boost' => 0.2, 'type' => 'unStored']
+            ],
+            $fields
+        );
     }
 
     public function testOptionalAttributes()
@@ -104,12 +113,12 @@ class ConfigTest extends TestCase
             ->with('optional_attributes')
             ->andReturn([
                 'name' => 'value',
-                'boosted_name' => ['boost' => 0.1, 'value' => 'boosted_value']
+                'boosted_name' => ['boost' => 0.1, 'type' => 'unStored', 'value' => 'boosted_value']
             ])->byDefault();
 
         $expected = [
-            'name' => ['boost' => 1, 'value' => 'value'],
-            'boosted_name' => ['boost' => 0.1, 'value' => 'boosted_value']
+            'name' => ['boost' => 1, 'type' => 'unStored', 'value' => 'value'],
+            'boosted_name' => ['boost' => 0.1, 'type' => 'unStored', 'value' => 'boosted_value']
         ];
         $this->assertEquals($expected, $this->config->optionalAttributes($this->productMock));
 
@@ -118,12 +127,12 @@ class ConfigTest extends TestCase
             ->with('optional_attributes')
             ->andReturn([
                 0 => 'value',
-                1 => ['boost' => 0.1, 'value' => 'boosted_value']
+                1 => ['boost' => 0.1, 'type' => 'unStored', 'value' => 'boosted_value']
             ])->byDefault();
 
         $expected = [
-            'optional_attributes_0' => ['boost' => 1, 'value' => 'value'],
-            'optional_attributes_1' => ['boost' => 0.1, 'value' => 'boosted_value']
+            'optional_attributes_0' => ['boost' => 1, 'type' => 'unStored', 'value' => 'value'],
+            'optional_attributes_1' => ['boost' => 0.1, 'type' => 'unStored', 'value' => 'boosted_value']
         ];
         $this->assertEquals($expected, $this->config->optionalAttributes($this->productMock));
 
@@ -132,12 +141,12 @@ class ConfigTest extends TestCase
             ->with('custom_optional_attributes')
             ->andReturn([
                 'name' => 'value',
-                'boosted_name' => ['boost' => 0.1, 'value' => 'boosted_value']
+                'boosted_name' => ['boost' => 0.1, 'type' => 'unStored', 'value' => 'boosted_value']
             ])->byDefault();
 
         $expected = [
-            'name' => ['boost' => 1, 'value' => 'value'],
-            'boosted_name' => ['boost' => 0.1, 'value' => 'boosted_value']
+            'name' => ['boost' => 1, 'type' => 'unStored', 'value' => 'value'],
+            'boosted_name' => ['boost' => 0.1, 'type' => 'unStored', 'value' => 'boosted_value']
         ];
         $this->assertEquals($expected, $this->config->optionalAttributes($this->dummyMock));
 
@@ -146,12 +155,12 @@ class ConfigTest extends TestCase
             ->with('custom_optional_attributes')
             ->andReturn([
                 0 => 'value',
-                1 => ['boost' => 0.1, 'value' => 'boosted_value']
+                1 => ['boost' => 0.1, 'type' => 'unStored', 'value' => 'boosted_value']
             ])->byDefault();
 
         $expected = [
-            'custom_optional_attributes_0' => ['boost' => 1, 'value' => 'value'],
-            'custom_optional_attributes_1' => ['boost' => 0.1, 'value' => 'boosted_value']
+            'custom_optional_attributes_0' => ['boost' => 1, 'type' => 'unStored', 'value' => 'value'],
+            'custom_optional_attributes_1' => ['boost' => 0.1, 'type' => 'unStored', 'value' => 'boosted_value']
         ];
         $this->assertEquals($expected, $this->config->optionalAttributes($this->dummyMock));
     }

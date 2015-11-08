@@ -3,6 +3,7 @@
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Nqxcode\LuceneSearch\Support\Collection;
+use ZendSearch\Lucene\Document\Field;
 use ZendSearch\Lucene\Search\QueryHit;
 
 /**
@@ -164,7 +165,7 @@ class Config
             }
 
             // Set searchable id list for model's class
-            $groupedIdsAsKeys[get_class($model)] = $searchableIds ? array_flip($searchableIds): [];
+            $groupedIdsAsKeys[get_class($model)] = $searchableIds ? array_flip($searchableIds) : [];
         }
 
         return $groupedIdsAsKeys;
@@ -221,14 +222,16 @@ class Config
 
         foreach ($c['fields'] as $key => $value) {
             $boost = 1;
+            $type = FieldType::UNSTORED;
             $field = $value;
 
             if (is_array($value)) {
                 $boost = array_get($value, 'boost', 1);
+                $type = array_get($value, 'type', FieldType::UNSTORED);
                 $field = $key;
             }
 
-            $fields[$field] = ['boost' => $boost];
+            $fields[$field] = ['boost' => $boost, 'type' => $type];
         }
 
         return $fields;
@@ -271,13 +274,15 @@ class Config
 
         $attributes = array_map(function ($value) {
             $boost = 1;
+            $type = FieldType::UNSTORED;
 
             if (is_array($value)) {
                 $boost = array_get($value, 'boost', 1);
+                $type = array_get($value, 'type', FieldType::UNSTORED);
                 $value = array_get($value, 'value');
             }
 
-            return ['boost' => $boost, 'value' => $value];
+            return ['boost' => $boost, 'type' => $type, 'value' => $value];
         }, $attributes);
 
         return $attributes;
@@ -304,6 +309,35 @@ class Config
         }
 
         return $boost;
+    }
+
+    /**
+     * TODO Add tests.
+     * Get document field.
+     *
+     * @param $name
+     * @param $value
+     * @param array $options
+     * @return mixed
+     */
+    public function field($name, $value, array $options = [])
+    {
+        $name = trim($name);
+
+        if (empty($name)) {
+            throw new \InvalidArgumentException("Field name must be not empty.");
+        }
+
+        $type = array_get($options, 'type', FieldType::UNSTORED);
+
+        if (!method_exists('ZendSearch\Lucene\Document\Field', $type)) {
+            throw new \InvalidArgumentException("Unsupported field type: {$type}.");
+        }
+
+        $field = Field::$type($name, strip_tags(trim($value)));
+        $field->boost = array_get($options, 'boost', 1);
+
+        return $field;
     }
 
     /**
