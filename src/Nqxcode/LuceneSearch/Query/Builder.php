@@ -60,18 +60,15 @@ class Builder
      */
     public function get()
     {
-        $models = $this->runner->getCachedModels($this->query, $this->limit, $this->offset);
+        $models = $this->runner->getCachedModels($this->query);
         if (null === $models) {
             $models = $this->runner->models($this->query);
-
-            $this->runner->setCachedModels($this->query, $models, $this->limit, $this->offset);
+            $this->runner->setCachedModels($this->query, $models);
             $this->runner->setCachedTotal($this->query, $models->count());
         }
-
         if ($this->limit) {
             $models = $models->slice($this->offset, $this->limit);
         }
-
         return Collection::make($models->reload()->all());
     }
 
