@@ -12,7 +12,7 @@ class Collection extends \Illuminate\Database\Eloquent\Collection
     public function reload()
     {
         /** @var Model $source */
-        foreach($this->items as $i => $source) {
+        foreach ($this->items as $i => $source) {
             if (!$source->exists) {
                 /** @var Model $target */
                 $target = $source->find($source->{$source->getKeyName()});
