@@ -95,15 +95,29 @@ class SearchTest extends BaseTestCase
     public function testGetWithLimit()
     {
         $query = Search::query('clock,pointer', '*', ['phrase' => false]);
-        $found = $query->get();
-
-        $this->assertCount(6, $found);
-        $this->assertCount(6, $found->filter(function($v){ return $v->exists;}));
 
         $query->limit(3, 3);
         $found = $query->get();
 
         $this->assertCount(3, $found);
-        $this->assertCount(3, $found->filter(function($v){ return $v->exists;}));
+        $this->assertCount(3, $found->filter(function ($v) {
+            return $v->exists;
+        }));
+
+        $query->limit(null);
+        $found = $query->get();
+
+        $this->assertCount(6, $found);
+        $this->assertCount(6, $found->filter(function ($v) {
+            return $v->exists;
+        }));
+
+        $query->limit(3, 0);
+        $found = $query->get();
+
+        $this->assertCount(3, $found);
+        $this->assertCount(3, $found->filter(function ($v) {
+            return $v->exists;
+        }));
     }
 }
