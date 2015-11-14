@@ -28,4 +28,4 @@ class HighlighterTest extends TestCase
     {
         $this->assertEquals('<span class="highlight">test</span>', $this->highlighter->wrapWords('test'));
     }
-} 
+}

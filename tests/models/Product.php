@@ -7,6 +7,7 @@ use Nqxcode\LuceneSearch\Model\SearchTrait;
 
 /**
  * Class Product
+ * @property int $id
  * @property string $name
  * @property string $description
  * @property boolean $publish

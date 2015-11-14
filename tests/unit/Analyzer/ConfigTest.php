@@ -53,4 +53,4 @@ class ConfigTest extends TestCase
         $this->config->setHighlighterAnalyzer();
         $this->assertEquals($this->analyzer, Analyzer::getDefault());
     }
-} 
+}

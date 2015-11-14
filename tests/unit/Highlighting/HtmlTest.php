@@ -51,4 +51,4 @@ class HtmlTest extends TestCase
 
         $this->assertEquals('test', $this->html->highlight('test'));
     }
-} 
+}

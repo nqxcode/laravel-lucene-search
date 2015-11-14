@@ -35,4 +35,4 @@ class FiltersTest extends BaseTestCase
         $query = Search::query('поиск тестового товара', '*', ['phrase' => false]);
         $this->assertEquals(1, $query->count());
     }
-} 
+}
