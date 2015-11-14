@@ -1,5 +1,4 @@
-<?php
-namespace tests\functional;
+<?php namespace tests\functional;
 
 use Illuminate\Support\Facades\Artisan;
 use tests\TestCase;

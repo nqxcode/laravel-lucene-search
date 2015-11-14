@@ -58,8 +58,8 @@ class BuilderTest extends TestCase
 
         $this->runner->shouldReceive('run')->with($this->query)->andReturn([1, 2, 3, 4])->byDefault();
 
-        $this->runner->shouldReceive('setCachedTotal')->byDefault();;
-        $this->runner->shouldReceive('setCachedModels')->byDefault();;
+        $this->runner->shouldReceive('setCachedTotal')->byDefault();
+        $this->runner->shouldReceive('setCachedModels')->byDefault();
 
         $this->runner->shouldReceive('getCachedTotal')->andReturn(null)->byDefault();
         $this->runner->shouldReceive('getCachedModels')->andReturn(null)->byDefault();
@@ -170,10 +170,12 @@ class BuilderTest extends TestCase
     {
         $this->assertEquals($this->constructor, $this->constructor->rawQuery('test'));
 
-        $closure = function(){return 'test';};
+        $closure = function () {
+            return 'test';
+        };
         $this->rawQueryBuilder->shouldReceive('parse')->with($closure)->andReturn(new Boolean)->byDefault();
         $this->assertEquals($this->constructor, $this->constructor->rawQuery($closure));
 
         $this->assertEquals($this->constructor, $this->constructor->rawQuery(new Boolean));
     }
-} 
+}

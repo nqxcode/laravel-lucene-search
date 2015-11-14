@@ -46,5 +46,4 @@ class ModelBoostingTest extends BaseTestCase
             'bright lamp',
         ], $names);
     }
-
 }
