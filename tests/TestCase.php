@@ -56,7 +56,7 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
 
         // Define the models that have event listeners.
         foreach (scandir($dir) as $modelFile) {
-            if (preg_match("/(.*?)\.php/", $modelFile, $matches)) {
+            if (preg_match('/(.*?)\.php/', $modelFile, $matches)) {
                 $className = $namespace . $matches[1];
                 if (class_exists($className) && is_subclass_of($className, 'Illuminate\Database\Eloquent\Model')) {
                     // Flush any existing listeners.
