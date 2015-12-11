@@ -32,21 +32,24 @@ class RebuildCommand extends Command
             foreach ($modelRepositories as $modelRepository) {
                 $this->info('Creating index for model: "' . get_class($modelRepository) . '"');
 
-                $all = $modelRepository->all();
+                $count = $modelRepository->count();
 
-                $count = count($all);
+                if ($count === 0) {
+                    $this->comment(' No available models found. ');
+                    continue;
+                }
 
-                if ($count > 0) {
-                    $progress = new ProgressBar($this->getOutput(), $count);
-                    foreach ($all as $model) {
+                $progress = new ProgressBar($this->getOutput(), $count);
+
+                $modelRepository->chunk(1000, function ($rows) use ($progress, $search) {
+                    foreach ($rows as $model) {
                         $search->update($model);
                         $progress->advance();
                     }
-                    $progress->finish();
 
-                } else {
-                    $this->comment(' No available models found. ');
-                }
+                });
+
+                $progress->finish();
             }
             $this->info(PHP_EOL . 'Operation is fully complete!');
         } else {
