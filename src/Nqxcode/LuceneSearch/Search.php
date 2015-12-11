@@ -61,16 +61,6 @@ class Search
     }
 
     /**
-     * Destroy the entire index.
-     *
-     * @return bool
-     */
-    public function destroy()
-    {
-        $this->connection->destroy();
-    }
-
-    /**
      * Find query hits for model in index.
      *
      * @param Model $model

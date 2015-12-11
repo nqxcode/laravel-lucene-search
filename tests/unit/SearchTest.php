@@ -1,6 +1,8 @@
 <?php namespace tests\unit;
 
 use Mockery as m;
+use Nqxcode\LuceneSearch\Index\Connection;
+use Nqxcode\LuceneSearch\Model\Config;
 use Nqxcode\LuceneSearch\Search;
 use tests\models\DummyModel;
 use tests\TestCase;
@@ -11,9 +13,9 @@ use ZendSearch\Lucene\Index\Term;
 
 class SearchTest extends TestCase
 {
-    /** @var \Mockery\MockInterface */
+    /** @var \Mockery\MockInterface|Connection */
     private $connection;
-    /** @var  \Mockery\MockInterface */
+    /** @var  \Mockery\MockInterface|Config */
     private $config;
     /** @var  DummyModel */
     private $model;
@@ -109,13 +111,6 @@ class SearchTest extends TestCase
 
         $index = $this->createIndex();
         $index->delete($this->model);
-    }
-
-    public function testDestroy()
-    {
-        $this->connection->shouldReceive('destroy')->once();
-        $index = $this->createIndex();
-        $index->destroy();
     }
 
     private function createIndex()

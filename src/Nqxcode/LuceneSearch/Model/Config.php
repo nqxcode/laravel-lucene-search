@@ -175,7 +175,7 @@ class Config
     /**
      * Get full list of models instances.
      *
-     * @return Model[]
+     * @return Model[]|Builder[]
      */
     public function repositories()
     {

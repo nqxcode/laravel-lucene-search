@@ -19,9 +19,7 @@ class RebuildCommand extends Command
             $this->output = new NullOutput;
         }
 
-        if (is_dir(Config::get('laravel-lucene-search.index.path'))) {
-            $this->call('search:clear');
-        }
+        $this->call('search:clear');
 
         /** @var Search $search */
         $search = App::make('search');
@@ -36,17 +34,17 @@ class RebuildCommand extends Command
 
                 if ($count === 0) {
                     $this->comment(' No available models found. ');
-                    continue;
+                    return;
                 }
 
                 $progress = new ProgressBar($this->getOutput(), $count);
+                $progress->start();
 
-                $modelRepository->chunk(1000, function ($rows) use ($progress, $search) {
-                    foreach ($rows as $model) {
+                $modelRepository->chunk(1000, function ($chunk) use ($progress, $search) {
+                    foreach ($chunk as $model) {
                         $search->update($model);
                         $progress->advance();
                     }
-
                 });
 
                 $progress->finish();
