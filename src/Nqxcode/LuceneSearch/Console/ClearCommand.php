@@ -1,4 +1,4 @@
-<?php  namespace Nqxcode\LuceneSearch\Console;
+<?php namespace Nqxcode\LuceneSearch\Console;
 
 use Illuminate\Console\Command;
 use Config;
@@ -15,7 +15,8 @@ class ClearCommand extends Command
             $this->output = new NullOutput;
         }
 
-        if ($result = rmdir_recursive(Config::get('laravel-lucene-search::index.path'))) {
+        if (\File::isDirectory($indexPath = Config::get('laravel-lucene-search::index.path'))) {
+            \File::deleteDirectory($indexPath);
             $this->info('Search index is cleared.');
         } else {
             $this->comment('There is nothing to clear..');

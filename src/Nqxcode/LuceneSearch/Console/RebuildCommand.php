@@ -2,10 +2,11 @@
 
 use Illuminate\Console\Command;
 use Nqxcode\LuceneSearch\Search;
+use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Output\NullOutput;
 
 use App;
 use Config;
-use Symfony\Component\Console\Output\NullOutput;
 
 class RebuildCommand extends Command
 {
@@ -18,9 +19,7 @@ class RebuildCommand extends Command
             $this->output = new NullOutput;
         }
 
-        if (is_dir(Config::get('laravel-lucene-search.index.path'))) {
-            $this->call('search:clear');
-        }
+        $this->call('search:clear');
 
         /** @var Search $search */
         $search = App::make('search');
@@ -31,26 +30,26 @@ class RebuildCommand extends Command
             foreach ($modelRepositories as $modelRepository) {
                 $this->info('Creating index for model: "' . get_class($modelRepository) . '"');
 
-                $all = $modelRepository->all();
+                $count = $modelRepository->count();
 
-                $count = count($all);
+                if ($count === 0) {
+                    $this->comment(' No available models found. ');
+                    return;
+                }
 
-                if ($count > 0) {
-                    /** @var \Symfony\Component\Console\Helper\ProgressBar $progress */
-                    $progress = $this->getHelperSet()->get('progress');
-                    $progress->start($this->getOutput(), $count);
+                $progress = new ProgressBar($this->getOutput(), $count);
+                $progress->start();
 
-                    foreach ($all as $model) {
+                $modelRepository->chunk(1000, function ($chunk) use ($progress, $search) {
+                    foreach ($chunk as $model) {
                         $search->update($model);
                         $progress->advance();
                     }
-                    $progress->finish();
+                });
 
-                } else {
-                    $this->comment(' No available models found. ');
-                }
+                $progress->finish();
             }
-            $this->info('Operation is fully complete!');
+            $this->info(PHP_EOL . 'Operation is fully complete!');
         } else {
             $this->error('No models found in config.php file..');
         }

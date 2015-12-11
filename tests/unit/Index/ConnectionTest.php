@@ -22,9 +22,7 @@ class ConnectionTest extends TestCase
     {
         parent::tearDown();
 
-        if (is_dir($this->indexPath)) {
-            rmdir_recursive($this->indexPath);
-        }
+        \File::deleteDirectory($this->indexPath);
     }
 
     public function testCreateIndex()
@@ -32,15 +30,6 @@ class ConnectionTest extends TestCase
         $index = $this->createConnection();
         $this->assertNotEmpty($index->getIndex());
         $this->assertEquals($this->indexPath, $index->getIndexPath());
-    }
-
-    public function testDestroyIndex()
-    {
-        $index = $this->createConnection();
-        $this->assertNotEmpty($index->getIndex());
-        $index->destroy();
-        $this->assertEmpty($index->getIndex());
-        $this->assertFalse(is_dir($this->indexPath));
     }
 
     private function createConnection()

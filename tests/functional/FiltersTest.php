@@ -26,10 +26,7 @@ class FiltersTest extends BaseTestCase
         $query = Search::query('clocks', '*');
         $this->assertEquals(3, $query->count());
 
-        $query = Search::query('bigger', '*');
-        $this->assertEquals(2, $query->count());
-
-        $query = Search::query('smaller', '*');
+        $query = Search::query('clocking', '*');
         $this->assertEquals(3, $query->count());
 
         $query = Search::query('поиск тестового товара', '*', ['phrase' => false]);

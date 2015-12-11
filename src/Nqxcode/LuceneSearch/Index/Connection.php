@@ -58,16 +58,4 @@ class Connection
             throw $e;
         }
     }
-
-    /**
-     * Destroy the entire index.
-     */
-    public function destroy()
-    {
-        $this->index = null;
-
-        if (is_dir($this->indexPath)) {
-            rmdir_recursive($this->indexPath);
-        }
-    }
 }
