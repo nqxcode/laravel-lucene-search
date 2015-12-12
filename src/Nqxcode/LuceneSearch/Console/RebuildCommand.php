@@ -34,7 +34,7 @@ class RebuildCommand extends Command
 
                 if ($count === 0) {
                     $this->comment(' No available models found. ');
-                    return;
+                    continue;
                 }
 
                 $progress = new ProgressBar($this->getOutput(), $count);
