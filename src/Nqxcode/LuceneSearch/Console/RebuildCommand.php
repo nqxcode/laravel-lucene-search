@@ -33,7 +33,7 @@ class RebuildCommand extends Command
                 $count = $modelRepository->count();
 
                 if ($count === 0) {
-                    $this->comment(' No available models found. ');
+                    $this->comment(' No available models found.');
                     continue;
                 }
 
