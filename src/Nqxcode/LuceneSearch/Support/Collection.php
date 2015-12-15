@@ -36,4 +36,5 @@ class Collection extends \Illuminate\Database\Eloquent\Collection
         }
 
         return $this;
+    }
 }
