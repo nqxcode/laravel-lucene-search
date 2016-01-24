@@ -9,7 +9,6 @@ use Mockery as m;
 use ZendSearch\Lucene\Search\Query\Boolean;
 
 use App;
-use Input;
 
 class BuilderTest extends TestCase
 {

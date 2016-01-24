@@ -155,11 +155,10 @@ class Config
         foreach ($this->classUidList($hits) as $classUid) {
             /** @var Model|Builder $model */
             $model = $this->newInstanceBy($classUid);
-            $builder = $model->newQuery();
             $primaryKey = $model->getKeyName();
 
             if (!method_exists($model, 'searchableIds')) { // If not exists get full id list
-                $searchableIds = $builder->lists($primaryKey);
+                $searchableIds = $model->newQuery()->lists($primaryKey);
             } else {
                 $searchableIds = $model->{'searchableIds'}();
             }
