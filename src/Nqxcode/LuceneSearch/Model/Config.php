@@ -158,7 +158,7 @@ class Config
             $primaryKey = $model->getKeyName();
 
             if (!method_exists($model, 'searchableIds')) { // If not exists get full id list
-                $searchableIds = $model->lists($primaryKey);
+                $searchableIds = $model->newQuery()->lists($primaryKey);
             } else {
                 $searchableIds = $model->{'searchableIds'}();
             }
