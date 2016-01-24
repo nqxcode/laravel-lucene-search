@@ -4,7 +4,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\Paginator;
 use ZendSearch\Lucene\Search\Query\AbstractQuery;
 use ZendSearch\Lucene\Search\Query\Boolean as QueryBoolean;
-use Input;
 use App;
 
 /**
@@ -98,7 +97,7 @@ class Builder
      */
     public function paginate($perPage = 25, $page = null)
     {
-        $page = $page ?: Input::get('page', 1);
+        $page = $page ?: request()->input('page', 1);
 
         $this->limit($perPage, ($page - 1) * $perPage);
         $models = $this->get()->all();

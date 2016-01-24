@@ -42,7 +42,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             return $app['search'];
         });
 
-        $this->app->bindShared('search', function ($app) {
+        $this->app->singleton('search', function ($app) {
             return new Search(
                 $app['laravel-lucene-search.connection'],
                 $app['laravel-lucene-search.models.config']
@@ -61,29 +61,29 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             );
         });
 
-        $this->app->bindShared('laravel-lucene-search.index.path', function () {
+        $this->app->singleton('laravel-lucene-search.index.path', function () {
             return Config::get('laravel-lucene-search.index.path');
         });
 
-        $this->app->bindShared('laravel-lucene-search.connection', function ($app) {
+        $this->app->singleton('laravel-lucene-search.connection', function ($app) {
             return new Connection(
                 $app['laravel-lucene-search.index.path'],
                 $app->make('Nqxcode\LuceneSearch\Analyzer\Config')
             );
         });
 
-        $this->app->bindShared('laravel-lucene-search.models.config', function ($app) {
+        $this->app->singleton('laravel-lucene-search.models.config', function ($app) {
             return new ModelsConfig(
                 Config::get('laravel-lucene-search.index.models'),
                 $app->make('Nqxcode\LuceneSearch\Model\Factory')
             );
         });
 
-        $this->app->bindShared('command.search.rebuild', function () {
+        $this->app->singleton('command.search.rebuild', function () {
             return new Console\RebuildCommand;
         });
 
-        $this->app->bindShared('command.search.clear', function () {
+        $this->app->singleton('command.search.clear', function () {
             return new Console\ClearCommand;
         });
 
