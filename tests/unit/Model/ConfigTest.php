@@ -195,9 +195,7 @@ class ConfigTest extends TestCase
         list($cKey, $cValue) = $this->config->classUidPair(new DummyModel);
         list($pKey, $pValue) = $this->config->primaryKeyPair(new DummyModel);
 
-        $builderMock = m::mock(Builder::class);
-        $this->dummyMock->shouldReceive('newQuery')->andReturn($builderMock);
-
+        $this->dummyMock->shouldReceive('newQuery')->andReturn($builderMock = m::mock(Builder::class));
         $builderMock->shouldReceive('lists')->with('pk')->andReturn([1, 2, 3])->byDefault();
 
         $hitMock = m::mock('ZendSearch\Lucene\Search\QueryHit');
