@@ -36,7 +36,7 @@ class ModelBoostingTest extends BaseTestCase
     public function testSearchWithModelBoosting()
     {
         $query = Search::query('lamp', ['name', 'description']);
-        $names = $query->get()->lists('name')->all();
+        $names = $query->get()->pluck('name')->all();
 
         $this->assertCount(3, $names);
 

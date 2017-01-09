@@ -16,7 +16,10 @@ abstract class BaseTestCase extends TestCase
         $this->configure();
 
         // Call migrations specific to our tests, e.g. to seed the db.
-        Artisan::call('migrate', ['--database' => 'testbench', '--path' => '../tests/migrations']);
+        $this->loadMigrationsFrom([
+            '--database' => 'testbench',
+            '--realpath' => __DIR__ . '/../migrations',
+        ]);
 
         // Call rebuild search index.
         Artisan::call('search:rebuild');

@@ -186,26 +186,26 @@ class ConfigTest extends TestCase
         $hitMock->{$cKey} = $cValue;
 
         $hitMock->{$pKey} = 1;
-        $this->assertEquals([1], $this->config->models([$hitMock])->lists('id')->all());
+        $this->assertEquals([1], $this->config->models([$hitMock])->pluck('id')->all());
 
         $hitMock->{$pKey} = 5;
-        $this->assertEquals([], $this->config->models([$hitMock])->lists('id')->all());
+        $this->assertEquals([], $this->config->models([$hitMock])->pluck('id')->all());
 
         // Asserts for dummy model
         list($cKey, $cValue) = $this->config->classUidPair(new DummyModel);
         list($pKey, $pValue) = $this->config->primaryKeyPair(new DummyModel);
 
         $this->dummyMock->shouldReceive('newQuery')->andReturn($builderMock = m::mock(Builder::class));
-        $builderMock->shouldReceive('lists')->with('pk')->andReturn([1, 2, 3])->byDefault();
+        $builderMock->shouldReceive('pluck')->with('pk')->andReturn([1, 2, 3])->byDefault();
 
         $hitMock = m::mock('ZendSearch\Lucene\Search\QueryHit');
         $hitMock->{$cKey} = $cValue;
 
         $hitMock->{$pKey} = 3;
-        $this->assertEquals([3], $this->config->models([$hitMock])->lists('pk')->all());
+        $this->assertEquals([3], $this->config->models([$hitMock])->pluck('pk')->all());
 
         $hitMock->{$pKey} = 10;
-        $this->assertEquals([], $this->config->models([$hitMock])->lists('pk')->all());
+        $this->assertEquals([], $this->config->models([$hitMock])->pluck('pk')->all());
 
     }
 
