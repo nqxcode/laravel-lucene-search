@@ -24,7 +24,7 @@ class Product extends Model implements SearchableInterface
     {
         static $ids;
         if (is_null($ids)) {
-            $ids = self::wherePublish(true)->lists('id');
+            $ids = self::wherePublish(true)->pluck('id');
         }
 
         return $ids;
