@@ -63,6 +63,14 @@ In published config file add descriptions for models which need to be indexed, f
 		]
 	],
 	
+	namespace\ModelWithCustomPrimaryKey::class => [
+		// You can also define your primary key (if you use something else than "id")
+		'primary_key' => 'my_custom_field_name',
+		'fields' => [
+			'username', 'short_description', // fields for indexing
+		]
+	],
+	
 	// ...
 	
 ],
