@@ -21,7 +21,7 @@ Require this package in your composer.json and run composer update:
 }
 ```
 
-After updating composer, add the ServiceProvider to the providers array in `app/config/app.php`
+After updating composer, add the ServiceProvider to the providers array in `config/app.php`
 
 ```php
 'providers' => [
@@ -29,7 +29,7 @@ After updating composer, add the ServiceProvider to the providers array in `app/
 ],
 ```
 
-If you want to use the facade to search, add this to your facades in `app/config/app.php`:
+If you want to use the facade to search, add this to your facades in `config/app.php`:
 
 ```php
 'aliases' => [
