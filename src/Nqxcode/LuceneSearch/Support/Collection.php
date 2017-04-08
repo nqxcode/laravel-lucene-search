@@ -1,5 +1,6 @@
 <?php namespace Nqxcode\LuceneSearch\Support;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class Collection extends \Illuminate\Database\Eloquent\Collection
@@ -11,19 +12,42 @@ class Collection extends \Illuminate\Database\Eloquent\Collection
      */
     public function reload()
     {
-        /** @var Model $source */
-        foreach ($this->items as $i => $source) {
-            if (!$source->exists) {
-                /** @var Model $target */
-                $target = $source->find($source->{$source->getKeyName()});
-                if (!is_null($target)) {
-                    $source->setRawAttributes($target->getAttributes(), true);
-                    $source->exists = true;
+        $groups = $this->groupBy(
+            function (Model $model) {
+                return $model->getTable();
+            },
+            true
+        );
+
+        /** @var Collection $groups */
+        foreach ($groups as $group) {
+            /** @var Model|Builder $targetRepo */
+            $targetRepo = $group->first();
+
+            /** @var Collection|Model[] $targets */
+            $targets = $group->where('exists', false);
+
+            $primaryKeyName = $targetRepo->getKeyName();
+            $targetPrimaryKeys = $targets->pluck($primaryKeyName)->all();
+            $sourceDictionary = $targetRepo->find($targetPrimaryKeys)->keyBy($primaryKeyName);
+
+            foreach ($targets as $key => $target) {
+                $primaryKey = $target->{$primaryKeyName};
+
+                if ($sourceDictionary->has($primaryKey)) {
+                    /** @var Model $source */
+                    $source = $sourceDictionary->get($primaryKey);
+                    $target->setRawAttributes($source->getAttributes(), true);
+                    $target->exists = true;
+
                 } else {
-                    unset($this->items[$i]);
+                    $this->forget($key);
                 }
             }
         }
+
+        $this->items = array_values($this->items);
+
         return $this;
     }
 }
