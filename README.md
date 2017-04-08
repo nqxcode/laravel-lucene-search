@@ -121,7 +121,7 @@ In model add following accessor:
 ### Score Boosting
 See details on [Apache Lucene - Scoring](https://lucene.apache.org/core/3_5_0/scoring.html#Score%20Boosting).
 
-####Model level boosting
+#### Model level boosting
 This is **Document level boosting** in terminology of Apache Lucene. By default all models have **boost** value equal to **1**. For change of this behavior customize boost for necessary models as in the following examples.
 
 - In config for each necessary model add following option:
@@ -169,7 +169,7 @@ In model add following accessor:
         }
 ```
 
-####Model's field level boosting
+#### Model's field level boosting
 This is **Document's Field level boosting** in terminology of Apache Lucene.
 By default **boost** is set in **1** for each field. For change of this behavior set boost for necessary fields as in the following examples.
 
