@@ -16,7 +16,7 @@ Require this package in your composer.json and run composer update:
 ```json
 {
 	"require": {
-        	"nqxcode/laravel-lucene-search": "1.*"
+        "nqxcode/laravel-lucene-search": "1.*"
 	}
 }
 ```
@@ -43,7 +43,7 @@ Publish the config file into your project by running:
 ```bash
 php artisan config:publish nqxcode/laravel-lucene-search
 ```
-###Basic
+### Basic
 In published config file add descriptions for models which need to be indexed, for example:
 
 ```php
@@ -76,7 +76,7 @@ In published config file add descriptions for models which need to be indexed, f
 ],
 
 ```
-###Indexing of dynamic fields
+### Indexing of dynamic fields
 You can also index values of **optional fields** (dynamic fields). For enable indexing for optional fields:
 
 - In config for each necessary model add following option:
@@ -195,7 +195,7 @@ Or/and in model accessor:
         }
 ```
 
-###Stemming and stopwords
+### Stemming and stopwords
 By default the following filters are used in search:
 - Stemming filter for **english/russian** words (for reducing words to their root form),
 - Stopword filters for **english/russian** words (for exclude some words from search index).
