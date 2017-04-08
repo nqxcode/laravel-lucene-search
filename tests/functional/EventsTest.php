@@ -1,5 +1,4 @@
-<?php
-namespace tests\functional;
+<?php namespace tests\functional;
 
 use tests\models\Product;
 use Search;
@@ -48,4 +47,16 @@ class EventsTest extends BaseTestCase
         $this->assertEquals(0, Search::query('observer')->count());
     }
 
-} 
+    public function testWithoutSyncingToSearch()
+    {
+        $this->assertEquals(0, Search::query('observer')->count());
+
+        Product::withoutSyncingToSearch(function () {
+            $p = Product::first();
+            $p->name = 'observer';
+            $p->save();
+        });
+
+        $this->assertEquals(0, Search::query('observer')->count());
+    }
+}
