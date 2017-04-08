@@ -11,7 +11,7 @@ use Nqxcode\LuceneSearch\Model\SearchTrait;
  * @property string $name
  * @property string $description
  * @property boolean $publish
- * @method Builder wherePublish(boolean $publish)
+ * @method static Builder wherePublish(boolean $publish)
  * @package tests\models
  */
 class Product extends Model implements SearchableInterface

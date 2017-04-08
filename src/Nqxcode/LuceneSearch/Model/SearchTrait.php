@@ -13,16 +13,13 @@ trait SearchTrait
      */
     public static function bootSearchTrait()
     {
-        self::saved(
-            function ($model) {
-                App::offsetGet('search')->update($model);
-            }
-        );
+        self::observe(new SearchObserver);
+    }
 
-        self::deleting(
-            function ($model) {
-                App::offsetGet('search')->delete($model);
-            }
-        );
+    public static function withoutSyncingToSearch(\Closure $closure)
+    {
+        SearchObserver::setEnabled(false);
+        $closure();
+        SearchObserver::setEnabled(true);
     }
 }
