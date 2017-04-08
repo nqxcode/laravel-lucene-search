@@ -66,8 +66,6 @@ class Connection
     {
         $this->index = null;
 
-        if (is_dir($this->indexPath)) {
-            rmdir_recursive($this->indexPath);
-        }
+        \File::deleteDirectory($this->indexPath);
     }
 }

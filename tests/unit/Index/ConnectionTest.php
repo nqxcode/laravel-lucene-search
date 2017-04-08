@@ -22,9 +22,7 @@ class ConnectionTest extends TestCase
     {
         parent::tearDown();
 
-        if (is_dir($this->indexPath)) {
-            rmdir_recursive($this->indexPath);
-        }
+        \File::deleteDirectory($this->indexPath);
     }
 
     public function testCreateIndex()
