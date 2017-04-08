@@ -273,6 +273,19 @@ For register of necessary events (save/update/delete) `use Nqxcode\LuceneSearch\
 
 ```
 
+###Perform operations without indexing #
+
+If you want to avoid triggering the indexing, wrap necessary operations in the ``withoutSyncingToSearch()`` method on your model:
+
+```php
+Product::withoutSyncingToSearch(function () {
+    // mass update position for product, e.g.
+    foreach (Product::all() as $i => $product) {
+        $product->update(['position' => $i)]);
+    }    
+});
+```
+
 ### Query building
 Build query in several ways:
 
