@@ -48,6 +48,7 @@ class RebuildCommand extends Command
                 });
 
                 $progress->finish();
+                $this->info(PHP_EOL);
             }
             $this->info(PHP_EOL . 'Operation is fully complete!');
         } else {
