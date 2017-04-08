@@ -273,7 +273,7 @@ For register of necessary events (save/update/delete) `use Nqxcode\LuceneSearch\
 
 ```
 
-###Perform operations without indexing #
+###Perform operations without indexing
 
 If you want to avoid triggering the indexing, wrap necessary operations in the ``withoutSyncingToSearch()`` method on your model:
 
