@@ -43,7 +43,7 @@ Publish the config file into your project by running:
 ```bash
 php artisan vendor:publish --provider="Nqxcode\LuceneSearch\ServiceProvider"
 ```
-###Basic
+### Basic
 In published config file add descriptions for models which need to be indexed, for example:
 
 ```php
@@ -76,7 +76,7 @@ In published config file add descriptions for models which need to be indexed, f
 ],
 
 ```
-###Indexing of dynamic fields
+### Indexing of dynamic fields
 You can also index values of **optional fields** (dynamic fields). For enable indexing for optional fields:
 
 - In config for each necessary model add following option:
