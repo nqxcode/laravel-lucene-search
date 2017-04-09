@@ -96,7 +96,7 @@ class Builder
      *
      * @return \Illuminate\Pagination\Paginator
      */
-    public function paginate($perPage = 25, $page = null)
+    public function paginate($perPage = 25, $page = null, array $options = [])
     {
         $page = $page ?: Input::get('page', 1);
 
@@ -105,7 +105,7 @@ class Builder
 
         $total = $this->count();
 
-        $paginator = new LengthAwarePaginator($models, $total, $perPage, $page);
+        $paginator = new LengthAwarePaginator($models, $total, $perPage, $page, $options);
 
         return $paginator;
     }
