@@ -1,7 +1,7 @@
 <?php namespace Nqxcode\LuceneSearch\Query;
 
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use ZendSearch\Lucene\Search\Query\AbstractQuery;
 use ZendSearch\Lucene\Search\Query\Boolean as QueryBoolean;
 use Input;
@@ -105,7 +105,7 @@ class Builder
 
         $total = $this->count();
 
-        $paginator = new Paginator($models, $total, $perPage);
+        $paginator = new LengthAwarePaginator($models, $total, $perPage, $page);
 
         return $paginator;
     }
