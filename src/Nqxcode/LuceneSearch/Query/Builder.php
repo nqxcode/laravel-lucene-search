@@ -93,6 +93,7 @@ class Builder
      *
      * @param int $perPage
      * @param int|null $page
+     * @param array $options
      *
      * @return \Illuminate\Pagination\Paginator
      */
