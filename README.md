@@ -1,4 +1,4 @@
-Laravel 5.3 Lucene search
+Laravel 5.4 Lucene search
 ==============
 
 [![Latest Stable Version](https://poser.pugx.org/nqxcode/laravel-lucene-search/v/stable.png)](https://packagist.org/packages/nqxcode/laravel-lucene-search)
@@ -7,7 +7,7 @@ Laravel 5.3 Lucene search
 [![Build Status](https://travis-ci.org/nqxcode/laravel-lucene-search.svg?branch=master)](https://travis-ci.org/nqxcode/laravel-lucene-search)
 [![Coverage Status](https://img.shields.io/coveralls/nqxcode/laravel-lucene-search/master.svg?style=flat)](https://coveralls.io/r/nqxcode/laravel-lucene-search?branch=master)
 
-Laravel 5.3 package for full-text search over Eloquent models based on ZendSearch Lucene.
+Laravel 5.4 package for full-text search over Eloquent models based on ZendSearch Lucene.
 
 ## Installation
 
@@ -16,7 +16,7 @@ Require this package in your composer.json and run composer update:
 ```json
 {
 	"require": {
-        "nqxcode/laravel-lucene-search": "2.3.*"
+        "nqxcode/laravel-lucene-search": "2.4.*"
 	}
 }
 ```
