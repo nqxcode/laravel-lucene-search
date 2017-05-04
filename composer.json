@@ -1,6 +1,6 @@
 {
     "name": "nqxcode/laravel-lucene-search",
-    "description": "Laravel 5.3 package for full-text search over Eloquent models based on ZendSearch Lucene.",
+    "description": "Laravel 5.4 package for full-text search over Eloquent models based on ZendSearch Lucene.",
     "keywords": ["laravel", "lucene", "zendsearch", "eloquent", "search", "fulltext"],
     "license": "MIT",
     "authors": [
@@ -11,14 +11,15 @@
     ],
     "require": {
         "php": ">=5.6.4",
-        "illuminate/support": "5.3.*",
+        "illuminate/support": "5.4.*",
         "nqxcode/zendsearch": "2.*",
         "nqxcode/lucene-stemmer-en-ru": "1.*"
     },
     "require-dev": {
-        "phpunit/phpunit": "3.7.*",
+        "phpunit/phpunit": "^5.2",
         "mockery/mockery": "0.9.*",
-        "orchestra/testbench": "3.3.*"
+        "orchestra/testbench": "~3.4.0",
+        "orchestra/database": "~3.4.0"
     },
     "autoload": {
         "psr-4": {
