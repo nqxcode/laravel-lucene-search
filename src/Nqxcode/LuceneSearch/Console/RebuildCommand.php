@@ -18,7 +18,7 @@ class RebuildCommand extends Command
             $this->output = new NullOutput;
         }
 
-        if (is_dir(Config::get('laravel-lucene-search.index.path'))) {
+        if (is_dir(Config::get('laravel-lucene-search:index.path'))) {
             $this->call('search:clear');
         }
 
