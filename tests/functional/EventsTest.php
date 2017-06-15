@@ -2,6 +2,7 @@
 
 use tests\models\Product;
 use Search;
+use tests\models\Tool;
 
 /**
  * Class EventsTest
@@ -58,5 +59,23 @@ class EventsTest extends BaseTestCase
         });
 
         $this->assertEquals(0, Search::query('observer')->count());
+    }
+
+    public function testSearch()
+    {
+        $this->assertEquals(0, Search::query('observer')->count());
+
+        $p = new Product;
+        $p->name = 'observer';
+        $p->save();
+
+        $p = new Tool();
+        $p->name = 'observer';
+        $p->save();
+
+        $this->assertEquals(2, Search::query('observer')->count());
+
+        $this->assertEquals(1, Product::search('observer')->count());
+        $this->assertEquals(1, Tool::search('observer')->count());
     }
 }

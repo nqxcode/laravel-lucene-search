@@ -22,6 +22,9 @@
         "orchestra/database": "~3.4.0"
     },
     "autoload": {
+        "files": [
+            "src/Nqxcode/LuceneSearch/Support/helpers.php"
+        ],
         "psr-4": {
             "Nqxcode\\LuceneSearch\\": "src/Nqxcode/LuceneSearch",
             "tests\\": "tests/"

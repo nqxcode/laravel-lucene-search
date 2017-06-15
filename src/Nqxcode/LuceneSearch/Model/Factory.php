@@ -31,12 +31,6 @@ class Factory
      */
     public function classUid($obj)
     {
-        $className = is_object($obj) ? get_class($obj) : $obj;
-
-        if (!class_exists($className, true)) {
-            throw new \InvalidArgumentException("Class '{$className}' doesn't not exist.");
-        }
-
-        return md5($className);
+        return class_uid($obj);
     }
 }
