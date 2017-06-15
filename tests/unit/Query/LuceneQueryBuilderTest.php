@@ -50,6 +50,7 @@ class RawQueryBuilderTest extends TestCase
             [['(field1:("value"~10)) AND NOT primary_key:("value"~10) AND NOT class_uid:("value"~10)', null], ['field' => 'field1', 'value' => 'value', 'proximity' => 10, 'phrase' => false]],
             [['(field1:("value~0.1"~10)) AND NOT primary_key:("value~0.1"~10) AND NOT class_uid:("value~0.1"~10)', null], ['field' => 'field1', 'value' => 'value', 'proximity' => 10, 'fuzzy' => 0.1]],
             [['(field1:("value~0.1"~10) OR field2:("value~0.1"~10)) AND NOT primary_key:("value~0.1"~10) AND NOT class_uid:("value~0.1"~10)', null], ['field' => ['field1', 'field2'], 'value' => 'value', 'proximity' => 10, 'fuzzy' => 0.1]],
+            [['(class_uid:(value)) AND NOT primary_key:(value)', null], ['field' => 'class_uid', 'value' => 'value']],
         ];
         $data = array_merge($data, $this->getExpectedAndSourceDataForQueryWithSpecialChars());
         $data = array_merge($data, $this->getExpectedAndSourceDataForQueryWithSpecialOperators());

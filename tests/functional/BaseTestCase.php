@@ -37,6 +37,12 @@ abstract class BaseTestCase extends TestCase
                     'optional_attributes' => [
                         'accessor' => 'custom_optional_attributes'
                     ],
+                ],
+                'tests\models\Tool' => [
+                    'fields' => [
+                        'name',
+                        'description',
+                    ]
                 ]
             ]
         );

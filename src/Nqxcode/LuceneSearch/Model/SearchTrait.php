@@ -22,4 +22,14 @@ trait SearchTrait
         $closure();
         SearchObserver::setEnabled(true);
     }
+
+    public static function search($value, $field = '*', array $options = [])
+    {
+        $queryBuilder = App::make('Nqxcode\LuceneSearch\Query\Builder');
+
+        $queryBuilder->query($value, $field, $options);
+        $queryBuilder->where('class_uid', class_uid(get_called_class()));
+
+        return $queryBuilder;
+    }
 }
