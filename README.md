@@ -301,6 +301,8 @@ $query = Search::where('name', 'clock'); // search by 'name' field.
 // or
 $query = Search::query('clock')              // search by all fields with
 	->where('short_description', 'analog'); // filter by 'short_description' field. 
+// or
+$query = Product::search('clock'); // search only in `Product` model by all fields in case when `Product` use `SearchableTrait`.
 ```
 ##### Advanced queries
 
