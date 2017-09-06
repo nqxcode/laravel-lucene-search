@@ -19,8 +19,10 @@ trait SearchTrait
     public static function withoutSyncingToSearch(\Closure $closure)
     {
         SearchObserver::setEnabled(false);
-        $closure();
+        $result = $closure();
         SearchObserver::setEnabled(true);
+
+        return $result;
     }
 
     public static function search($value, $field = '*', array $options = [])
