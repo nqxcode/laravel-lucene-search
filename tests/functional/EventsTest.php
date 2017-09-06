@@ -52,13 +52,16 @@ class EventsTest extends BaseTestCase
     {
         $this->assertEquals(0, Search::query('observer')->count());
 
-        Product::withoutSyncingToSearch(function () {
+        $result = Product::withoutSyncingToSearch(function () {
             $p = Product::first();
             $p->name = 'observer';
             $p->save();
+
+            return 'result of closure';
         });
 
         $this->assertEquals(0, Search::query('observer')->count());
+        $this->assertEquals('result of closure', $result);
     }
 
     public function testSearch()
