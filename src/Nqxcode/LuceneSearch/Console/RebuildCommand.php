@@ -8,6 +8,10 @@ use Symfony\Component\Console\Output\NullOutput;
 use App;
 use Config;
 
+/**
+ * Class RebuildCommand
+ * @package Nqxcode\LuceneSearch\Console
+ */
 class RebuildCommand extends Command
 {
     protected $name = 'search:rebuild';

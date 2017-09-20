@@ -3,7 +3,7 @@
 use App;
 
 /**
- * Class Search
+ * Trait SearchTrait
  * @package Nqxcode\LuceneSearch\Model
  */
 trait SearchTrait

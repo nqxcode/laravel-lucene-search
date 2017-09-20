@@ -4,7 +4,7 @@ use App;
 
 /**
  * Class SearchObserver
- * @package LuceneSearch\Model
+ * @package Nqxcode\LuceneSearch\Model
  */
 class SearchObserver
 {

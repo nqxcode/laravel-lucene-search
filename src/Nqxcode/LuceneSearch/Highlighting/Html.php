@@ -5,7 +5,7 @@ use Nqxcode\LuceneSearch\Query\Runner;
 
 /**
  * Class Html
- * @package Nqxcode\LuceneSearch
+ * @package Nqxcode\LuceneSearch\Highlighting
  */
 class Html
 {

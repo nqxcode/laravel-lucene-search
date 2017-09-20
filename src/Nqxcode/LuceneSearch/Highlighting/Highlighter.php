@@ -5,12 +5,14 @@ use ZendSearch\Lucene\Search\Highlighter\HighlighterInterface;
 
 /**
  * Class Highlighter
+/**
+ * Class Highlighter
  *
  * Provides a functionality for illumination of words.
  *
  * @category   Zend
  * @package    Zend_Search_Lucene
- * @subpackage Search
+ * @package Nqxcode\LuceneSearch\Highlighting
  */
 class Highlighter implements HighlighterInterface
 {

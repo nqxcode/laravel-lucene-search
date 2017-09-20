@@ -1,8 +1,8 @@
 <?php namespace Nqxcode\LuceneSearch\Model;
 
 /**
- * Interface Searchable
- * @package Nqxcode\LuceneSearch
+ * Interface SearchableInterface
+ * @package Nqxcode\LuceneSearch\Model
  */
 interface SearchableInterface
 {

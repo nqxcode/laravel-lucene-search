@@ -3,6 +3,10 @@
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Collection
+ * @package Nqxcode\LuceneSearch\Support
+ */
 class Collection extends \Illuminate\Database\Eloquent\Collection
 {
     /**

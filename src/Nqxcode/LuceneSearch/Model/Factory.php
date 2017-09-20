@@ -2,6 +2,10 @@
 
 use App;
 
+/**
+ * Class Factory
+ * @package Nqxcode\LuceneSearch\Model
+ */
 class Factory
 {
     /**

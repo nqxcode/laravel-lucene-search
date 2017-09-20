@@ -6,9 +6,9 @@ use Nqxcode\LuceneSearch\Support\Collection;
 use ZendSearch\Lucene\Search\QueryHit;
 
 /**
- * TODO add unit tests
  * Class Config
- * @package Nqxcode\LuceneSearch
+ * TODO add unit tests
+ * @package Nqxcode\LuceneSearch\Model
  */
 class Config
 {

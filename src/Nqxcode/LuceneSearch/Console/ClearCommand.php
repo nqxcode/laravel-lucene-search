@@ -4,6 +4,10 @@ use Illuminate\Console\Command;
 use Config;
 use Symfony\Component\Console\Output\NullOutput;
 
+/**
+ * Class ClearCommand
+ * @package Nqxcode\LuceneSearch\Console
+ */
 class ClearCommand extends Command
 {
     protected $name = 'search:clear';
