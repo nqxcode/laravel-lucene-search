@@ -66,10 +66,10 @@ class ConfigTest extends TestCase
     public function testPrimaryKeyPair()
     {
         $pair = $this->config->primaryKeyPair($this->productRepoMock);
-        $this->assertEquals(['primary_key', 1], $pair);
+        $this->assertEquals(['primary_key', base64_encode('1-postfix')], $pair);
 
         $pair = $this->config->primaryKeyPair($this->dummyRepoMock);
-        $this->assertEquals(['primary_key', 2], $pair);
+        $this->assertEquals(['primary_key', base64_encode('2-postfix')], $pair);
     }
 
     public function testPrimaryKeyPairForIncorrectModel()
@@ -184,10 +184,10 @@ class ConfigTest extends TestCase
         $hitMock = m::mock('ZendSearch\Lucene\Search\QueryHit');
         $hitMock->{$cKey} = $cValue;
 
-        $hitMock->{$pKey} = 1;
+        $hitMock->{$pKey} = base64_encode('1-postfix');
         $this->assertEquals([1], $this->config->models([$hitMock])->lists('id'));
 
-        $hitMock->{$pKey} = 5;
+        $hitMock->{$pKey} = base64_encode('5-postfix');
         $this->assertEquals([], $this->config->models([$hitMock])->lists('id'));
 
         // Asserts for dummy model
@@ -202,10 +202,10 @@ class ConfigTest extends TestCase
         $hitMock = m::mock('ZendSearch\Lucene\Search\QueryHit');
         $hitMock->{$cKey} = $cValue;
 
-        $hitMock->{$pKey} = 3;
+        $hitMock->{$pKey} = base64_encode('3-postfix');
         $this->assertEquals([3], $this->config->models([$hitMock])->lists('pk'));
 
-        $hitMock->{$pKey} = 10;
+        $hitMock->{$pKey} = base64_encode('10-postfix');
         $this->assertEquals([], $this->config->models([$hitMock])->lists('pk'));
 
     }

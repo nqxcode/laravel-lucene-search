@@ -121,7 +121,7 @@ class Config
         $model = $this->newInstanceBy($hit->{'class_uid'});
 
         // Set primary key value
-        $model->setAttribute($model->getKeyName(), $hit->{'primary_key'});
+        $model->setAttribute($model->getKeyName(), $this->decodePrimaryKey($hit->{'primary_key'}));
 
         // Set score
         // $model->setAttribute('score', $hit->score);
@@ -140,6 +140,28 @@ class Config
         return array_unique(array_map(function ($hit) {
             return $hit->{'class_uid'};
         }, $hits));
+    }
+
+    /**
+     * Encode primary key for search engine.
+     *
+     * @param mixed $value
+     * @return string
+     */
+    private function encodePrimaryKey($value)
+    {
+        return base64_encode("{$value}-postfix");
+    }
+
+    /**
+     * Decode primary key for models.
+     *
+     * @param mixed $value
+     * @return string
+     */
+    private function decodePrimaryKey($value)
+    {
+        return substr_replace(base64_decode("{$value}"), '', -8, 8);
     }
 
     /**
@@ -193,7 +215,7 @@ class Config
     public function primaryKeyPair(Model $model)
     {
         $c = $this->config($model);
-        return ['primary_key', $model->{$c['primary_key']}];
+        return ['primary_key', $this->encodePrimaryKey($model->{$c['primary_key']})];
     }
 
     /**

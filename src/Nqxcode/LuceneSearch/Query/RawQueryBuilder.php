@@ -75,10 +75,7 @@ class RawQueryBuilder
             $sign = false;
         }
 
-        $value = "({$value}) AND NOT primary_key:({$tmpValue})";
-        if ($field !== 'class_uid') {
-            $value .= " AND NOT class_uid:({$tmpValue})";
-        }
+        $value = "({$value})";
 
         return [$value, $sign];
     }
