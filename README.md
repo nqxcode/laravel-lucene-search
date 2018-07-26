@@ -1,4 +1,4 @@
-Laravel 5.4 Lucene search
+Laravel 5.5 Lucene search
 ==============
 
 [![Latest Stable Version](https://poser.pugx.org/nqxcode/laravel-lucene-search/v/stable.png)](https://packagist.org/packages/nqxcode/laravel-lucene-search)
@@ -7,7 +7,7 @@ Laravel 5.4 Lucene search
 [![Build Status](https://travis-ci.org/nqxcode/laravel-lucene-search.svg?branch=master)](https://travis-ci.org/nqxcode/laravel-lucene-search)
 [![Coverage Status](https://img.shields.io/coveralls/nqxcode/laravel-lucene-search/master.svg?style=flat)](https://coveralls.io/r/nqxcode/laravel-lucene-search?branch=master)
 
-Laravel 5.4 package for full-text search over Eloquent models based on ZendSearch Lucene.
+Laravel 5.5 package for full-text search over Eloquent models based on ZendSearch Lucene.
 
 ## Installation
 
@@ -36,7 +36,7 @@ If you want to use the facade to search, add this to your facades in `config/app
 	'Search' => Nqxcode\LuceneSearch\Facade::class,
 ],
 ```
-## Configuration 
+## Configuration
 
 Publish the config file into your project by running:
 
@@ -48,7 +48,7 @@ In published config file add descriptions for models which need to be indexed, f
 
 ```php
 'index' => [
-	
+
 	// ...
 
 	namespace\FirstModel::class => [
@@ -56,13 +56,13 @@ In published config file add descriptions for models which need to be indexed, f
 			'name', 'full_description', // fields for indexing
 		]
 	],
-	
+
 	namespace\SecondModel::class => [
 		'fields' => [
 			'name', 'short_description', // fields for indexing
 		]
 	],
-	
+
 	namespace\ModelWithCustomPrimaryKey::class => [
 		// You can also define your primary key (if you use something else than "id")
 		'primary_key' => 'my_custom_field_name',
@@ -70,9 +70,9 @@ In published config file add descriptions for models which need to be indexed, f
 			'username', 'short_description', // fields for indexing
 		]
 	],
-	
+
 	// ...
-	
+
 ],
 
 ```
@@ -82,9 +82,9 @@ You can also index values of **optional fields** (dynamic fields). For enable in
 - In config for each necessary model add following option:
 ```php
         'optional_attributes' => true
-        
+
         // or
-        
+
         'optional_attributes' => [
                 'accessor' => 'custom_name' // with specifying of accessor name
         ]
@@ -127,9 +127,9 @@ This is **Document level boosting** in terminology of Apache Lucene. By default 
 - In config for each necessary model add following option:
 ```php
         'boost' => true
-        
+
         // or
-        
+
         'boost' => [
                 'accessor' => 'custom_name' // with specifying of accessor name
         ]
@@ -155,7 +155,7 @@ In config file:
                 'fields' => [
                     'name', 'full_description',
                 ],
-                
+
                 'boost' => true // enable boosting for model
         ],
 ```
@@ -208,11 +208,11 @@ This filters can be deleted or replaced with others.
     	// Default stemming filter.
     	Nqxcode\Stemming\TokenFilterEnRu::class,
     ],
-        
-    // List of paths to files with stopwords. 
+
+    // List of paths to files with stopwords.
     'stopwords' => Nqxcode\LuceneSearch\Analyzer\Stopwords\Files::get(),
 ],
-    
+
 ```
 
 ## Usage
@@ -229,7 +229,7 @@ For clearing of search index run:
 ```bash
 php artisan search:clear
 ```
-#### Filtering of models in search results 
+#### Filtering of models in search results
 For filtering of models in search results each model's class can implements `SearchableInterface`.
 For example:
 
@@ -267,7 +267,7 @@ For register of necessary events (save/update/delete) `use Nqxcode\LuceneSearch\
     class Dummy extends Model implements SearchableInterface
     {
         use SearchTrait;
-    
+
         // ...
     }
 
@@ -296,11 +296,11 @@ By default, queries which will execute search in the **phrase entirely** are cre
 ##### Simple queries
 ```php
 $query = Search::query('clock'); // search by all fields.
-// or 
+// or
 $query = Search::where('name', 'clock'); // search by 'name' field.
 // or
 $query = Search::query('clock')              // search by all fields with
-	->where('short_description', 'analog'); // filter by 'short_description' field. 
+	->where('short_description', 'analog'); // filter by 'short_description' field.
 // or
 $query = Product::search('clock'); // search only in `Product` model by all fields in case when `Product` use `SearchableTrait`.
 ```
@@ -316,12 +316,12 @@ For `query` and `where` methods it is possible to set the following options:
 ###### Examples:
 
 Find all models in which any field contains phrase like 'composite one two phrase':
-```php 
-$query = Search::query('composite phrase', '*', ['proximity' => 2]); 
+```php
+$query = Search::query('composite phrase', '*', ['proximity' => 2]);
 ```
 Search by each word in query:
-```php 
-$query = Search::query('composite phrase', '*', ['phrase' => false]); 
+```php
+$query = Search::query('composite phrase', '*', ['phrase' => false]);
 ```
 
 #### Using Lucene raw queries:
@@ -364,7 +364,7 @@ Highlighting of matches is available for any html fragment encoded in **utf-8** 
 Search::find('nearly all words must be highlighted')->get();
 $highlighted = Search::highlight('all words');
 
-// highlighted html: 
+// highlighted html:
 // '<span class="highlight">all</span> <span class="highlight">words</span>'
 ```
 ##

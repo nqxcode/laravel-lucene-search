@@ -5,8 +5,6 @@ use ZendSearch\Lucene\Search\Highlighter\HighlighterInterface;
 
 /**
  * Class Highlighter
-/**
- * Class Highlighter
  *
  * Provides a functionality for illumination of words.
  *

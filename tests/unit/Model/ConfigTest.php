@@ -76,7 +76,8 @@ class ConfigTest extends TestCase
     public function testPrimaryKeyPairForIncorrectModel()
     {
         $message = "Configuration doesn't exist for model of class '" . get_class($this->unknownRepoMock) . "'.";
-        $this->setExpectedException('\InvalidArgumentException', $message);
+        $this->expectException('\InvalidArgumentException');
+        $this->expectExceptionMessage($message);
 
         $this->config->primaryKeyPair($this->unknownRepoMock);
     }
