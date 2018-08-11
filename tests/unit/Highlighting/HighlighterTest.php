@@ -15,6 +15,11 @@ class HighlighterTest extends TestCase
         $this->highlighter = new Highlighter();
     }
 
+    public function tearDown()
+    {
+        $this->addToAssertionCount(m::getContainer()->mockery_getExpectationCount());
+    }
+
     public function testHighlight()
     {
         $docMock = m::mock('ZendSearch\Lucene\Document\Html');

@@ -17,7 +17,7 @@ class RebuildCommand extends Command
     protected $name = 'search:rebuild';
     protected $description = 'Rebuild the search index';
 
-    public function fire()
+    public function handle()
     {
         if (!$this->option('verbose')) {
             $this->output = new NullOutput;

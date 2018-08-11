@@ -25,6 +25,11 @@ class RunnerTest extends TestCase
         $this->search->shouldReceive('index->find')->with('test')->andReturn([1, 2, 3, 4, 5]);
     }
 
+    public function tearDown()
+    {
+        $this->addToAssertionCount(m::getContainer()->mockery_getExpectationCount());
+    }
+
     public function testRun()
     {
         $this->assertEquals([1, 2, 3, 4, 5], $this->runner->run('test'));
