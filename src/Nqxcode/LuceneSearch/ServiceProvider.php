@@ -40,7 +40,12 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
         $this->app->bindShared('search', function ($app) {
             return new Search(
-                $app['search.connection'],
+                function () {
+                    return new Connection(
+                        $this->app['search.index.path'],
+                        $this->app->make('Nqxcode\LuceneSearch\Analyzer\Config')
+                    );
+                },
                 $app['search.models.config']
             );
         });
@@ -61,12 +66,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             return Config::get('laravel-lucene-search::index.path');
         });
 
-        $this->app->bindShared('search.connection', function ($app) {
-            return new Connection(
-                $app['search.index.path'],
-                $app->make('Nqxcode\LuceneSearch\Analyzer\Config')
-            );
-        });
 
         $this->app->bindShared('search.models.config', function ($app) {
             return new ModelsConfig(

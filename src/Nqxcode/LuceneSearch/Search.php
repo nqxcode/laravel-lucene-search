@@ -19,9 +19,14 @@ use App;
 class Search
 {
     /**
+     * @var \Closure
+     */
+    protected $connectionBuilder;
+
+    /**
      * @var Connection
      */
-    private $connection;
+    protected $connection;
 
     /**
      * Get descriptor for open index.
@@ -30,7 +35,7 @@ class Search
      */
     public function index()
     {
-        return $this->connection->getIndex();
+        return $this->makeConnection()->getIndex();
     }
 
     /**
@@ -51,13 +56,41 @@ class Search
     /**
      * Create index instance.
      *
-     * @param Connection $connection
+     * @param \Closure $connectionBuilder
      * @param Config $config
      */
-    public function __construct(Connection $connection, Config $config)
+    public function __construct(\Closure $connectionBuilder, Config $config)
     {
-        $this->connection = $connection;
+        $this->connectionBuilder = $connectionBuilder;
         $this->config = $config;
+    }
+
+    /**
+     * Destruct the instance.
+     */
+    public function __destruct()
+    {
+        unset($this->connection);
+    }
+
+    /**
+     * Make connection.
+     */
+    private function makeConnection()
+    {
+        if (null === $this->connection) {
+            $this->connection = call_user_func($this->connectionBuilder);
+        }
+
+        return $this->connection;
+    }
+
+    /**
+     * Destroy current connection.
+     */
+    public function destroyConnection()
+    {
+        unset($this->connection);
     }
 
     /**

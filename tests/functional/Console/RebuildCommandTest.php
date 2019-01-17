@@ -23,7 +23,8 @@ class RebuildCommandTest extends TestCase
         // Call migrations specific to our tests, e.g. to seed the db.
         $this->artisan->call('migrate', ['--database' => 'testbench', '--path' => '../tests/migrations']);
 
-        Config::set('laravel-lucene-search::index.path', storage_path() . '/lucene-search/index_' . uniqid());
+        Config::set('laravel-lucene-search::index.path',
+            sys_get_temp_dir() . '/laravel-lucene-search/index' . uniqid('index-', true));
     }
 
     /**
@@ -31,7 +32,22 @@ class RebuildCommandTest extends TestCase
      * @param $expected
      * @param $config
      */
-    public function testRebuildCommand($expected, $config)
+    public function testForceRebuildCommand($expected, $config)
+    {
+        Config::set('laravel-lucene-search::index.models', $config);
+
+        $output = new BufferedOutput();
+        $this->artisan->call('search:rebuild', ['--verbose' => true, '--force' => true], $output);
+
+        $this->assertEquals($expected, $output->fetch());
+    }
+
+    /**
+     * @dataProvider getOutputDataProvider
+     * @param $expected
+     * @param $config
+     */
+    public function testSoftRebuildCommand($expected, $config)
     {
         Config::set('laravel-lucene-search::index.models', $config);
 

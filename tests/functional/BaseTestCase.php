@@ -20,12 +20,13 @@ abstract class BaseTestCase extends TestCase
         $artisan->call('migrate', ['--database' => 'testbench', '--path' => '../tests/migrations']);
 
         // Call rebuild search index.
-        $artisan->call('search:rebuild');
+        $artisan->call('search:rebuild', ['--force' => true]);
     }
 
     protected function configure()
     {
-        Config::set('laravel-lucene-search::index.path', storage_path() . '/lucene-search/index_' . uniqid());
+        Config::set('laravel-lucene-search::index.path',
+            sys_get_temp_dir() . '/laravel-lucene-search/index' . uniqid('index-', true));
         Config::set(
             'laravel-lucene-search::index.models',
             [

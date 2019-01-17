@@ -6,8 +6,15 @@ use ZendSearch\Exception\ExceptionInterface;
 
 class Connection
 {
-    /** @var \ZendSearch\Lucene\SearchIndexInterface */
+    /**
+     * @var \ZendSearch\Lucene\SearchIndexInterface
+     */
     private $index;
+
+    /**
+     * @var string
+     */
+    private $indexPath;
 
     /**
      * Get descriptor for open index
@@ -18,8 +25,6 @@ class Connection
     {
         return $this->index;
     }
-
-    private $indexPath;
 
     /**
      * Get path to index
@@ -47,8 +52,10 @@ class Connection
 
         try {
             $this->index = Lucene::open($path);
+
         } catch (ExceptionInterface $e) {
             $this->index = Lucene::create($path);
+
         } catch (\Exception $e) {
             if (!file_exists($path)) {
                 throw new \Exception(
@@ -57,5 +64,13 @@ class Connection
             }
             throw $e;
         }
+    }
+
+    /**
+     * Destruct the instance.
+     */
+    public function __destruct()
+    {
+        unset($this->index);
     }
 }

@@ -115,6 +115,11 @@ class SearchTest extends TestCase
 
     private function createIndex()
     {
-        return new Search($this->connection, $this->config);
+        return new Search(
+            function () {
+                return $this->connection;
+            },
+            $this->config
+        );
     }
 }
