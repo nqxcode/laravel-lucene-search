@@ -1,12 +1,12 @@
 <?php namespace Nqxcode\LuceneSearch\Console;
 
+use App;
+use Config;
 use Illuminate\Console\Command;
+use Nqxcode\LuceneSearch\Locker\Locker;
 use Nqxcode\LuceneSearch\Search;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\NullOutput;
-
-use App;
-use Config;
 
 class RebuildCommand extends Command
 {
@@ -19,40 +19,62 @@ class RebuildCommand extends Command
             $this->output = new NullOutput;
         }
 
-        $this->call('search:clear');
+        $lockFilePath = sys_get_temp_dir()
+            . DIRECTORY_SEPARATOR
+            . 'laravel-lucene-search'
+            . DIRECTORY_SEPARATOR
+            . 'rebuild.lock';
 
-        /** @var Search $search */
-        $search = App::make('search');
+        $locker = new Locker($lockFilePath);
 
-        $modelRepositories = $search->config()->repositories();
-
-        if (count($modelRepositories) > 0) {
-            foreach ($modelRepositories as $modelRepository) {
-                $this->info('Creating index for model: "' . get_class($modelRepository) . '"');
-
-                $count = $modelRepository->count();
-
-                if ($count === 0) {
-                    $this->comment(' No available models found.');
-                    continue;
-                }
-
-                $progress = new ProgressBar($this->getOutput(), $count);
-                $progress->start();
-
-                $modelRepository->chunk(1000, function ($chunk) use ($progress, $search) {
-                    foreach ($chunk as $model) {
-                        $search->update($model);
-                        $progress->advance();
-                    }
-                });
-
-                $progress->finish();
-                $this->info(PHP_EOL);
-            }
-            $this->info(PHP_EOL . 'Operation is fully complete!');
-        } else {
-            $this->error('No models found in config.php file..');
+        if ($locker->isLocked()) {
+            $this->error('Rebuild is already running!');
         }
+
+        $locker->doLocked(function () {
+            $oldIndexPath = \Config::get('laravel-lucene-search::index.path');
+            $newIndexPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'laravel-lucene-search' . DIRECTORY_SEPARATOR . 'index';
+
+            \Config::set('laravel-lucene-search::index.path', $newIndexPath);
+
+            /** @var Search $search */
+            $search = App::make('search');
+
+            $modelRepositories = $search->config()->repositories();
+
+            if (count($modelRepositories) > 0) {
+                foreach ($modelRepositories as $modelRepository) {
+                    $this->info('Creating index for model: "' . get_class($modelRepository) . '"');
+
+                    $count = $modelRepository->count();
+
+                    if ($count === 0) {
+                        $this->comment(' No available models found.');
+                        continue;
+                    }
+
+                    $progress = new ProgressBar($this->getOutput(), $count);
+                    $progress->start();
+
+                    $modelRepository->chunk(1000, function ($chunk) use ($progress, $search) {
+                        foreach ($chunk as $model) {
+                            $search->update($model);
+                            $progress->advance();
+                        }
+                    });
+
+                    $progress->finish();
+                    $this->info(PHP_EOL);
+                }
+                $this->info(PHP_EOL . 'Operation is fully complete!');
+            } else {
+                $this->error('No models found in config.php file..');
+            }
+
+            \File::cleanDirectory($oldIndexPath);
+            \File::copyDirectory($newIndexPath, $oldIndexPath);
+
+            \Config::set('laravel-lucene-search::index.path', $oldIndexPath);
+        });
     }
 }

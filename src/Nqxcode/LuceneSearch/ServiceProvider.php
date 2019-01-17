@@ -5,7 +5,6 @@ use Nqxcode\LuceneSearch\Analyzer\Config as AnalyzerConfig;
 use Nqxcode\LuceneSearch\Analyzer\Stopwords\FilterFactory;
 use Nqxcode\LuceneSearch\Index\Connection;
 use Nqxcode\LuceneSearch\Model\Config as ModelsConfig;
-use Nqxcode\LuceneSearch\Pagination\Factory;
 use ZendSearch\Lucene\Analysis\Analyzer\Common\Utf8Num\CaseInsensitive;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
