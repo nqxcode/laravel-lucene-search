@@ -6,7 +6,12 @@ use Nqxcode\LuceneSearch\Analyzer\Stopwords\FilterFactory;
 use Nqxcode\LuceneSearch\Index\Connection;
 use Nqxcode\LuceneSearch\Model\Config as ModelsConfig;
 use ZendSearch\Lucene\Analysis\Analyzer\Common\Utf8Num\CaseInsensitive;
+use ZendSearch\Lucene\Search\QueryParser;
 
+/**
+ * Class ServiceProvider
+ * @package Nqxcode\LuceneSearch
+ */
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
 
@@ -39,6 +44,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         });
 
         $this->app->bindShared('search', function ($app) {
+
+            QueryParser::setDefaultEncoding('utf-8');
+
             return new Search(
                 function () {
                     return new Connection(
