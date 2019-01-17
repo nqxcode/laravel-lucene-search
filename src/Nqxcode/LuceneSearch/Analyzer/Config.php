@@ -22,8 +22,6 @@ class Config
 
     public function __construct(array $filterClasses, array $stopWordFiles, FilterFactory $stopwordsFilterFactory)
     {
-        QueryParser::setDefaultEncoding('utf-8');
-
         $this->filterClasses = $filterClasses;
         $this->stopWordFiles = $stopWordFiles;
         $this->stopwordsFilterFactory = $stopwordsFilterFactory;
