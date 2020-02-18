@@ -2,12 +2,14 @@
 
 use App;
 use Config;
+use File;
 use Illuminate\Console\Command;
 use Nqxcode\LuceneSearch\Locker\Locker;
 use Nqxcode\LuceneSearch\Search;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\NullOutput;
+use Queue;
 
 class RebuildCommand extends Command
 {
@@ -68,14 +70,28 @@ class RebuildCommand extends Command
                     continue;
                 }
 
-                $progress = new ProgressBar($this->getOutput(), $count);
+                $chunkCount = Config::get('laravel-lucene-search::chunk');
+                $progress = new ProgressBar($this->getOutput(), $count / $chunkCount);
                 $progress->start();
 
-                $modelRepository->chunk(1000, function ($chunk) use ($progress) {
-                    foreach ($chunk as $model) {
-                        $this->search->update($model);
-                        $progress->advance();
+                $modelRepository->chunk($chunkCount, function ($chunk) use ($progress) {
+                    $queue = Config::get('laravel-lucene-search::queue');
+                    if ($queue) {
+                        Queue::push(
+                            'Nqxcode\LuceneSearch\Job\MassUpdateSearchIndex',
+                            [
+                                'modelClass' => get_class($chunk[0]),
+                                'modelKeys' => $chunk->lists($chunk[0]->getKeyName()),
+                            ],
+                            $queue);
+
+                    } else {
+                        foreach ($chunk as $model) {
+                            $this->search->update($model);
+                        }
                     }
+
+                    $progress->advance();
                 });
 
                 $progress->finish();
@@ -89,19 +105,20 @@ class RebuildCommand extends Command
 
     private function softRebuild()
     {
-        $oldIndexPath = \Config::get('laravel-lucene-search::index.path');
+        $oldIndexPath = Config::get('laravel-lucene-search::index.path');
         $newIndexPath = sys_get_temp_dir() . '/laravel-lucene-search/' . uniqid('index-', true);
 
-        \Config::set('laravel-lucene-search::index.path', $newIndexPath);
+        Config::set('laravel-lucene-search::index.path', $newIndexPath);
 
         $this->rebuild();
 
         $this->search->destroyConnection();
 
-        \File::cleanDirectory($oldIndexPath);
-        \File::copyDirectory($newIndexPath, $oldIndexPath);
+        File::cleanDirectory($oldIndexPath);
+        File::copyDirectory($newIndexPath, $oldIndexPath);
+        File::cleanDirectory($newIndexPath);
 
-        \Config::set('laravel-lucene-search::index.path', $oldIndexPath);
+        Config::set('laravel-lucene-search::index.path', $oldIndexPath);
 
     }
 

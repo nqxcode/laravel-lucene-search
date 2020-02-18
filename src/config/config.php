@@ -51,4 +51,24 @@ return [
 
         'stopwords' => Nqxcode\LuceneSearch\Analyzer\Stopwords\Files::get(),
     ],
+
+    /*
+     |--------------------------------------------------------------------------
+     | Queue for jobs.
+     |--------------------------------------------------------------------------
+     |
+     | Define queue that will be used for jobs of search index updating.
+     |
+    */
+    'queue' => null,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Chunk Size
+    |--------------------------------------------------------------------------
+    |
+    | This option allow you to control the maximum chunk size when you are rebuild search index.
+    |
+    */
+    'chunk' => 50,
 ];

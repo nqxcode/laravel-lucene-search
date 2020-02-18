@@ -5,6 +5,7 @@ use Nqxcode\LuceneSearch\Analyzer\Config as AnalyzerConfig;
 use Nqxcode\LuceneSearch\Analyzer\Stopwords\FilterFactory;
 use Nqxcode\LuceneSearch\Index\Connection;
 use Nqxcode\LuceneSearch\Model\Config as ModelsConfig;
+use Nqxcode\LuceneSearch\Model\SearchObserver;
 use ZendSearch\Lucene\Analysis\Analyzer\Common\Utf8Num\CaseInsensitive;
 use ZendSearch\Lucene\Search\QueryParser;
 
@@ -30,6 +31,8 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     public function boot()
     {
         $this->package('nqxcode/laravel-lucene-search');
+
+        SearchObserver::setQueue(Config::get('laravel-lucene-search::queue'));
     }
 
     /**

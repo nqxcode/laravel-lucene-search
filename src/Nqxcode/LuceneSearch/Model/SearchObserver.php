@@ -1,6 +1,7 @@
 <?php namespace Nqxcode\LuceneSearch\Model;
 
 use App;
+use Queue;
 
 /**
  * Class SearchObserver
@@ -11,6 +12,9 @@ class SearchObserver
     /** @var bool */
     private static $enabled = true;
 
+    /** @var string|null */
+    private static $queue = null;
+
     /**
      * @param bool $enabled
      */
@@ -19,17 +23,49 @@ class SearchObserver
         self::$enabled = $enabled;
     }
 
+    /**
+     * @param bool $queue
+     */
+    public static function setQueue($queue)
+    {
+        self::$queue = $queue;
+    }
+
     public function saved($model)
     {
         if (self::$enabled) {
-            App::offsetGet('search')->update($model);
+            if (self::$queue) {
+                Queue::push(
+                    'Nqxcode\LuceneSearch\Job\UpdateSearchIndex',
+                    [
+                        'modelClass' => get_class($model),
+                        'modelKey' => $model->getKey()
+                    ],
+                    self::$queue
+                );
+
+            } else {
+                App::offsetGet('search')->update($model);
+            }
         }
     }
 
     public function deleting($model)
     {
         if (self::$enabled) {
-            App::offsetGet('search')->delete($model);
+            if (self::$queue) {
+                Queue::push(
+                    'Nqxcode\LuceneSearch\Job\DeleteSearchIndex',
+                    [
+                        'modelClass' => get_class($model),
+                        'modelKey' => $model->getKey()
+                    ],
+                    self::$queue
+                );
+
+            } else {
+                App::offsetGet('search')->delete($model);
+            }
         }
     }
 }
