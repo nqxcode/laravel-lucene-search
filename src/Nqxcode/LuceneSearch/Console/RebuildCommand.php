@@ -119,7 +119,7 @@ class RebuildCommand extends Command
         $this->search->destroyConnection();
 
         if ($queue) {
-            Queue::push('Nqxcode\LuceneSearch\Job\RotateSearchIndex', $queue);
+            Queue::push('Nqxcode\LuceneSearch\Job\RotateSearchIndex', [], $queue);
 
         } else {
             $this->searchIndexRotator->rotate();

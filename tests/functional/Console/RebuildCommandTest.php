@@ -41,10 +41,12 @@ class RebuildCommandTest extends TestCase
      * @dataProvider getOutputDataProvider
      * @param $expected
      * @param $config
+     * @param $queue
      */
-    public function testForceRebuildCommand($expected, $config)
+    public function testForceRebuildCommand($expected, $config, $queue)
     {
         Config::set('laravel-lucene-search::index.models', $config);
+        Config::set('laravel-lucene-search::queue', $queue);
 
         $output = new BufferedOutput();
         $this->artisan->call('search:rebuild', ['--verbose' => true, '--force' => true], $output);
@@ -56,10 +58,12 @@ class RebuildCommandTest extends TestCase
      * @dataProvider getOutputDataProvider
      * @param $expected
      * @param $config
+     * @param $queue
      */
-    public function testSoftRebuildCommand($expected, $config)
+    public function testSoftRebuildCommand($expected, $config, $queue)
     {
         Config::set('laravel-lucene-search::index.models', $config);
+        Config::set('laravel-lucene-search::queue', $queue);
 
         $output = new BufferedOutput();
         $this->artisan->call('search:rebuild', ['--verbose' => true], $output);
@@ -88,7 +92,9 @@ Operation is fully complete!
                     'tests\models\Tool' => [
                         'fields' => ['name', 'description'],
                     ],
-                ]
+                ],
+
+                false,
             ],
             [
                 'Creating index for model: "tests\models\Tool"
@@ -100,7 +106,45 @@ Operation is fully complete!
                     'tests\models\Tool' => [
                         'fields' => ['name', 'description'],
                     ],
-                ]
+                ],
+
+                false,
+            ],
+            [
+                'Creating index for model: "tests\models\Product"
+    0 [>---------------------------]
+    1 [->--------------------------]
+
+Creating index for model: "tests\models\Tool"
+ No available models found.
+
+Operation is fully complete!
+',
+                [
+                    'tests\models\Product' => [
+                        'fields' => ['name', 'description'],
+                    ],
+
+                    'tests\models\Tool' => [
+                        'fields' => ['name', 'description'],
+                    ],
+                ],
+
+                'search-sync-queue',
+            ],
+            [
+                'Creating index for model: "tests\models\Tool"
+ No available models found.
+
+Operation is fully complete!
+',
+                [
+                    'tests\models\Tool' => [
+                        'fields' => ['name', 'description'],
+                    ],
+                ],
+
+                'search-sync-queue',
             ],
         ];
     }
