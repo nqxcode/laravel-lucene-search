@@ -82,6 +82,7 @@ class RebuildCommand extends Command
                             [
                                 'modelClass' => get_class($chunk[0]),
                                 'modelKeys' => $chunk->lists($chunk[0]->getKeyName()),
+                                'indexPath' => Config::get('laravel-lucene-search::index.path'),
                             ],
                             $queue);
 

@@ -51,9 +51,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             QueryParser::setDefaultEncoding('utf-8');
 
             return new Search(
-                function () {
+                function ($indexPath = null) {
                     return new Connection(
-                        $this->app['search.index.path'],
+                        $indexPath ?: $this->app['search.index.path'],
                         $this->app->make('Nqxcode\LuceneSearch\Analyzer\Config')
                     );
                 },
