@@ -22,7 +22,7 @@ return [
      */
     'index' => [
 
-        'path' => storage_path() . '/lucene-search/index',
+        'path' => storage_path('lucene-search/index'),
 
         'models' => [
             // Add models descriptions here.

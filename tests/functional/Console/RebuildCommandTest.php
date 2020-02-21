@@ -1,9 +1,10 @@
 <?php namespace tests\functional\Console;
 
+use Config;
+use File;
 use Illuminate\Console\Application;
 use Symfony\Component\Console\Output\BufferedOutput;
 use tests\TestCase;
-use Config;
 
 /**
  * Class RebuildCommandTest
@@ -23,8 +24,17 @@ class RebuildCommandTest extends TestCase
         // Call migrations specific to our tests, e.g. to seed the db.
         $this->artisan->call('migrate', ['--database' => 'testbench', '--path' => '../tests/migrations']);
 
-        Config::set('laravel-lucene-search::index.path',
-            sys_get_temp_dir() . '/laravel-lucene-search/index' . uniqid('index-', true));
+        Config::set(
+            'laravel-lucene-search::index.path',
+            sys_get_temp_dir() . '/laravel-lucene-search/' . uniqid('index-', true)
+        );
+    }
+
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        File::deleteDirectory(Config::get('laravel-lucene-search::index.path'));
     }
 
     /**

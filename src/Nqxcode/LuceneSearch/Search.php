@@ -29,11 +29,6 @@ class Search
     protected $connection;
 
     /**
-     * @var string
-     */
-    protected $indexPath;
-
-    /**
      * Get descriptor for open index.
      *
      * @return \ZendSearch\Lucene\SearchIndexInterface
@@ -41,19 +36,6 @@ class Search
     public function index()
     {
         return $this->makeConnection()->getIndex();
-    }
-
-    /**
-     * Use index path for connection.
-     *
-     * @param $indexPath
-     * @return $this
-     */
-    public function useIndexPath($indexPath)
-    {
-        $this->indexPath = $indexPath;
-
-        return $this;
     }
 
     /**
@@ -96,8 +78,8 @@ class Search
      */
     private function makeConnection()
     {
-        if (null === $this->connection) {
-            $this->connection = call_user_func($this->connectionBuilder, $this->indexPath);
+        if (!isset($this->connection)) {
+            $this->connection = call_user_func($this->connectionBuilder);
         }
 
         return $this->connection;

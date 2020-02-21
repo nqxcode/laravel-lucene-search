@@ -6,6 +6,7 @@ use File;
 use Illuminate\Console\Command;
 use Nqxcode\LuceneSearch\Locker\Locker;
 use Nqxcode\LuceneSearch\Search;
+use Nqxcode\LuceneSearch\Support\SearchIndexRotator;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\NullOutput;
@@ -21,6 +22,11 @@ class RebuildCommand extends Command
      */
     private $search;
 
+    /**
+     * @var SearchIndexRotator
+     */
+    private $searchIndexRotator;
+
     protected function getOptions()
     {
         return [
@@ -34,7 +40,7 @@ class RebuildCommand extends Command
             $this->output = new NullOutput;
         }
 
-        $lockFilePath = sys_get_temp_dir() . '/laravel-lucene-search/rebuild.lock';
+        $lockFilePath = storage_path('laravel-lucene-search/rebuild.lock');
 
         $locker = new Locker($lockFilePath);
 
@@ -44,10 +50,11 @@ class RebuildCommand extends Command
 
         $locker->doLocked(function () {
             if ($this->option('force')) {
-                $this->forceRebuild();
+                $this->call('search:clear');
+                $this->rebuild();
 
             } else {
-                $this->softRebuild();
+                $this->rebuild();
             }
         });
     }
@@ -56,6 +63,10 @@ class RebuildCommand extends Command
     {
         /** @var Search $search */
         $this->search = App::make('search');
+
+        $this->searchIndexRotator = App::make('search.index.rotator');
+        $queue = Config::get('laravel-lucene-search::queue');
+        $indexPath = Config::get('laravel-lucene-search::index.path');
 
         $modelRepositories = $this->search->config()->repositories();
 
@@ -74,19 +85,21 @@ class RebuildCommand extends Command
                 $progress = new ProgressBar($this->getOutput(), $count / $chunkCount);
                 $progress->start();
 
-                $modelRepository->chunk($chunkCount, function ($chunk) use ($progress) {
-                    $queue = Config::get('laravel-lucene-search::queue');
+                $modelRepository->chunk($chunkCount, function ($chunk) use ($progress, $queue) {
+                    $newIndexPath = $this->searchIndexRotator->getNewIndexPath();
+
                     if ($queue) {
                         Queue::push(
                             'Nqxcode\LuceneSearch\Job\MassUpdateSearchIndex',
                             [
                                 'modelClass' => get_class($chunk[0]),
                                 'modelKeys' => $chunk->lists($chunk[0]->getKeyName()),
-                                'indexPath' => Config::get('laravel-lucene-search::index.path'),
+                                'indexPath' => $newIndexPath,
                             ],
                             $queue);
 
                     } else {
+                        Config::set('laravel-lucene-search::index.path', $newIndexPath);
                         foreach ($chunk as $model) {
                             $this->search->update($model);
                         }
@@ -102,30 +115,16 @@ class RebuildCommand extends Command
         } else {
             $this->error('No models found in config.php file..');
         }
-    }
-
-    private function softRebuild()
-    {
-        $oldIndexPath = Config::get('laravel-lucene-search::index.path');
-        $newIndexPath = sys_get_temp_dir() . '/laravel-lucene-search/' . uniqid('index-', true);
-
-        Config::set('laravel-lucene-search::index.path', $newIndexPath);
-
-        $this->rebuild();
 
         $this->search->destroyConnection();
 
-        File::cleanDirectory($oldIndexPath);
-        File::copyDirectory($newIndexPath, $oldIndexPath);
-        File::cleanDirectory($newIndexPath);
+        if ($queue) {
+            Queue::push('Nqxcode\LuceneSearch\Job\RotateSearchIndex', $queue);
 
-        Config::set('laravel-lucene-search::index.path', $oldIndexPath);
+        } else {
+            $this->searchIndexRotator->rotate();
+        }
 
-    }
-
-    private function forceRebuild()
-    {
-        $this->call('search:clear');
-        $this->rebuild();
+        Config::set('laravel-lucene-search::index.path', $indexPath);
     }
 }

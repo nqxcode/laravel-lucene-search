@@ -6,6 +6,7 @@ use Nqxcode\LuceneSearch\Analyzer\Stopwords\FilterFactory;
 use Nqxcode\LuceneSearch\Index\Connection;
 use Nqxcode\LuceneSearch\Model\Config as ModelsConfig;
 use Nqxcode\LuceneSearch\Model\SearchObserver;
+use Nqxcode\LuceneSearch\Support\SearchIndexRotator;
 use ZendSearch\Lucene\Analysis\Analyzer\Common\Utf8Num\CaseInsensitive;
 use ZendSearch\Lucene\Search\QueryParser;
 
@@ -51,9 +52,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             QueryParser::setDefaultEncoding('utf-8');
 
             return new Search(
-                function ($indexPath = null) {
+                function () {
                     return new Connection(
-                        $indexPath ?: $this->app['search.index.path'],
+                        $this->app['search.index.path'],
                         $this->app->make('Nqxcode\LuceneSearch\Analyzer\Config')
                     );
                 },
@@ -73,7 +74,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             );
         });
 
-        $this->app->bindShared('search.index.path', function () {
+        $this->app->bind('search.index.path', function () {
             return Config::get('laravel-lucene-search::index.path');
         });
 
@@ -82,6 +83,14 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             return new ModelsConfig(
                 Config::get('laravel-lucene-search::index.models'),
                 $app->make('Nqxcode\LuceneSearch\Model\Factory')
+            );
+        });
+
+        $this->app->bindShared('search.index.rotator', function () {
+            return new SearchIndexRotator(
+                $this->app['search.index.path'],
+                storage_path('laravel-lucene-search/index.new'),
+                storage_path('laravel-lucene-search/index.preview')
             );
         });
 

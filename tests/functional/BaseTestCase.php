@@ -1,5 +1,6 @@
 <?php namespace tests\functional;
 
+use File;
 use tests\TestCase;
 use Config;
 
@@ -9,9 +10,12 @@ use Config;
  */
 abstract class BaseTestCase extends TestCase
 {
+    private $indexPath;
+
     public function setUp()
     {
         parent::setUp();
+
         $this->configure();
 
         $artisan = $this->app->make('artisan');
@@ -23,10 +27,19 @@ abstract class BaseTestCase extends TestCase
         $artisan->call('search:rebuild', ['--force' => true]);
     }
 
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        app('search')->destroyConnection();
+
+        File::deleteDirectory($this->indexPath);
+    }
+
     protected function configure()
     {
-        Config::set('laravel-lucene-search::index.path',
-            sys_get_temp_dir() . '/laravel-lucene-search/index' . uniqid('index-', true));
+        $this->indexPath = sys_get_temp_dir() . '/laravel-lucene-search/' . uniqid('index-', true);
+        Config::set('laravel-lucene-search::index.path', $this->indexPath);
         Config::set(
             'laravel-lucene-search::index.models',
             [
