@@ -66,11 +66,15 @@ class RebuildCommand extends Command
 
         $this->searchIndexRotator = App::make('search.index.rotator');
         $queue = Config::get('laravel-lucene-search::queue');
-        $indexPath = Config::get('laravel-lucene-search::index.path');
 
         $modelRepositories = $this->search->config()->repositories();
-
         if (count($modelRepositories) > 0) {
+
+            $originalIndexPath = Config::get('laravel-lucene-search::index.path');
+            $newIndexPath = $this->searchIndexRotator->getNewIndexPath();
+
+            Config::set('laravel-lucene-search::index.path', $newIndexPath);
+
             foreach ($modelRepositories as $modelRepository) {
                 $this->info('Creating index for model: "' . get_class($modelRepository) . '"');
 
@@ -85,8 +89,7 @@ class RebuildCommand extends Command
                 $progress = new ProgressBar($this->getOutput(), $count / $chunkCount);
                 $progress->start();
 
-                $modelRepository->chunk($chunkCount, function ($chunk) use ($progress, $queue) {
-                    $newIndexPath = $this->searchIndexRotator->getNewIndexPath();
+                $modelRepository->chunk($chunkCount, function ($chunk) use ($progress, $queue, $newIndexPath) {
 
                     if ($queue) {
                         Queue::push(
@@ -99,7 +102,6 @@ class RebuildCommand extends Command
                             $queue);
 
                     } else {
-                        Config::set('laravel-lucene-search::index.path', $newIndexPath);
                         foreach ($chunk as $model) {
                             $this->search->update($model);
                         }
@@ -111,7 +113,11 @@ class RebuildCommand extends Command
                 $progress->finish();
                 $this->info(PHP_EOL);
             }
+
+            Config::set('laravel-lucene-search::index.path', $originalIndexPath);
+
             $this->info(PHP_EOL . 'Operation is fully complete!');
+
         } else {
             $this->error('No models found in config.php file..');
         }
@@ -124,7 +130,5 @@ class RebuildCommand extends Command
         } else {
             $this->searchIndexRotator->rotate();
         }
-
-        Config::set('laravel-lucene-search::index.path', $indexPath);
     }
 }

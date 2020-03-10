@@ -14,6 +14,7 @@ class MassUpdateSearchIndex
         $modelKeys = $jobData['modelKeys'];
         $indexPath = $jobData['indexPath'];
 
+        $originalIndexPath = Config::get('laravel-lucene-search::index.path');
         Config::set('laravel-lucene-search::index.path', $indexPath);
 
         foreach ($modelKeys as $modelKey) {
@@ -22,6 +23,8 @@ class MassUpdateSearchIndex
                 app('search')->update($model);
             }
         }
+
+        Config::set('laravel-lucene-search::index.path', $originalIndexPath);
 
         $job->delete();
     }
