@@ -120,14 +120,13 @@ class RebuildCommand extends Command
 
         } else {
             $this->error('No models found in config.php file..');
-        }
-
-        $this->search->destroyConnection();
+        }        
 
         if ($queue) {
             Queue::push('Nqxcode\LuceneSearch\Job\RotateSearchIndex', [], $queue);
 
         } else {
+            $this->search->destroyConnection();
             $this->searchIndexRotator->rotate();
         }
     }
