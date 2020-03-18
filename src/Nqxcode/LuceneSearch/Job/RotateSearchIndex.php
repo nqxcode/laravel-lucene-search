@@ -1,6 +1,7 @@
 <?php namespace Nqxcode\LuceneSearch\Job;
 
 use File;
+use Nqxcode\LuceneSearch\Search;
 use Nqxcode\LuceneSearch\Support\SearchIndexRotator;
 
 /**
@@ -9,9 +10,23 @@ use Nqxcode\LuceneSearch\Support\SearchIndexRotator;
  */
 class RotateSearchIndex
 {
+    /**
+     * @var Search
+     */
+    private $search;
+
+    /**
+     * @var SearchIndexRotator
+     */
+    private $searchIndexRotator;
+
     public function fire($job, array $jobData)
     {
-        app('search.index.rotator')->rotate();
+        $this->search = app('search');
+        $this->searchIndexRotator = app('search.index.rotator');
+
+        $this->search->destroyConnection();
+        $this->searchIndexRotator->rotate();
 
         $job->delete();
     }
