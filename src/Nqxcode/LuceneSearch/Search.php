@@ -170,6 +170,7 @@ class Search
 
         // Add document to index.
         $this->index()->addDocument($doc);
+        $this->index()->optimize();
     }
 
     /**
@@ -184,6 +185,7 @@ class Search
         foreach ($hits as $hit) {
             $this->index()->delete($hit->id); // delete document from index by ID of hit.
         }
+        $this->index()->optimize();
     }
 
     /**
