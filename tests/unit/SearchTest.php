@@ -84,6 +84,7 @@ class SearchTest extends TestCase
         })->once();
 
         $luceneIndex->shouldReceive('delete')->with(10)->once();
+        $luceneIndex->shouldReceive('optimize')->twice();
 
         $index = $this->createIndex();
 
@@ -108,6 +109,7 @@ class SearchTest extends TestCase
         });
 
         $luceneIndex->shouldReceive('delete')->with(10)->once();
+        $luceneIndex->shouldReceive('optimize')->once();
 
         $index = $this->createIndex();
         $index->delete($this->model);
