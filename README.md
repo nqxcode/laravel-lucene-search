@@ -72,10 +72,10 @@ In published config file add descriptions for models which need to be indexed, f
 	],
 	
 	// ...
-	
 ],
 
 ```
+
 ### Indexing of dynamic fields
 You can also index values of **optional fields** (dynamic fields). For enable indexing for optional fields:
 
@@ -213,6 +213,16 @@ This filters can be deleted or replaced with others.
     'stopwords' => Nqxcode\LuceneSearch\Analyzer\Stopwords\Files::get(),
 ],
     
+```
+
+### Enable queue 
+
+```php
+
+'queue' => 'search', // Define queue that will be used for jobs of search index updating.
+
+'chunk' => 50, // Chunk size for models, use in search index rebuilding.
+
 ```
 
 ## Usage
